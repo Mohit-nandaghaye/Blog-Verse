@@ -6,88 +6,100 @@
     <title>BlogVerse — Platform Owned by MOHIT NANDAGHAYE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
-    </style>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <!-- Top Navigation Bar -->
+    <!-- Header Navigation -->
     <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-40 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="bg-emerald-500 text-slate-900 font-black px-2.5 py-1 rounded-lg text-lg">BV</div>
                 <div>
                     <h1 class="font-bold text-lg leading-none">BlogVerse</h1>
-                    <p class="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase mt-0.5">Owned by MOHIT NANDAGHAYE</p>
+                    <p class="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider mt-0.5">Owned by MOHIT NANDAGHAYE</p>
                 </div>
             </div>
-
-            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
-                <a href="#home" class="hover:text-emerald-400 transition"><i class="fa-solid fa-house mr-1"></i> Home</a>
-                <a href="#articles" class="hover:text-emerald-400 transition"><i class="fa-solid fa-newspaper mr-1"></i> Articles</a>
-                <a href="#create" class="hover:text-emerald-400 transition"><i class="fa-solid fa-pen-to-square mr-1"></i> Write</a>
-            </nav>
-
-            <div class="flex items-center space-x-3" id="auth-nav-area">
-                <!-- Dynamic Auth Buttons injected via JavaScript -->
-            </div>
+            <div class="flex items-center space-x-3" id="auth-nav-area"></div>
         </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
         
-        <!-- Platform Ownership Banner -->
-        <section class="mb-10 bg-gradient-to-r from-emerald-900/40 via-slate-800 to-slate-900 border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden">
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Welcome Banner -->
+        <section class="mb-8 bg-gradient-to-r from-emerald-950 via-slate-800 to-slate-900 border border-emerald-500/30 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-500/30 font-semibold">Official Platform</span>
-                    <h2 class="text-2xl md:text-3xl font-bold mt-2">Welcome to BlogVerse</h2>
+                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-500/30 font-semibold">Live Database Powered</span>
+                    <h2 class="text-2xl font-bold mt-2">Welcome to BlogVerse Studio</h2>
                     <p class="text-slate-400 text-sm mt-1">Platform Architecture & Sole Ownership managed by <span class="text-emerald-400 font-bold">MOHIT NANDAGHAYE</span>.</p>
                 </div>
-                <div>
-                    <button onclick="openAuthModal('signup')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-5 py-2.5 rounded-xl shadow-lg transition">
-                        Start Writing
-                    </button>
-                </div>
+                <div id="hero-action-btn"></div>
             </div>
         </section>
 
-        <!-- Articles Section -->
-        <section id="articles" class="space-y-6">
-            <div class="flex items-center justify-between">
-                <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-fire text-emerald-400"></i> Published Articles
-                </h3>
-            </div>
+        <!-- Write Article Form -->
+        <section id="editor-section" class="hidden mb-10 bg-slate-800/80 border border-emerald-500/50 rounded-2xl p-6 shadow-xl">
+            <h3 class="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-pen-nib"></i> Publish New Article
+            </h3>
+            <form onsubmit="handlePublishArticle(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Article Title</label>
+                    <input type="text" id="post-title" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Enter article title...">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Category</label>
+                    <select id="post-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500">
+                        <option value="Technology">Technology</option>
+                        <option value="Business">Business</option>
+                        <option value="Stories">Stories</option>
+                        <option value="Creativity">Creativity</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Content / Story</label>
+                    <textarea id="post-content" rows="4" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Write your full article here..."></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="toggleEditor(false)" class="px-4 py-2 text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</button>
+                    <button type="submit" id="publish-btn" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-6 py-2 rounded-xl transition">Publish Now</button>
+                </div>
+            </form>
+        </section>
 
-            <!-- Articles Container -->
+        <!-- Feed Section -->
+        <section class="space-y-6">
+            <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-newspaper text-emerald-400"></i> Published Articles
+            </h3>
             <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Injected via JavaScript -->
+                <p class="text-slate-400 text-sm col-span-2">Loading articles from live database...</p>
             </div>
         </section>
     </main>
 
-    <!-- Dedicated Auth Modal (Login / Sign Up) -->
+    <!-- Login / Sign Up Modal -->
     <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
 
-            <!-- Tabs -->
             <div class="flex border-b border-slate-800 mb-6">
                 <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-2 font-bold text-center border-b-2 border-emerald-500 text-emerald-400">Login</button>
                 <button id="tab-signup" onclick="switchTab('signup')" class="flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent">Sign Up</button>
             </div>
 
-            <!-- Auth Form -->
-            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div id="name-field" class="hidden">
-                    <label class="block text-xs text-slate-400 mb-1">Full Name</label>
-                    <input type="text" id="auth-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="John Doe">
+                    <label class="block text-xs text-slate-400 mb-1">Your Name</label>
+                    <input type="text" id="auth-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Enter full name">
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Email Address</label>
@@ -97,99 +109,135 @@
                     <label class="block text-xs text-slate-400 mb-1">Password</label>
                     <input type="password" id="auth-password" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="••••••••">
                 </div>
-                <button type="submit" id="auth-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-2.5 rounded-xl transition mt-4">
-                    Sign In
-                </button>
+                <p id="auth-error" class="text-xs text-red-400 hidden"></p>
+                <button type="submit" id="auth-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-2.5 rounded-xl transition mt-4">Sign In</button>
             </form>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="border-t border-slate-800 bg-slate-900 mt-12 py-6 text-center text-xs text-slate-500">
-        <p>BlogVerse Platform © <span id="year"></span> | Designed, Developed & Owned by <strong class="text-slate-300">MOHIT NANDAGHAYE</strong>.</p>
+        <p>BlogVerse Platform © <span id="year"></span> | Designed & Owned by <strong class="text-slate-300">MOHIT NANDAGHAYE</strong>.</p>
     </footer>
 
-    <!-- Application JavaScript Logic -->
     <script>
         document.getElementById('year').innerText = new Date().getFullYear();
-
-        // Locked Owner Information (Immutable)
         const OWNER_NAME = "MOHIT NANDAGHAYE";
 
-        // Initial Real Articles (4 Published Articles by Owner)
-        const defaultArticles = [
-            {
-                id: 1,
-                title: "Building Scalable Modern Web Applications",
-                category: "Technology",
-                excerpt: "An architectural guide on developing lightweight and responsive web services with clean frontend patterns.",
-                author: OWNER_NAME,
-                date: "Oct 02, 2026"
-            },
-            {
-                id: 2,
-                title: "The Future of Digital Publishing & Content Rights",
-                category: "Business",
-                excerpt: "Exploring how content creators can safeguard ownership while engaging audiences in decentralized web environments.",
-                author: OWNER_NAME,
-                date: "Oct 03, 2026"
-            },
-            {
-                id: 3,
-                title: "Mastering Clean JavaScript without Framework Bloat",
-                category: "Engineering",
-                excerpt: "Why pure JavaScript and native APIs remain the ultimate foundation for ultra-fast digital products.",
-                author: OWNER_NAME,
-                date: "Oct 04, 2026"
-            },
-            {
-                id: 4,
-                title: "Innovating Beyond Boundaries: A Product Playbook",
-                category: "Creativity",
-                excerpt: "Transforming original ideas into sustainable digital platforms through structured execution.",
-                author: OWNER_NAME,
-                date: "Oct 05, 2026"
-            }
-        ];
+        // Step 1 ki Firebase config values yahan daalein
+        const firebaseConfig = {
+            apiKey: "AIzaSyBRe5ja_JmKkZwlXjRY0UmBEgwdLeM8vNw",
+  authDomain: "blogverse-f45bf.firebaseapp.com",
+  projectId: "blogverse-f45bf",
+  storageBucket: "blogverse-f45bf.firebasestorage.app",
+  messagingSenderId: "903299334786",
+  appId: "1:903299334786:web:cba3a6f203db7504106a9b",
+        };
 
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
         let currentAuthMode = 'login';
-        let currentUser = JSON.parse(localStorage.getItem('bv_user')) || null;
+
+        // Monitor Real-time Authentication
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            renderNav();
+        });
+
+        // Load Real-time Articles from Database
+        db.collection("articles").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            const articlesGrid = document.getElementById('articles-grid');
+            if (snapshot.empty) {
+                articlesGrid.innerHTML = `<p class="text-slate-400 text-sm col-span-2">No articles published yet. Be the first to write one!</p>`;
+                return;
+            }
+
+            articlesGrid.innerHTML = snapshot.docs.map(doc => {
+                const art = doc.data();
+                return `
+                    <div class="bg-slate-800/50 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 transition flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50">${art.category}</span>
+                                <span class="text-xs text-slate-500">${art.date}</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-100 mb-2">${art.title}</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4">${art.excerpt}</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <span>By <strong class="text-slate-200">${art.author}</strong></span>
+                            <span class="text-emerald-400 font-semibold cursor-pointer">Read Article →</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        });
 
         function renderNav() {
             const navArea = document.getElementById('auth-nav-area');
+            const heroBtn = document.getElementById('hero-action-btn');
+
             if (currentUser) {
+                const displayName = currentUser.displayName || currentUser.email.split('@')[0];
                 navArea.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <span class="text-sm font-medium text-emerald-400"><i class="fa-solid fa-user-circle mr-1"></i> ${currentUser.name}</span>
-                        <button onclick="logout()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">Logout</button>
-                    </div>
+                    <button onclick="toggleEditor(true)" class="text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-3 py-2 rounded-lg transition"><i class="fa-solid fa-pen mr-1"></i> Write Blog</button>
+                    <span class="text-sm font-medium text-slate-200"><i class="fa-solid fa-user-circle text-emerald-400"></i> ${displayName}</span>
+                    <button onclick="logout()" class="text-xs bg-slate-800 text-slate-400 hover:text-slate-200 px-3 py-2 rounded-lg border border-slate-700">Logout</button>
+                `;
+                heroBtn.innerHTML = `
+                    <button onclick="toggleEditor(true)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-5 py-2.5 rounded-xl shadow-lg transition">Create New Post</button>
                 `;
             } else {
                 navArea.innerHTML = `
-                    <button onclick="openAuthModal('login')" class="text-sm font-medium text-slate-300 hover:text-slate-100 px-3 py-1.5">Log In</button>
+                    <button onclick="openAuthModal('login')" class="text-sm font-medium text-slate-300 px-3 py-1.5">Log In</button>
                     <button onclick="openAuthModal('signup')" class="text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-4 py-1.5 rounded-lg transition">Sign Up</button>
+                `;
+                heroBtn.innerHTML = `
+                    <button onclick="openAuthModal('signup')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-5 py-2.5 rounded-xl shadow-lg transition">Start Writing</button>
                 `;
             }
         }
 
-        function renderArticles() {
-            const grid = document.getElementById('articles-grid');
-            grid.innerHTML = defaultArticles.map(art => `
-                <div class="bg-slate-800/50 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 transition flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50">${art.category}</span>
-                            <span class="text-xs text-slate-500">${art.date}</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-slate-100 mb-2">${art.title}</h4>
-                        <p class="text-slate-400 text-sm leading-relaxed mb-4">${art.excerpt}</p>
-                    </div>
-                    <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                        <span>By <strong class="text-slate-200">${art.author}</strong></span>
-                        <span class="text-emerald-400 hover:underline cursor-pointer">Read Full Article →</span>
-                    </div>
-                </div>
-            `).join('');
+        function toggleEditor(show) {
+            const section = document.getElementById('editor-section');
+            if (show) {
+                section.classList.remove('hidden');
+                section.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                section.classList.add('hidden');
+            }
+        }
+
+        async function handlePublishArticle(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const btn = document.getElementById('publish-btn');
+            btn.innerText = "Publishing...";
+            btn.disabled = true;
+
+            const title = document.getElementById('post-title').value;
+            const category = document.getElementById('post-category').value;
+            const excerpt = document.getElementById('post-content').value;
+            const authorName = currentUser.displayName || currentUser.email.split('@')[0];
+
+            await db.collection("articles").add({
+                title: title,
+                category: category,
+                excerpt: excerpt,
+                author: authorName,
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-content').value = '';
+            btn.innerText = "Publish Now";
+            btn.disabled = false;
+            toggleEditor(false);
         }
 
         function openAuthModal(mode) {
@@ -200,6 +248,7 @@
 
         function closeAuthModal() {
             document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('auth-error').classList.add('hidden');
         }
 
         function switchTab(mode) {
@@ -222,27 +271,32 @@
             }
         }
 
-        function handleAuthSubmit(e) {
+        async function handleAuthSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
-            const name = currentAuthMode === 'signup' ? document.getElementById('auth-name').value || "Author" : email.split('@')[0];
+            const password = document.getElementById('auth-password').value;
+            const errBox = document.getElementById('auth-error');
+            errBox.classList.add('hidden');
 
-            currentUser = { name, email };
-            localStorage.setItem('bv_user', JSON.stringify(currentUser));
-            
-            renderNav();
-            closeAuthModal();
+            try {
+                if (currentAuthMode === 'signup') {
+                    const name = document.getElementById('auth-name').value || "Author";
+                    const res = await auth.createUserWithEmailAndPassword(email, password);
+                    await res.user.updateProfile({ displayName: name });
+                } else {
+                    await auth.signInWithEmailAndPassword(email, password);
+                }
+                closeAuthModal();
+            } catch (err) {
+                errBox.innerText = err.message;
+                errBox.classList.remove('hidden');
+            }
         }
 
         function logout() {
-            localStorage.removeItem('bv_user');
-            currentUser = null;
-            renderNav();
+            auth.signOut();
+            toggleEditor(false);
         }
-
-        // Initialize App
-        renderNav();
-        renderArticles();
     </script>
 </body>
 </html>
