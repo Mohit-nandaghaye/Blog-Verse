@@ -1,904 +1,248 @@
 <!DOCTYPE html>
-<html lang="en" class="dark h-full">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlogVerse — Your thoughts. Your creativity. Your story. | Owned by MOHIT NANDAGHAYE</title>
-    <!-- Tailwind CSS CDN -->
+    <title>BlogVerse — Platform Owned by MOHIT NANDAGHAYE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            200: '#bbf7d0',
-                            400: '#4ade80',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
-                            950: '#052e16',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome & Google Fonts -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-            <!-- Brand Logo -->
-            <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-extrabold text-xl shadow-lg shadow-emerald-500/20">
-                    BV
-                </div>
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-500 text-slate-900 font-black px-2.5 py-1 rounded-lg text-lg">BV</div>
                 <div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-black text-xl tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">BlogVerse</span>
-                        <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
-                            <i class="fa-solid fa-shield-check"></i> Owned by MOHIT NANDAGHAYE
-                        </span>
-                    </div>
-                    <p class="text-[11px] text-slate-400 hidden sm:block">Your thoughts. Your creativity. Your story.</p>
+                    <h1 class="font-bold text-lg leading-none">BlogVerse</h1>
+                    <p class="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase mt-0.5">Owned by MOHIT NANDAGHAYE</p>
                 </div>
             </div>
 
-            <!-- Search Bar -->
-            <div class="hidden md:flex flex-1 max-w-md mx-4 relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input type="text" id="globalSearchInput" onkeyup="handleGlobalSearch(event)" placeholder="Search articles, topics, or authors..." 
-                    class="w-full pl-10 pr-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-emerald-500/50 transition">
-            </div>
-
-            <!-- Navigation Links -->
-            <nav class="hidden lg:flex items-center gap-1">
-                <button onclick="navigateTo('home')" id="nav-home" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-emerald-400 bg-emerald-500/10">
-                    <i class="fa-solid fa-house mr-1.5"></i> Home
-                </button>
-                <button onclick="navigateTo('explore')" id="nav-explore" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-                    <i class="fa-solid fa-compass mr-1.5"></i> Discovery
-                </button>
-                <button onclick="navigateTo('create')" id="nav-create" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-                    <i class="fa-solid fa-pen-nib mr-1.5"></i> Create Blog
-                </button>
-                <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-                    <i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard
-                </button>
-                <button onclick="navigateTo('profile')" id="nav-profile" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-                    <i class="fa-solid fa-user mr-1.5"></i> Profile
-                </button>
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+                <a href="#home" class="hover:text-emerald-400 transition"><i class="fa-solid fa-house mr-1"></i> Home</a>
+                <a href="#articles" class="hover:text-emerald-400 transition"><i class="fa-solid fa-newspaper mr-1"></i> Articles</a>
+                <a href="#create" class="hover:text-emerald-400 transition"><i class="fa-solid fa-pen-to-square mr-1"></i> Write</a>
             </nav>
 
-            <!-- Actions -->
-            <div class="flex items-center gap-2">
-                <button onclick="openRightsModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-emerald-400 rounded-xl transition flex items-center gap-1.5" title="Rights & License Info">
-                    <i class="fa-solid fa-certificate"></i> <span class="hidden sm:inline">Rights Studio</span>
-                </button>
-                <button onclick="navigateTo('create')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center gap-2">
-                    <i class="fa-solid fa-plus"></i> <span class="hidden sm:inline">New Post</span>
-                </button>
+            <div class="flex items-center space-x-3" id="auth-nav-area">
+                <!-- Dynamic Auth Buttons injected via JavaScript -->
             </div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-        <!-- VIEW 1: HOME PAGE -->
-        <section id="view-home" class="space-y-12">
-            <!-- Hero Banner -->
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950/60 border border-emerald-500/20 p-8 sm:p-12 shadow-2xl">
-                <div class="absolute -right-16 -bottom-16 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="relative z-10 max-w-3xl space-y-4">
-                    <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
-                        <i class="fa-solid fa-crown text-amber-400"></i> Official Publishing Hub
-                    </div>
-                    <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight">
-                        Your thoughts. Your creativity. <span class="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Your story.</span>
-                    </h1>
-                    <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
-                        An exclusive blogging & editorial platform powered and solely owned by <strong class="text-emerald-400 font-bold" id="heroOwnerName">MOHIT NANDAGHAYE</strong>. Explore technology, creative prose, life stories, and business insights.
-                    </p>
-                    <div class="pt-2 flex flex-wrap items-center gap-3">
-                        <button onclick="navigateTo('create')" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl transition shadow-lg shadow-emerald-500/25 flex items-center gap-2">
-                            <i class="fa-solid fa-feather-pointed"></i> Start Writing Now
-                        </button>
-                        <button onclick="navigateTo('explore')" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-bold rounded-xl transition flex items-center gap-2">
-                            <i class="fa-solid fa-compass"></i> Explore Topics
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Categories Horizontal Pills -->
-            <div class="space-y-4">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                    <i class="fa-solid fa-layer-group text-emerald-400"></i> Browse Categories
-                </h3>
-                <div class="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar" id="categoryPills">
-                    <!-- Dynamic categories injected here -->
-                </div>
-            </div>
-
-            <!-- Main Layout: Grid Feed + Sidebar -->
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Articles Column (2 cols) -->
-                <div class="lg:col-span-2 space-y-8">
-                    <!-- Featured Article -->
-                    <div id="featuredPostContainer" class="space-y-4">
-                        <!-- Injected via JS -->
-                    </div>
-
-                    <!-- Latest Articles -->
-                    <div class="space-y-6">
-                        <div class="flex items-center justify-between">
-                            <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-fire text-amber-400"></i> Latest Publications
-                            </h2>
-                            <span class="text-xs text-slate-400" id="postCountBadge">0 posts available</span>
-                        </div>
-                        <div class="grid gap-6" id="latestPostsContainer">
-                            <!-- Injected via JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sidebar (1 col) -->
-                <div class="space-y-8">
-                    <!-- Platform Owner Bio Card -->
-                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full pointer-events-none"></div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg shadow-emerald-500/20">
-                                MN
-                            </div>
-                            <div>
-                                <h3 class="font-extrabold text-white text-lg flex items-center gap-1.5" id="sidebarOwnerName">
-                                    MOHIT NANDAGHAYE
-                                </h3>
-                                <p class="text-xs text-emerald-400 font-semibold">Founder & Sole Owner</p>
-                            </div>
-                        </div>
-                        <p class="text-xs text-slate-300 leading-relaxed" id="sidebarBio">
-                            Tech enthusiast, creative thinker, and lead author at BlogVerse. Building modern editorial experiences and sharing ideas across technology, life, and innovation.
-                        </p>
-                        <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-                            <span><i class="fa-solid fa-file-lines text-emerald-400 mr-1"></i> <span id="ownerPostCount">0</span> Articles</span>
-                            <span><i class="fa-solid fa-users text-teal-400 mr-1"></i> <span id="ownerFollowerCount">1,240</span> Followers</span>
-                        </div>
-                        <button onclick="toggleFollowOwner()" id="followOwnerBtn" class="w-full py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl transition">
-                            <i class="fa-solid fa-user-plus mr-1"></i> Follow MOHIT
-                        </button>
-                    </div>
-
-                    <!-- Featured Creators -->
-                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
-                        <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-users text-emerald-400"></i> Featured Creators
-                        </h3>
-                        <div class="space-y-4" id="featuredCreatorsContainer">
-                            <!-- Injected via JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW 2: DISCOVERY PAGE -->
-        <section id="view-explore" class="hidden space-y-8">
-            <div class="space-y-2">
-                <h1 class="text-3xl font-black text-white">Discovery & Search Hub</h1>
-                <p class="text-slate-400 text-sm">Filter articles across categories, search keywords, or discover top authors.</p>
-            </div>
-
-            <!-- Discovery Filters -->
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-wrap gap-4 items-center justify-between">
-                <div class="flex-1 min-w-[240px] relative">
-                    <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" id="exploreSearchInput" oninput="renderExploreView()" placeholder="Filter by keyword..." class="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
-                </div>
-                <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar" id="exploreCategoryFilters">
-                    <!-- Filters injected via JS -->
-                </div>
-            </div>
-
-            <!-- Results Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="exploreResultsContainer">
-                <!-- Injected via JS -->
-            </div>
-        </section>
-
-        <!-- VIEW 3: CREATE BLOG / STUDIO EDITOR -->
-        <section id="view-create" class="hidden max-w-4xl mx-auto space-y-8">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+        
+        <!-- Platform Ownership Banner -->
+        <section class="mb-10 bg-gradient-to-r from-emerald-900/40 via-slate-800 to-slate-900 border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden">
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-white">BlogVerse Studio Editor</h1>
-                    <p class="text-xs text-slate-400">Author: <span class="text-emerald-400 font-semibold" id="editorOwnerDisplay">MOHIT NANDAGHAYE</span></p>
+                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-500/30 font-semibold">Official Platform</span>
+                    <h2 class="text-2xl md:text-3xl font-bold mt-2">Welcome to BlogVerse</h2>
+                    <p class="text-slate-400 text-sm mt-1">Platform Architecture & Sole Ownership managed by <span class="text-emerald-400 font-bold">MOHIT NANDAGHAYE</span>.</p>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="saveDraftArticle()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold text-xs rounded-xl border border-slate-800 transition">
-                        <i class="fa-solid fa-bookmark mr-1"></i> Save Draft
-                    </button>
-                    <button onclick="publishArticle()" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg shadow-emerald-500/20">
-                        <i class="fa-solid fa-paper-plane mr-1"></i> Publish Post
+                <div>
+                    <button onclick="openAuthModal('signup')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-5 py-2.5 rounded-xl shadow-lg transition">
+                        Start Writing
                     </button>
                 </div>
             </div>
-
-            <form id="createBlogForm" onsubmit="event.preventDefault(); publishArticle();" class="space-y-6">
-                <!-- Title Input -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Article Title</label>
-                    <input type="text" id="postTitleInput" required placeholder="Enter an intriguing title..." class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-lg font-bold text-white focus:outline-none focus:border-emerald-500">
-                </div>
-
-                <!-- Category & Cover Image URL -->
-                <div class="grid sm:grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Category</label>
-                        <select id="postCategoryInput" class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
-                            <option value="Technology">Technology</option>
-                            <option value="Stories">Stories</option>
-                            <option value="Poetry">Poetry</option>
-                            <option value="Travel">Travel</option>
-                            <option value="Life">Life</option>
-                            <option value="Education">Education</option>
-                            <option value="Business">Business</option>
-                            <option value="Creativity">Creativity</option>
-                        </select>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Cover Image URL (Optional)</label>
-                        <input type="url" id="postCoverInput" placeholder="https://images.unsplash.com/..." class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
-                    </div>
-                </div>
-
-                <!-- Formatting Tools -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Rich Content Editor</label>
-                    <div class="flex flex-wrap gap-2 p-2 bg-slate-900 border border-slate-800 rounded-t-xl text-slate-300">
-                        <button type="button" onclick="formatDoc('bold')" class="p-2 hover:bg-slate-800 rounded text-xs font-bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
-                        <button type="button" onclick="formatDoc('italic')" class="p-2 hover:bg-slate-800 rounded text-xs" title="Italic"><i class="fa-solid fa-italic"></i></button>
-                        <button type="button" onclick="formatDoc('underline')" class="p-2 hover:bg-slate-800 rounded text-xs" title="Underline"><i class="fa-solid fa-underline"></i></button>
-                        <button type="button" onclick="formatDoc('insertUnorderedList')" class="p-2 hover:bg-slate-800 rounded text-xs" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
-                        <button type="button" onclick="formatDoc('formatBlock', 'h2')" class="p-2 hover:bg-slate-800 rounded text-xs font-bold" title="Heading">H2</button>
-                        <button type="button" onclick="formatDoc('formatBlock', 'blockquote')" class="p-2 hover:bg-slate-800 rounded text-xs" title="Quote"><i class="fa-solid fa-quote-left"></i></button>
-                    </div>
-                    <div id="postContentInput" contenteditable="true" class="w-full min-h-[280px] p-4 bg-slate-950 border border-slate-800 rounded-b-xl text-slate-200 focus:outline-none focus:border-emerald-500 leading-relaxed text-sm">
-                        Write your creative ideas, thoughts, or story here...
-                    </div>
-                </div>
-            </form>
         </section>
 
-        <!-- VIEW 4: CREATOR DASHBOARD -->
-        <section id="view-dashboard" class="hidden space-y-8">
+        <!-- Articles Section -->
+        <section id="articles" class="space-y-6">
             <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-black text-white">Creator Analytics & Telemetry</h1>
-                    <p class="text-slate-400 text-sm">Track reader engagement, total posts, and content reach for <strong class="text-emerald-400">MOHIT NANDAGHAYE</strong>.</p>
-                </div>
-            </div>
-
-            <!-- Stats Grid -->
-            <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-                    <div class="flex justify-between items-center text-xs text-slate-400">
-                        <span>Total Posts</span>
-                        <i class="fa-solid fa-file-lines text-emerald-400"></i>
-                    </div>
-                    <p class="text-2xl font-black text-white mt-2" id="statTotalPosts">0</p>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-                    <div class="flex justify-between items-center text-xs text-slate-400">
-                        <span>Total Views</span>
-                        <i class="fa-solid fa-eye text-teal-400"></i>
-                    </div>
-                    <p class="text-2xl font-black text-white mt-2" id="statTotalViews">14,280</p>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-                    <div class="flex justify-between items-center text-xs text-slate-400">
-                        <span>Total Likes</span>
-                        <i class="fa-solid fa-heart text-rose-400"></i>
-                    </div>
-                    <p class="text-2xl font-black text-white mt-2" id="statTotalLikes">1,890</p>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-                    <div class="flex justify-between items-center text-xs text-slate-400">
-                        <span>Comments</span>
-                        <i class="fa-solid fa-comments text-cyan-400"></i>
-                    </div>
-                    <p class="text-2xl font-black text-white mt-2" id="statTotalComments">342</p>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-                    <div class="flex justify-between items-center text-xs text-slate-400">
-                        <span>Followers</span>
-                        <i class="fa-solid fa-users text-amber-400"></i>
-                    </div>
-                    <p class="text-2xl font-black text-white mt-2" id="statTotalFollowers">1,240</p>
-                </div>
-            </div>
-
-            <!-- SVG Engagement Graph -->
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
-                <h3 class="font-bold text-white text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-chart-line text-emerald-400"></i> Weekly Engagement Telemetry
+                <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-fire text-emerald-400"></i> Published Articles
                 </h3>
-                <div class="w-full h-48 flex items-end justify-between gap-2 pt-8 px-2 border-b border-slate-800">
-                    <div class="flex-1 bg-emerald-500/20 hover:bg-emerald-500/40 rounded-t-lg transition h-[40%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">420</span></div>
-                    <div class="flex-1 bg-emerald-500/30 hover:bg-emerald-500/40 rounded-t-lg transition h-[65%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">780</span></div>
-                    <div class="flex-1 bg-emerald-500/20 hover:bg-emerald-500/40 rounded-t-lg transition h-[50%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">550</span></div>
-                    <div class="flex-1 bg-emerald-500/50 hover:bg-emerald-500/60 rounded-t-lg transition h-[85%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">1,120</span></div>
-                    <div class="flex-1 bg-emerald-500/40 hover:bg-emerald-500/50 rounded-t-lg transition h-[70%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">910</span></div>
-                    <div class="flex-1 bg-emerald-500/80 hover:bg-emerald-500 rounded-t-lg transition h-[95%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">1,450</span></div>
-                    <div class="flex-1 bg-emerald-400 hover:bg-emerald-300 rounded-t-lg transition h-[80%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">1,210</span></div>
-                </div>
-                <div class="flex justify-between text-[11px] text-slate-400 px-2 font-mono">
-                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                </div>
+            </div>
+
+            <!-- Articles Container -->
+            <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Injected via JavaScript -->
             </div>
         </section>
-
-        <!-- VIEW 5: USER PROFILE -->
-        <section id="view-profile" class="hidden space-y-8">
-            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 space-y-6 relative overflow-hidden">
-                <div class="flex flex-col sm:flex-row items-center gap-6">
-                    <div class="w-24 h-24 rounded-3xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-4xl shadow-xl shadow-emerald-500/20">
-                        MN
-                    </div>
-                    <div class="text-center sm:text-left space-y-2">
-                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                            <h1 class="text-2xl font-black text-white" id="profileOwnerName">MOHIT NANDAGHAYE</h1>
-                            <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold px-2.5 py-0.5 rounded-full">Verified Owner</span>
-                        </div>
-                        <p class="text-sm text-slate-300 max-w-xl">
-                            Lead Architect & Sole Owner of BlogVerse. Sharing deep dives in web tech, personal development, software innovation, and original essays.
-                        </p>
-                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-400 pt-2">
-                            <span><i class="fa-solid fa-location-dot text-emerald-400 mr-1"></i> Global / Web</span>
-                            <span><i class="fa-solid fa-link text-teal-400 mr-1"></i> blogverse.studio</span>
-                            <span><i class="fa-solid fa-calendar mr-1"></i> Member since 2026</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Published Posts by Owner -->
-            <div class="space-y-4">
-                <h3 class="font-bold text-white text-lg">Published Articles by MOHIT NANDAGHAYE</h3>
-                <div class="grid md:grid-cols-2 gap-6" id="ownerArticlesContainer">
-                    <!-- Injected via JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW 6: ARTICLE READER / DETAIL VIEW -->
-        <section id="view-article" class="hidden max-w-3xl mx-auto space-y-8">
-            <button onclick="navigateTo('home')" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-semibold rounded-xl border border-slate-800 transition flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-left"></i> Back to Feed
-            </button>
-            
-            <div id="articleDetailContent" class="space-y-6">
-                <!-- Article Content dynamically loaded here -->
-            </div>
-        </section>
-
     </main>
 
-    <!-- RIGHTS & BRAND MANAGER MODAL -->
-    <div id="rightsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative">
-            <button onclick="closeRightsModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
+    <!-- Dedicated Auth Modal (Login / Sign Up) -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100">
+                <i class="fa-solid fa-xmark text-xl"></i>
             </button>
 
-            <div class="space-y-2">
-                <div class="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
-                    <i class="fa-solid fa-certificate"></i> Digital Rights & Licensing
-                </div>
-                <h2 class="text-xl font-bold text-white">Brand Ownership Certificate</h2>
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-800 mb-6">
+                <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-2 font-bold text-center border-b-2 border-emerald-500 text-emerald-400">Login</button>
+                <button id="tab-signup" onclick="switchTab('signup')" class="flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent">Sign Up</button>
             </div>
 
-            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3 text-xs text-slate-300">
-                <div class="flex justify-between border-b border-slate-800/80 pb-2">
-                    <span class="text-slate-400">Application Name:</span>
-                    <span class="font-bold text-white">BlogVerse</span>
-                </div>
-                <div class="flex justify-between border-b border-slate-800/80 pb-2">
-                    <span class="text-slate-400">Sole Owner & Creator:</span>
-                    <span class="font-bold text-emerald-400" id="modalOwnerDisplay">MOHIT NANDAGHAYE</span>
-                </div>
-                <div class="flex justify-between border-b border-slate-800/80 pb-2">
-                    <span class="text-slate-400">Tagline:</span>
-                    <span class="font-medium text-slate-200">"Your thoughts. Your creativity. Your story."</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Rights Status:</span>
-                    <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check"></i> Registered & Protected</span>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Update Custom Ownership Info</h3>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Owner / Rights Holder Name</label>
-                    <input type="text" id="ownerNameInput" value="MOHIT NANDAGHAYE" class="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500">
+            <!-- Auth Form -->
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div id="name-field" class="hidden">
+                    <label class="block text-xs text-slate-400 mb-1">Full Name</label>
+                    <input type="text" id="auth-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="John Doe">
                 </div>
                 <div>
-                    <label class="block text-xs text-slate-400 mb-1">Copyright Notice Text</label>
-                    <input type="text" id="copyrightInput" value="© 2026 MOHIT NANDAGHAYE. All rights reserved." class="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500">
+                    <label class="block text-xs text-slate-400 mb-1">Email Address</label>
+                    <input type="email" id="auth-email" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="user@domain.com">
                 </div>
-            </div>
-
-            <div class="flex gap-3 pt-2">
-                <button onclick="saveBrandSettings()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm rounded-xl transition shadow-lg shadow-emerald-500/20">
-                    Save Ownership Settings
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Password</label>
+                    <input type="password" id="auth-password" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="••••••••">
+                </div>
+                <button type="submit" id="auth-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-2.5 rounded-xl transition mt-4">
+                    Sign In
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-800/80 bg-slate-950 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
-            <div class="flex items-center justify-center gap-2">
-                <span class="font-black text-lg bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">BlogVerse</span>
-                <span class="text-slate-500 text-xs">|</span>
-                <span class="text-xs text-slate-400">Powered & Owned by <strong class="text-emerald-400" id="footerOwnerName">MOHIT NANDAGHAYE</strong></span>
-            </div>
-            <p class="text-xs text-slate-500" id="footerCopyrightText">
-                © 2026 MOHIT NANDAGHAYE. All rights reserved. Your thoughts. Your creativity. Your story.
-            </p>
-        </div>
+    <footer class="border-t border-slate-800 bg-slate-900 mt-12 py-6 text-center text-xs text-slate-500">
+        <p>BlogVerse Platform © <span id="year"></span> | Designed, Developed & Owned by <strong class="text-slate-300">MOHIT NANDAGHAYE</strong>.</p>
     </footer>
 
+    <!-- Application JavaScript Logic -->
     <script>
-        const CATEGORIES = ["Technology", "Stories", "Poetry", "Travel", "Life", "Education", "Business", "Creativity"];
+        document.getElementById('year').innerText = new Date().getFullYear();
 
-        let appState = {
-            ownerName: "MOHIT NANDAGHAYE",
-            copyrightText: "© 2026 MOHIT NANDAGHAYE. All rights reserved.",
-            activeCategory: "All",
-            isFollowingOwner: false,
-            followersCount: 1240,
-            posts: [
-                {
-                    id: 101,
-                    title: "Building Modern Web Experiences with Pure Creativity",
-                    category: "Technology",
-                    author: "MOHIT NANDAGHAYE",
-                    date: "Oct 6, 2026",
-                    cover: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80",
-                    excerpt: "An exploration into crafting performant, beautifully styled web applications without overwhelming dependencies.",
-                    content: "<p>The web application landscape is evolving rapidly. By keeping design frameworks clean and prioritizing user experience, developers can build scalable platforms that load instantly and provide seamless interactivity.</p><p>BlogVerse represents a clean, single-file architecture built for creators who want total control over their intellectual property and brand identity.</p>",
-                    likes: 142,
-                    comments: [
-                        { author: "Sarah Jenkins", text: "Inspiring article! Loved the focus on performance." },
-                        { author: "David Chen", text: "Clean architecture design." }
-                    ],
-                    featured: true
-                },
-                {
-                    id: 102,
-                    title: "The Art of Mindful Storytelling in the Digital Age",
-                    category: "Stories",
-                    author: "MOHIT NANDAGHAYE",
-                    date: "Oct 5, 2026",
-                    cover: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80",
-                    excerpt: "How authentic personal stories connect people across digital platforms better than automated content.",
-                    content: "<p>Storytelling remains the most powerful tool for human connection. In an era saturated with generic noise, authentic voices stand out effortlessly.</p>",
-                    likes: 89,
-                    comments: [
-                        { author: "Elena Rostova", text: "Resonates so deeply with me!" }
-                    ],
-                    featured: false
-                },
-                {
-                    id: 103,
-                    title: "Innovating Beyond Boundaries: A Business Playbook",
-                    category: "Business",
-                    author: "MOHIT NANDAGHAYE",
-                    date: "Oct 4, 2026",
-                    cover: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
-                    excerpt: "Key principles for independent creators turning original ideas into sustainable digital brands.",
-                    content: "<p>Building a recognizable brand requires consistency, ownership, and clarity of purpose. Here are three core pillars to focus on...</p>",
-                    likes: 112,
-                    comments: [],
-                    featured: false
-                }
-            ],
-            creators: [
-                { name: "MOHIT NANDAGHAYE", handle: "@mohit_n", role: "Owner & Lead Author", avatar: "MN" },
-                { name: "Aria Sharma", handle: "@aria_dev", role: "Tech Writer", avatar: "AS" },
-                { name: "Lucas Vance", handle: "@lucas_v", role: "Creative Essayist", avatar: "LV" }
-            ]
-        };
+        // Locked Owner Information (Immutable)
+        const OWNER_NAME = "MOHIT NANDAGHAYE";
 
-        // Initialize on load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadFromLocalStorage();
-            updateBrandUI();
-            renderCategoryPills();
-            renderHomeFeed();
-            updateDashboardStats();
-        });
-
-        function loadFromLocalStorage() {
-            const savedOwner = localStorage.getItem('bv_owner');
-            if (savedOwner) appState.ownerName = savedOwner;
-            
-            const savedPosts = localStorage.getItem('bv_posts');
-            if (savedPosts) appState.posts = JSON.parse(savedPosts);
-        }
-
-        function saveToLocalStorage() {
-            localStorage.setItem('bv_owner', appState.ownerName);
-            localStorage.setItem('bv_posts', JSON.stringify(appState.posts));
-        }
-
-        function updateBrandUI() {
-            const owner = appState.ownerName;
-            document.getElementById('heroOwnerName').innerText = owner;
-            document.getElementById('sidebarOwnerName').innerText = owner;
-            document.getElementById('profileOwnerName').innerText = owner;
-            document.getElementById('editorOwnerDisplay').innerText = owner;
-            document.getElementById('footerOwnerName').innerText = owner;
-            document.getElementById('modalOwnerDisplay').innerText = owner;
-            document.getElementById('ownerNameInput').value = owner;
-            document.getElementById('copyrightInput').value = `© 2026 ${owner}. All rights reserved.`;
-            document.getElementById('footerCopyrightText').innerText = `© 2026 ${owner}. All rights reserved. Your thoughts. Your creativity. Your story.`;
-        }
-
-        function navigateTo(viewId) {
-            ['home', 'explore', 'create', 'dashboard', 'profile', 'article'].forEach(v => {
-                const el = document.getElementById(`view-${v}`);
-                if (el) el.classList.add('hidden');
-                
-                const navBtn = document.getElementById(`nav-${v}`);
-                if (navBtn) {
-                    navBtn.className = "nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900";
-                }
-            });
-
-            document.getElementById(`view-${viewId}`).classList.remove('hidden');
-            const activeNav = document.getElementById(`nav-${viewId}`);
-            if (activeNav) {
-                activeNav.className = "nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-emerald-400 bg-emerald-500/10";
+        // Initial Real Articles (4 Published Articles by Owner)
+        const defaultArticles = [
+            {
+                id: 1,
+                title: "Building Scalable Modern Web Applications",
+                category: "Technology",
+                excerpt: "An architectural guide on developing lightweight and responsive web services with clean frontend patterns.",
+                author: OWNER_NAME,
+                date: "Oct 02, 2026"
+            },
+            {
+                id: 2,
+                title: "The Future of Digital Publishing & Content Rights",
+                category: "Business",
+                excerpt: "Exploring how content creators can safeguard ownership while engaging audiences in decentralized web environments.",
+                author: OWNER_NAME,
+                date: "Oct 03, 2026"
+            },
+            {
+                id: 3,
+                title: "Mastering Clean JavaScript without Framework Bloat",
+                category: "Engineering",
+                excerpt: "Why pure JavaScript and native APIs remain the ultimate foundation for ultra-fast digital products.",
+                author: OWNER_NAME,
+                date: "Oct 04, 2026"
+            },
+            {
+                id: 4,
+                title: "Innovating Beyond Boundaries: A Product Playbook",
+                category: "Creativity",
+                excerpt: "Transforming original ideas into sustainable digital platforms through structured execution.",
+                author: OWNER_NAME,
+                date: "Oct 05, 2026"
             }
+        ];
 
-            if (viewId === 'explore') renderExploreView();
-            if (viewId === 'profile') renderProfileArticles();
-            if (viewId === 'dashboard') updateDashboardStats();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        let currentAuthMode = 'login';
+        let currentUser = JSON.parse(localStorage.getItem('bv_user')) || null;
 
-        function renderCategoryPills() {
-            const container = document.getElementById('categoryPills');
-            container.innerHTML = `
-                <button onclick="filterCategory('All')" class="px-4 py-1.5 rounded-full text-xs font-bold transition ${appState.activeCategory === 'All' ? 'bg-emerald-500 text-slate-950' : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'}">
-                    All Topics
-                </button>
-            ` + CATEGORIES.map(cat => `
-                <button onclick="filterCategory('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${appState.activeCategory === cat ? 'bg-emerald-500 text-slate-950' : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'}">
-                    ${cat}
-                </button>
-            `).join('');
-        }
-
-        function filterCategory(cat) {
-            appState.activeCategory = cat;
-            renderCategoryPills();
-            renderHomeFeed();
-        }
-
-        function renderHomeFeed() {
-            const filtered = appState.activeCategory === 'All' 
-                ? appState.posts 
-                : appState.posts.filter(p => p.category === appState.activeCategory);
-
-            document.getElementById('postCountBadge').innerText = `${filtered.length} posts available`;
-            document.getElementById('ownerPostCount').innerText = appState.posts.filter(p => p.author === appState.ownerName).length;
-
-            // Render Featured Post
-            const featured = filtered.find(p => p.featured) || filtered[0];
-            const featuredContainer = document.getElementById('featuredPostContainer');
-            if (featured) {
-                featuredContainer.innerHTML = `
-                    <div class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-slate-700 transition cursor-pointer" onclick="openArticle(${featured.id})">
-                        <div class="h-64 sm:h-80 w-full overflow-hidden relative">
-                            <img src="${featured.cover}" alt="${featured.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            <div class="absolute top-4 left-4 bg-emerald-500 text-slate-950 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
-                                Featured • ${featured.category}
-                            </div>
-                        </div>
-                        <div class="p-6 space-y-3">
-                            <div class="flex items-center gap-3 text-xs text-slate-400">
-                                <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-user text-[10px] mr-1"></i> ${featured.author}</span>
-                                <span>•</span>
-                                <span>${featured.date}</span>
-                            </div>
-                            <h2 class="text-2xl font-black text-white hover:text-emerald-400 transition">${featured.title}</h2>
-                            <p class="text-slate-300 text-sm leading-relaxed">${featured.excerpt}</p>
-                            <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs text-slate-400">
-                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-heart text-rose-500"></i> ${featured.likes} Likes</span>
-                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-comment text-teal-400"></i> ${featured.comments.length} Comments</span>
-                                <span class="text-emerald-400 font-bold">Read Article <i class="fa-solid fa-arrow-right ml-1"></i></span>
-                            </div>
-                        </div>
+        function renderNav() {
+            const navArea = document.getElementById('auth-nav-area');
+            if (currentUser) {
+                navArea.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm font-medium text-emerald-400"><i class="fa-solid fa-user-circle mr-1"></i> ${currentUser.name}</span>
+                        <button onclick="logout()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">Logout</button>
                     </div>
                 `;
             } else {
-                featuredContainer.innerHTML = '';
-            }
-
-            // Render Latest Posts
-            const latestContainer = document.getElementById('latestPostsContainer');
-            const remaining = filtered.filter(p => p !== featured);
-            if (remaining.length === 0 && !featured) {
-                latestContainer.innerHTML = `<p class="text-slate-500 text-sm italic">No posts found in this category.</p>`;
-                return;
-            }
-
-            latestContainer.innerHTML = remaining.map(post => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row gap-5 hover:border-slate-700 transition cursor-pointer" onclick="openArticle(${post.id})">
-                    <img src="${post.cover}" class="w-full sm:w-40 h-32 object-cover rounded-xl">
-                    <div class="flex-1 space-y-2">
-                        <div class="flex items-center justify-between text-xs text-slate-400">
-                            <span class="text-emerald-400 font-semibold">${post.category}</span>
-                            <span>${post.date}</span>
-                        </div>
-                        <h3 class="font-bold text-white text-lg hover:text-emerald-400 transition">${post.title}</h3>
-                        <p class="text-slate-300 text-xs line-clamp-2">${post.excerpt}</p>
-                        <div class="flex items-center justify-between pt-2 text-xs text-slate-400">
-                            <span><i class="fa-solid fa-user text-[10px] mr-1"></i> ${post.author}</span>
-                            <span class="flex items-center gap-3">
-                                <span><i class="fa-solid fa-heart text-rose-500 mr-1"></i> ${post.likes}</span>
-                                <span><i class="fa-solid fa-comment text-teal-400 mr-1"></i> ${post.comments.length}</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            // Render Featured Creators
-            document.getElementById('featuredCreatorsContainer').innerHTML = appState.creators.map(c => `
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-slate-800 text-emerald-400 font-bold text-xs flex items-center justify-center border border-slate-700">
-                            ${c.avatar}
-                        </div>
-                        <div>
-                            <h4 class="text-xs font-bold text-white">${c.name}</h4>
-                            <p class="text-[10px] text-slate-400">${c.role}</p>
-                        </div>
-                    </div>
-                    <button class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 rounded-lg transition">Follow</button>
-                </div>
-            `).join('');
-        }
-
-        function openArticle(id) {
-            const post = appState.posts.find(p => p.id === id);
-            if (!post) return;
-
-            const detail = document.getElementById('articleDetailContent');
-            detail.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                        <span>${post.category}</span> • <span>${post.date}</span>
-                    </div>
-                    <h1 class="text-3xl sm:text-4xl font-black text-white leading-tight">${post.title}</h1>
-                    <div class="flex items-center gap-3 pb-4 border-b border-slate-800">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-sm">
-                            MN
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-white">${post.author}</p>
-                            <p class="text-[11px] text-emerald-400 font-semibold">Verified Author & Owner</p>
-                        </div>
-                    </div>
-                    <img src="${post.cover}" class="w-full h-72 sm:h-96 object-cover rounded-2xl">
-                    <div class="text-slate-200 leading-relaxed space-y-4 text-base pt-4">
-                        ${post.content}
-                    </div>
-                    
-                    <!-- Community Interactions -->
-                    <div class="pt-8 border-t border-slate-800 space-y-6">
-                        <div class="flex items-center justify-between">
-                            <button onclick="likePost(${post.id})" class="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 font-bold text-xs rounded-xl transition flex items-center gap-2">
-                                <i class="fa-solid fa-heart"></i> Like (${post.likes})
-                            </button>
-                            <span class="text-xs text-slate-400"><i class="fa-solid fa-shield-check text-emerald-400"></i> Copyright Registered to MOHIT NANDAGHAYE</span>
-                        </div>
-
-                        <!-- Comments Section -->
-                        <div class="space-y-4 pt-4">
-                            <h3 class="text-lg font-bold text-white">Community Discussion (${post.comments.length})</h3>
-                            <div class="flex gap-2">
-                                <input type="text" id="commentInput" placeholder="Write a constructive comment..." class="flex-1 px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
-                                <button onclick="addComment(${post.id})" class="px-4 py-2 bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl hover:bg-emerald-600 transition">Comment</button>
-                            </div>
-                            <div class="space-y-3 pt-2">
-                                ${post.comments.map(c => `
-                                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-1">
-                                        <p class="text-xs font-bold text-white">${c.author}</p>
-                                        <p class="text-xs text-slate-300">${c.text}</p>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            navigateTo('article');
-        }
-
-        function likePost(id) {
-            const post = appState.posts.find(p => p.id === id);
-            if (post) {
-                post.likes++;
-                saveToLocalStorage();
-                openArticle(id);
+                navArea.innerHTML = `
+                    <button onclick="openAuthModal('login')" class="text-sm font-medium text-slate-300 hover:text-slate-100 px-3 py-1.5">Log In</button>
+                    <button onclick="openAuthModal('signup')" class="text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-4 py-1.5 rounded-lg transition">Sign Up</button>
+                `;
             }
         }
 
-        function addComment(id) {
-            const input = document.getElementById('commentInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const post = appState.posts.find(p => p.id === id);
-            if (post) {
-                post.comments.push({ author: "Community Member", text: text });
-                saveToLocalStorage();
-                openArticle(id);
-            }
-        }
-
-        function formatDoc(cmd, value = null) {
-            document.execCommand(cmd, false, value);
-        }
-
-        function publishArticle() {
-            const title = document.getElementById('postTitleInput').value.trim();
-            const category = document.getElementById('postCategoryInput').value;
-            const cover = document.getElementById('postCoverInput').value.trim() || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80";
-            const content = document.getElementById('postContentInput').innerHTML.trim();
-
-            if (!title || !content) {
-                alert("Please provide both an article title and content.");
-                return;
-            }
-
-            const newPost = {
-                id: Date.now(),
-                title: title,
-                category: category,
-                author: appState.ownerName,
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                cover: cover,
-                excerpt: content.replace(/<[^>]*>?/gm, '').substring(0, 120) + "...",
-                content: content,
-                likes: 0,
-                comments: [],
-                featured: false
-            };
-
-            appState.posts.unshift(newPost);
-            saveToLocalStorage();
-
-            // Reset Form
-            document.getElementById('postTitleInput').value = '';
-            document.getElementById('postCoverInput').value = '';
-            document.getElementById('postContentInput').innerHTML = 'Write your creative ideas, thoughts, or story here...';
-
-            renderHomeFeed();
-            navigateTo('home');
-        }
-
-        function saveDraftArticle() {
-            alert("Draft article saved locally.");
-        }
-
-        function renderExploreView() {
-            const search = (document.getElementById('exploreSearchInput')?.value || '').toLowerCase();
-            const filtered = appState.posts.filter(p => 
-                p.title.toLowerCase().includes(search) || 
-                p.category.toLowerCase().includes(search) ||
-                p.author.toLowerCase().includes(search)
-            );
-
-            const container = document.getElementById('exploreResultsContainer');
-            container.innerHTML = filtered.map(post => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition cursor-pointer" onclick="openArticle(${post.id})">
-                    <img src="${post.cover}" class="w-full h-40 object-cover">
-                    <div class="p-5 space-y-2">
-                        <span class="text-xs font-bold text-emerald-400">${post.category}</span>
-                        <h3 class="font-bold text-white text-base hover:text-emerald-400 transition">${post.title}</h3>
-                        <p class="text-xs text-slate-400 line-clamp-2">${post.excerpt}</p>
-                        <div class="pt-2 flex justify-between text-[11px] text-slate-500">
-                            <span>By ${post.author}</span>
-                            <span>${post.date}</span>
+        function renderArticles() {
+            const grid = document.getElementById('articles-grid');
+            grid.innerHTML = defaultArticles.map(art => `
+                <div class="bg-slate-800/50 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50">${art.category}</span>
+                            <span class="text-xs text-slate-500">${art.date}</span>
                         </div>
+                        <h4 class="text-lg font-bold text-slate-100 mb-2">${art.title}</h4>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">${art.excerpt}</p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                        <span>By <strong class="text-slate-200">${art.author}</strong></span>
+                        <span class="text-emerald-400 hover:underline cursor-pointer">Read Full Article →</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        function renderProfileArticles() {
-            const ownerPosts = appState.posts.filter(p => p.author === appState.ownerName);
-            const container = document.getElementById('ownerArticlesContainer');
-            container.innerHTML = ownerPosts.map(post => `
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2 cursor-pointer" onclick="openArticle(${post.id})">
-                    <span class="text-xs font-bold text-emerald-400">${post.category}</span>
-                    <h3 class="font-bold text-white text-base">${post.title}</h3>
-                    <p class="text-xs text-slate-400 line-clamp-2">${post.excerpt}</p>
-                </div>
-            `).join('');
+        function openAuthModal(mode) {
+            currentAuthMode = mode;
+            switchTab(mode);
+            document.getElementById('auth-modal').classList.remove('hidden');
         }
 
-        function updateDashboardStats() {
-            document.getElementById('statTotalPosts').innerText = appState.posts.length;
-            const totalLikes = appState.posts.reduce((a, b) => a + b.likes, 0);
-            document.getElementById('statTotalLikes').innerText = totalLikes;
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
         }
 
-        function toggleFollowOwner() {
-            appState.isFollowingOwner = !appState.isFollowingOwner;
-            const btn = document.getElementById('followOwnerBtn');
-            if (appState.isFollowingOwner) {
-                btn.className = "w-full py-2 bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition";
-                btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Following MOHIT`;
-                appState.followersCount++;
+        function switchTab(mode) {
+            currentAuthMode = mode;
+            const tabLogin = document.getElementById('tab-login');
+            const tabSignup = document.getElementById('tab-signup');
+            const nameField = document.getElementById('name-field');
+            const authBtn = document.getElementById('auth-btn');
+
+            if (mode === 'signup') {
+                tabSignup.className = "flex-1 py-2 font-bold text-center border-b-2 border-emerald-500 text-emerald-400";
+                tabLogin.className = "flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent";
+                nameField.classList.remove('hidden');
+                authBtn.innerText = "Create Account";
             } else {
-                btn.className = "w-full py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl transition";
-                btn.innerHTML = `<i class="fa-solid fa-user-plus mr-1"></i> Follow MOHIT`;
-                appState.followersCount--;
-            }
-            document.getElementById('ownerFollowerCount').innerText = appState.followersCount.toLocaleString();
-        }
-
-        function openRightsModal() {
-            document.getElementById('rightsModal').classList.remove('hidden');
-        }
-
-        function closeRightsModal() {
-            document.getElementById('rightsModal').classList.add('hidden');
-        }
-
-        function saveBrandSettings() {
-            const newOwner = document.getElementById('ownerNameInput').value.trim();
-            if (newOwner) {
-                appState.ownerName = newOwner;
-                saveToLocalStorage();
-                updateBrandUI();
-                closeRightsModal();
+                tabLogin.className = "flex-1 py-2 font-bold text-center border-b-2 border-emerald-500 text-emerald-400";
+                tabSignup.className = "flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent";
+                nameField.classList.add('hidden');
+                authBtn.innerText = "Sign In";
             }
         }
 
-        function handleGlobalSearch(e) {
-            if (e.key === 'Enter') {
-                const term = e.target.value;
-                navigateTo('explore');
-                document.getElementById('exploreSearchInput').value = term;
-                renderExploreView();
-            }
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const name = currentAuthMode === 'signup' ? document.getElementById('auth-name').value || "Author" : email.split('@')[0];
+
+            currentUser = { name, email };
+            localStorage.setItem('bv_user', JSON.stringify(currentUser));
+            
+            renderNav();
+            closeAuthModal();
         }
+
+        function logout() {
+            localStorage.removeItem('bv_user');
+            currentUser = null;
+            renderNav();
+        }
+
+        // Initialize App
+        renderNav();
+        renderArticles();
     </script>
 </body>
 </html>
