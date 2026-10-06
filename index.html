@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" class="dark h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="app-window-title">BlogVerse - Personal Publishing Platform</title>
-    <!-- Tailwind CSS -->
+    <title>BlogVerse — Your thoughts. Your creativity. Your story. | Owned by MOHIT NANDAGHAYE</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,327 +13,244 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f0f5ff',
-                            100: '#e0ebff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
-                        },
-                        accent: {
-                            500: '#8b5cf6',
-                            600: '#7c3aed',
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
                         }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
-                        serif: ['Merriweather', 'serif']
                     }
                 }
             }
         }
     </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .article-body { font-family: 'Merriweather', serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
-        .dark .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
-        .badge-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
 
-    <!-- TOP NAVIGATION HEADER -->
-    <header class="sticky top-0 z-40 border-b border-slate-200/80 dark:border-slate-800/80 glass">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16 gap-4">
-                
-                <!-- Logo & Brand Identifier -->
-                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
-                    <div id="brand-logo-icon" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-blue-500/25">
-                        B
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-1.5">
-                            <span id="brand-header-name" class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                                BlogVerse
-                            </span>
-                            <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 uppercase tracking-wide">
-                                Official
-                            </span>
-                        </div>
-                        <p id="brand-header-owner" class="text-[10px] text-slate-400 font-semibold hidden sm:block -mt-1">
-                            Owned & Managed by Alex Rivera
-                        </p>
-                    </div>
+    <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-extrabold text-xl shadow-lg shadow-emerald-500/20">
+                    BV
                 </div>
-
-                <!-- Global Live Search Bar -->
-                <div class="flex-1 max-w-xs md:max-w-md hidden md:block relative">
-                    <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Search articles, tags, authors..." class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
-                </div>
-
-                <!-- Navigation Tabs -->
-                <nav class="hidden lg:flex items-center gap-1 text-sm font-semibold">
-                    <button onclick="navigateTo('home')" id="nav-link-home" class="px-3.5 py-2 rounded-xl transition text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60">Home</button>
-                    <button onclick="navigateTo('explore')" id="nav-link-explore" class="px-3.5 py-2 rounded-xl transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Explore</button>
-                    <button onclick="navigateTo('community')" id="nav-link-community" class="px-3.5 py-2 rounded-xl transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Community</button>
-                    <button onclick="navigateTo('dashboard')" id="nav-link-dashboard" class="px-3.5 py-2 rounded-xl transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Studio</button>
-                </nav>
-
-                <!-- Action Controls -->
-                <div class="flex items-center gap-2 sm:gap-3">
-                    <!-- Brand Rights Setting Trigger -->
-                    <button onclick="openModal('brand-settings-modal')" class="px-3 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold transition flex items-center gap-1.5" title="Manage Ownership Rights">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i>
-                        <span class="hidden xl:inline">Brand Rights</span>
-                    </button>
-
-                    <!-- Create Article CTA -->
-                    <button onclick="navigateTo('editor')" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs sm:text-sm font-bold transition shadow-md shadow-blue-500/20 active:scale-95">
-                        <i data-lucide="square-pen" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">Create Post</span>
-                    </button>
-
-                    <!-- Dark Mode Toggle -->
-                    <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
-                        <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
-                    </button>
-
-                    <!-- User Account / Profile Switcher -->
-                    <div id="auth-user-button-container" class="relative">
-                        <!-- Dynamically populated -->
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-black text-xl tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">BlogVerse</span>
+                        <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-shield-check"></i> Owned by MOHIT NANDAGHAYE
+                        </span>
                     </div>
+                    <p class="text-[11px] text-slate-400 hidden sm:block">Your thoughts. Your creativity. Your story.</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Mobile Bar -->
-        <div class="flex lg:hidden border-t border-slate-200 dark:border-slate-800 px-4 py-2 gap-2 overflow-x-auto text-xs font-medium">
-            <button onclick="navigateTo('home')" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Home</button>
-            <button onclick="navigateTo('explore')" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400">Explore</button>
-            <button onclick="navigateTo('community')" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400">Community</button>
-            <button onclick="navigateTo('dashboard')" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400">Studio</button>
+            <!-- Search Bar -->
+            <div class="hidden md:flex flex-1 max-w-md mx-4 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" id="globalSearchInput" onkeyup="handleGlobalSearch(event)" placeholder="Search articles, topics, or authors..." 
+                    class="w-full pl-10 pr-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-emerald-500/50 transition">
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-1">
+                <button onclick="navigateTo('home')" id="nav-home" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-emerald-400 bg-emerald-500/10">
+                    <i class="fa-solid fa-house mr-1.5"></i> Home
+                </button>
+                <button onclick="navigateTo('explore')" id="nav-explore" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                    <i class="fa-solid fa-compass mr-1.5"></i> Discovery
+                </button>
+                <button onclick="navigateTo('create')" id="nav-create" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                    <i class="fa-solid fa-pen-nib mr-1.5"></i> Create Blog
+                </button>
+                <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                    <i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard
+                </button>
+                <button onclick="navigateTo('profile')" id="nav-profile" class="nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                    <i class="fa-solid fa-user mr-1.5"></i> Profile
+                </button>
+            </nav>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-2">
+                <button onclick="openRightsModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-emerald-400 rounded-xl transition flex items-center gap-1.5" title="Rights & License Info">
+                    <i class="fa-solid fa-certificate"></i> <span class="hidden sm:inline">Rights Studio</span>
+                </button>
+                <button onclick="navigateTo('create')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> <span class="hidden sm:inline">New Post</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <!-- MAIN APP VIEW CONTAINER -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-        <!-- ================= PAGE 1: HOME ================= -->
-        <div id="page-home" class="space-y-12">
-            
-            <!-- Hero Banner with Dynamic Personal Branding -->
-            <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white p-8 sm:p-12 shadow-2xl border border-blue-900/30">
-                <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute right-1/3 -top-20 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
-                <div class="relative z-10 max-w-2xl space-y-5">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Welcome to <span class="brand-text-app">BlogVerse</span>
-                        </span>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                            <i data-lucide="shield-check" class="w-3 h-3"></i> Licensed & Owned
-                        </span>
+        <!-- VIEW 1: HOME PAGE -->
+        <section id="view-home" class="space-y-12">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950/60 border border-emerald-500/20 p-8 sm:p-12 shadow-2xl">
+                <div class="absolute -right-16 -bottom-16 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl space-y-4">
+                    <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-crown text-amber-400"></i> Official Publishing Hub
                     </div>
-
-                    <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-                        <span id="hero-title-prefix">Original Perspectives &</span> <br>
-                        <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent brand-text-tagline">
-                            Your thoughts. Your creativity. Your story.
-                        </span>
+                    <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+                        Your thoughts. Your creativity. <span class="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Your story.</span>
                     </h1>
-
-                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                        An exclusive publishing hub powered by <strong class="text-white brand-text-owner">Alex Rivera</strong>. Discover stories, tech deep-dives, creative prose, and personal ideas.
+                    <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+                        An exclusive blogging & editorial platform powered and solely owned by <strong class="text-emerald-400 font-bold" id="heroOwnerName">MOHIT NANDAGHAYE</strong>. Explore technology, creative prose, life stories, and business insights.
                     </p>
-
-                    <div class="pt-2 flex flex-wrap gap-3 items-center">
-                        <button onclick="navigateTo('editor')" class="px-6 py-3 bg-white text-slate-900 hover:bg-slate-100 rounded-xl font-bold text-sm shadow-lg transition active:scale-95 flex items-center gap-2">
-                            <i data-lucide="pen-tool" class="w-4 h-4 text-blue-600"></i> Write New Story
+                    <div class="pt-2 flex flex-wrap items-center gap-3">
+                        <button onclick="navigateTo('create')" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl transition shadow-lg shadow-emerald-500/25 flex items-center gap-2">
+                            <i class="fa-solid fa-feather-pointed"></i> Start Writing Now
                         </button>
-                        <button onclick="openModal('rights-info-modal')" class="px-5 py-3 bg-slate-800/80 hover:bg-slate-800 text-white border border-slate-700 rounded-xl font-semibold text-xs transition flex items-center gap-2">
-                            <i data-lucide="copyright" class="w-4 h-4 text-amber-400"></i> View Ownership Rights
+                        <button onclick="navigateTo('explore')" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-bold rounded-xl transition flex items-center gap-2">
+                            <i class="fa-solid fa-compass"></i> Explore Topics
                         </button>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- Category Filter Bar -->
-            <section class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Explore Topics</h3>
-                    <button onclick="navigateTo('explore')" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline">View All</button>
+            <!-- Categories Horizontal Pills -->
+            <div class="space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-emerald-400"></i> Browse Categories
+                </h3>
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar" id="categoryPills">
+                    <!-- Dynamic categories injected here -->
                 </div>
-                <div class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar" id="home-category-pills">
-                    <!-- Dynamic pills -->
-                </div>
-            </section>
+            </div>
 
-            <!-- Trending Posts Grid -->
-            <section class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <div class="p-2 bg-rose-500/10 text-rose-500 rounded-xl">
-                            <i data-lucide="flame" class="w-5 h-5"></i>
+            <!-- Main Layout: Grid Feed + Sidebar -->
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Articles Column (2 cols) -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Featured Article -->
+                    <div id="featuredPostContainer" class="space-y-4">
+                        <!-- Injected via JS -->
+                    </div>
+
+                    <!-- Latest Articles -->
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-fire text-amber-400"></i> Latest Publications
+                            </h2>
+                            <span class="text-xs text-slate-400" id="postCountBadge">0 posts available</span>
                         </div>
-                        <div>
-                            <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Trending Articles</h2>
-                            <p class="text-xs text-slate-500">Most engaged & read stories this week</p>
+                        <div class="grid gap-6" id="latestPostsContainer">
+                            <!-- Injected via JS -->
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="trending-blogs-container">
-                    <!-- Dynamic Trending Cards -->
-                </div>
-            </section>
-
-            <!-- Ownership Banner Badge -->
-            <section class="p-6 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 rounded-3xl border border-blue-200 dark:border-blue-900/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 bg-blue-600 text-white rounded-2xl shadow-md">
-                        <i data-lucide="badge-check" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">Exclusive Owner Rights & Copyright Protected</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">All original content, graphics, and articles published on this domain are registered under <span class="brand-text-owner font-bold">Alex Rivera</span>.</p>
-                    </div>
-                </div>
-                <button onclick="openModal('rights-info-modal')" class="px-4 py-2 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold whitespace-nowrap shadow-sm hover:border-blue-500 transition">
-                    View Legal Terms
-                </button>
-            </section>
-
-            <!-- Latest Community Feed -->
-            <section class="space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Recent Publications</h2>
-                        <p class="text-xs text-slate-500">Fresh daily thoughts, tutorials, and creative stories</p>
-                    </div>
-                    <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
-                        <button onclick="setFeedLayout('grid')" id="btn-layout-grid" class="p-1.5 rounded-lg text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-800 shadow-sm">
-                            <i data-lucide="layout-grid" class="w-4 h-4"></i>
-                        </button>
-                        <button onclick="setFeedLayout('list')" id="btn-layout-list" class="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white">
-                            <i data-lucide="list" class="w-4 h-4"></i>
+                <!-- Sidebar (1 col) -->
+                <div class="space-y-8">
+                    <!-- Platform Owner Bio Card -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full pointer-events-none"></div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg shadow-emerald-500/20">
+                                MN
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-white text-lg flex items-center gap-1.5" id="sidebarOwnerName">
+                                    MOHIT NANDAGHAYE
+                                </h3>
+                                <p class="text-xs text-emerald-400 font-semibold">Founder & Sole Owner</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed" id="sidebarBio">
+                            Tech enthusiast, creative thinker, and lead author at BlogVerse. Building modern editorial experiences and sharing ideas across technology, life, and innovation.
+                        </p>
+                        <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                            <span><i class="fa-solid fa-file-lines text-emerald-400 mr-1"></i> <span id="ownerPostCount">0</span> Articles</span>
+                            <span><i class="fa-solid fa-users text-teal-400 mr-1"></i> <span id="ownerFollowerCount">1,240</span> Followers</span>
+                        </div>
+                        <button onclick="toggleFollowOwner()" id="followOwnerBtn" class="w-full py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl transition">
+                            <i class="fa-solid fa-user-plus mr-1"></i> Follow MOHIT
                         </button>
                     </div>
-                </div>
 
-                <div id="latest-blogs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Dynamic Latest Cards -->
+                    <!-- Featured Creators -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-users text-emerald-400"></i> Featured Creators
+                        </h3>
+                        <div class="space-y-4" id="featuredCreatorsContainer">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
 
-        <!-- ================= PAGE 2: EXPLORE / SEARCH ================= -->
-        <div id="page-explore" class="hidden space-y-8">
+        <!-- VIEW 2: DISCOVERY PAGE -->
+        <section id="view-explore" class="hidden space-y-8">
             <div class="space-y-2">
-                <h1 class="text-3xl font-black text-slate-900 dark:text-white">Explore Catalog</h1>
-                <p class="text-sm text-slate-500">Search articles, filter categories, and sort by reader popularity.</p>
+                <h1 class="text-3xl font-black text-white">Discovery & Search Hub</h1>
+                <p class="text-slate-400 text-sm">Filter articles across categories, search keywords, or discover top authors.</p>
             </div>
 
-            <!-- Filters & Control Bar -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                <!-- Search Input -->
-                <div class="md:col-span-2 relative">
-                    <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="explore-search" oninput="renderExplorePage()" placeholder="Filter by keywords, titles, or tags..." class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <!-- Discovery Filters -->
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-wrap gap-4 items-center justify-between">
+                <div class="flex-1 min-w-[240px] relative">
+                    <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="exploreSearchInput" oninput="renderExploreView()" placeholder="Filter by keyword..." class="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
                 </div>
-
-                <!-- Category Select -->
-                <div>
-                    <select id="explore-category" onchange="renderExplorePage()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none">
-                        <option value="ALL">All Categories</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Stories">Stories</option>
-                        <option value="Poetry">Poetry</option>
-                        <option value="Travel">Travel</option>
-                        <option value="Life">Life</option>
-                        <option value="Education">Education</option>
-                        <option value="Business">Business</option>
-                        <option value="Creativity">Creativity</option>
-                    </select>
-                </div>
-
-                <!-- Sort Filter -->
-                <div>
-                    <select id="explore-sort" onchange="renderExplorePage()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none">
-                        <option value="recent">Most Recent</option>
-                        <option value="popular">Most Liked</option>
-                        <option value="views">Most Viewed</option>
-                    </select>
+                <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar" id="exploreCategoryFilters">
+                    <!-- Filters injected via JS -->
                 </div>
             </div>
 
-            <!-- Explore Grid -->
-            <div id="explore-results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Results Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="exploreResultsContainer">
                 <!-- Injected via JS -->
             </div>
-        </div>
+        </section>
 
-        <!-- ================= PAGE 3: COMMUNITY & AUTHORS ================= -->
-        <div id="page-community" class="hidden space-y-8">
-            <div class="space-y-2">
-                <h1 class="text-3xl font-black text-slate-900 dark:text-white">Community & Contributors</h1>
-                <p class="text-sm text-slate-500">Connect with featured guest writers, platform contributors, and follow updates.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="community-creators-grid">
-                <!-- Dynamic Creator Cards -->
-            </div>
-        </div>
-
-        <!-- ================= PAGE 4: BLOG EDITOR STUDIO ================= -->
-        <div id="page-editor" class="hidden max-w-4xl mx-auto space-y-6">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 gap-4">
+        <!-- VIEW 3: CREATE BLOG / STUDIO EDITOR -->
+        <section id="view-create" class="hidden max-w-4xl mx-auto space-y-8">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
                 <div>
-                    <h1 class="text-2xl font-black text-slate-900 dark:text-white" id="editor-heading">Create New Post</h1>
-                    <p class="text-xs text-slate-500">Draft, format, and publish your content</p>
+                    <h1 class="text-2xl font-black text-white">BlogVerse Studio Editor</h1>
+                    <p class="text-xs text-slate-400">Author: <span class="text-emerald-400 font-semibold" id="editorOwnerDisplay">MOHIT NANDAGHAYE</span></p>
                 </div>
-                <div class="flex items-center gap-2 sm:gap-3">
-                    <button onclick="saveBlogDraft()" class="px-4 py-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold transition">
-                        Save Draft
+                <div class="flex gap-2">
+                    <button onclick="saveDraftArticle()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold text-xs rounded-xl border border-slate-800 transition">
+                        <i class="fa-solid fa-bookmark mr-1"></i> Save Draft
                     </button>
-                    <button onclick="publishBlog()" class="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-md shadow-blue-500/20">
-                        Publish Article
+                    <button onclick="publishArticle()" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg shadow-emerald-500/20">
+                        <i class="fa-solid fa-paper-plane mr-1"></i> Publish Post
                     </button>
                 </div>
             </div>
 
-            <form id="editor-form" onsubmit="event.preventDefault();" class="space-y-6">
-                <input type="hidden" id="editor-post-id">
-
-                <!-- Title & Subtitle Inputs -->
-                <div class="space-y-3">
-                    <input type="text" id="editor-title" placeholder="Title of your story..." class="w-full text-2xl sm:text-3xl font-black bg-transparent border-b border-slate-200 dark:border-slate-800 pb-2 focus:outline-none focus:border-blue-500 placeholder-slate-300 dark:placeholder-slate-600">
-                    <input type="text" id="editor-subtitle" placeholder="Add a short summary or teaser..." class="w-full text-sm sm:text-base bg-transparent border-b border-slate-100 dark:border-slate-800/60 pb-2 focus:outline-none focus:border-blue-500 placeholder-slate-400">
+            <form id="createBlogForm" onsubmit="event.preventDefault(); publishArticle();" class="space-y-6">
+                <!-- Title Input -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Article Title</label>
+                    <input type="text" id="postTitleInput" required placeholder="Enter an intriguing title..." class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-lg font-bold text-white focus:outline-none focus:border-emerald-500">
                 </div>
 
-                <!-- Meta Fields: Category & Tags -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Category</label>
-                        <select id="editor-category" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs sm:text-sm focus:outline-none">
+                <!-- Category & Cover Image URL -->
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Category</label>
+                        <select id="postCategoryInput" class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
                             <option value="Technology">Technology</option>
                             <option value="Stories">Stories</option>
                             <option value="Poetry">Poetry</option>
@@ -344,892 +261,512 @@
                             <option value="Creativity">Creativity</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Tags (Comma separated)</label>
-                        <input type="text" id="editor-tags" placeholder="e.g. Innovation, Web, Writing" class="w-full px-3.5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs sm:text-sm focus:outline-none">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Cover Image URL (Optional)</label>
+                        <input type="url" id="postCoverInput" placeholder="https://images.unsplash.com/..." class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
                     </div>
                 </div>
 
-                <!-- Cover Image Selector -->
+                <!-- Formatting Tools -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400">Cover Image URL</label>
-                    <input type="url" id="editor-cover-url" onchange="previewCoverImage(this.value)" placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs sm:text-sm focus:outline-none">
-                    
-                    <div>
-                        <span class="text-[11px] text-slate-400 block mb-1.5">Or select high-res Unsplash preset:</span>
-                        <div class="flex items-center gap-2 overflow-x-auto pb-1" id="stock-cover-presets">
-                            <!-- Injected by JS -->
-                        </div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Rich Content Editor</label>
+                    <div class="flex flex-wrap gap-2 p-2 bg-slate-900 border border-slate-800 rounded-t-xl text-slate-300">
+                        <button type="button" onclick="formatDoc('bold')" class="p-2 hover:bg-slate-800 rounded text-xs font-bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
+                        <button type="button" onclick="formatDoc('italic')" class="p-2 hover:bg-slate-800 rounded text-xs" title="Italic"><i class="fa-solid fa-italic"></i></button>
+                        <button type="button" onclick="formatDoc('underline')" class="p-2 hover:bg-slate-800 rounded text-xs" title="Underline"><i class="fa-solid fa-underline"></i></button>
+                        <button type="button" onclick="formatDoc('insertUnorderedList')" class="p-2 hover:bg-slate-800 rounded text-xs" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
+                        <button type="button" onclick="formatDoc('formatBlock', 'h2')" class="p-2 hover:bg-slate-800 rounded text-xs font-bold" title="Heading">H2</button>
+                        <button type="button" onclick="formatDoc('formatBlock', 'blockquote')" class="p-2 hover:bg-slate-800 rounded text-xs" title="Quote"><i class="fa-solid fa-quote-left"></i></button>
                     </div>
-                    <div id="cover-preview-container" class="hidden h-48 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 relative mt-2">
-                        <img id="cover-preview-img" src="" class="w-full h-full object-cover">
-                    </div>
-                </div>
-
-                <!-- Rich Text Toolbar & Content Area -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900 shadow-sm">
-                    <div class="flex items-center gap-1 p-2 bg-slate-100 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
-                        <button type="button" onclick="formatDoc('bold')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" title="Bold"><i data-lucide="bold" class="w-4 h-4"></i></button>
-                        <button type="button" onclick="formatDoc('italic')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" title="Italic"><i data-lucide="italic" class="w-4 h-4"></i></button>
-                        <button type="button" onclick="formatDoc('formatBlock', '<h2>')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs" title="Heading">H2</button>
-                        <button type="button" onclick="formatDoc('formatBlock', '<blockquote>')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" title="Quote"><i data-lucide="quote" class="w-4 h-4"></i></button>
-                        <button type="button" onclick="formatDoc('insertUnorderedList')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" title="List"><i data-lucide="list" class="w-4 h-4"></i></button>
-                        <button type="button" onclick="insertCodeBlock()" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" title="Code"><i data-lucide="code" class="w-4 h-4"></i></button>
-                    </div>
-
-                    <!-- Article Body Area -->
-                    <div id="editor-content" contenteditable="true" oninput="updateWordCount()" class="p-5 min-h-[280px] focus:outline-none article-body text-slate-800 dark:text-slate-200 leading-relaxed text-base">
-                        <p>Begin writing your story here...</p>
-                    </div>
-
-                    <!-- Watermark / Ownership Toggle -->
-                    <div class="px-5 py-2.5 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" id="editor-watermark-check" checked class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                            <label for="editor-watermark-check" class="font-semibold text-slate-600 dark:text-slate-300">Embed Owner Rights & Watermark Stamp</label>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span id="editor-word-count">0 words</span>
-                            <span>•</span>
-                            <span id="editor-read-time">~1 min read</span>
-                        </div>
+                    <div id="postContentInput" contenteditable="true" class="w-full min-h-[280px] p-4 bg-slate-950 border border-slate-800 rounded-b-xl text-slate-200 focus:outline-none focus:border-emerald-500 leading-relaxed text-sm">
+                        Write your creative ideas, thoughts, or story here...
                     </div>
                 </div>
             </form>
-        </div>
+        </section>
 
-        <!-- ================= PAGE 5: CREATOR DASHBOARD & ANALYTICS ================= -->
-        <div id="page-dashboard" class="hidden space-y-8">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <!-- VIEW 4: CREATOR DASHBOARD -->
+        <section id="view-dashboard" class="hidden space-y-8">
+            <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-3xl font-black text-slate-900 dark:text-white">Studio Dashboard</h1>
-                    <p class="text-xs sm:text-sm text-slate-500">Manage publications, review analytics, and export platform backup.</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="exportPlatformData()" class="px-3.5 py-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
-                        <i data-lucide="download" class="w-4 h-4"></i> Export JSON
-                    </button>
-                    <button onclick="navigateTo('editor')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-500/20">
-                        <i data-lucide="plus" class="w-4 h-4"></i> New Post
-                    </button>
+                    <h1 class="text-3xl font-black text-white">Creator Analytics & Telemetry</h1>
+                    <p class="text-slate-400 text-sm">Track reader engagement, total posts, and content reach for <strong class="text-emerald-400">MOHIT NANDAGHAYE</strong>.</p>
                 </div>
             </div>
 
-            <!-- Dashboard Overview Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="dashboard-stats-grid">
-                <!-- Injected via JS -->
-            </div>
-
-            <!-- SVG Analytics Visualizer -->
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Reader Growth & Engagement</h3>
-                        <p class="text-xs text-slate-500">Monthly article traffic metrics</p>
+            <!-- Stats Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+                    <div class="flex justify-between items-center text-xs text-slate-400">
+                        <span>Total Posts</span>
+                        <i class="fa-solid fa-file-lines text-emerald-400"></i>
                     </div>
-                    <span class="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-full">+32.4% traffic growth</span>
+                    <p class="text-2xl font-black text-white mt-2" id="statTotalPosts">0</p>
                 </div>
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+                    <div class="flex justify-between items-center text-xs text-slate-400">
+                        <span>Total Views</span>
+                        <i class="fa-solid fa-eye text-teal-400"></i>
+                    </div>
+                    <p class="text-2xl font-black text-white mt-2" id="statTotalViews">14,280</p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+                    <div class="flex justify-between items-center text-xs text-slate-400">
+                        <span>Total Likes</span>
+                        <i class="fa-solid fa-heart text-rose-400"></i>
+                    </div>
+                    <p class="text-2xl font-black text-white mt-2" id="statTotalLikes">1,890</p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+                    <div class="flex justify-between items-center text-xs text-slate-400">
+                        <span>Comments</span>
+                        <i class="fa-solid fa-comments text-cyan-400"></i>
+                    </div>
+                    <p class="text-2xl font-black text-white mt-2" id="statTotalComments">342</p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+                    <div class="flex justify-between items-center text-xs text-slate-400">
+                        <span>Followers</span>
+                        <i class="fa-solid fa-users text-amber-400"></i>
+                    </div>
+                    <p class="text-2xl font-black text-white mt-2" id="statTotalFollowers">1,240</p>
+                </div>
+            </div>
 
-                <div class="h-44 w-full flex items-end justify-between gap-2 pt-6 px-2">
-                    <div class="flex-1 bg-blue-100 dark:bg-slate-800 hover:bg-blue-500 transition rounded-t-xl h-[35%] relative group"><span class="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] bg-slate-900 text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">1.4k</span></div>
-                    <div class="flex-1 bg-blue-100 dark:bg-slate-800 hover:bg-blue-500 transition rounded-t-xl h-[50%] relative group"><span class="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] bg-slate-900 text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">2.8k</span></div>
-                    <div class="flex-1 bg-blue-100 dark:bg-slate-800 hover:bg-blue-500 transition rounded-t-xl h-[40%] relative group"><span class="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] bg-slate-900 text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">2.1k</span></div>
-                    <div class="flex-1 bg-blue-100 dark:bg-slate-800 hover:bg-blue-500 transition rounded-t-xl h-[70%] relative group"><span class="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] bg-slate-900 text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">4.2k</span></div>
-                    <div class="flex-1 bg-blue-100 dark:bg-slate-800 hover:bg-blue-500 transition rounded-t-xl h-[85%] relative group"><span class="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] bg-slate-900 text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">5.6k</span></div>
-                    <div class="flex-1 bg-blue-600 rounded-t-xl h-[100%] relative group"><span class="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] bg-slate-900 text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">7.1k</span></div>
+            <!-- SVG Engagement Graph -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+                <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-emerald-400"></i> Weekly Engagement Telemetry
+                </h3>
+                <div class="w-full h-48 flex items-end justify-between gap-2 pt-8 px-2 border-b border-slate-800">
+                    <div class="flex-1 bg-emerald-500/20 hover:bg-emerald-500/40 rounded-t-lg transition h-[40%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">420</span></div>
+                    <div class="flex-1 bg-emerald-500/30 hover:bg-emerald-500/40 rounded-t-lg transition h-[65%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">780</span></div>
+                    <div class="flex-1 bg-emerald-500/20 hover:bg-emerald-500/40 rounded-t-lg transition h-[50%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">550</span></div>
+                    <div class="flex-1 bg-emerald-500/50 hover:bg-emerald-500/60 rounded-t-lg transition h-[85%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">1,120</span></div>
+                    <div class="flex-1 bg-emerald-500/40 hover:bg-emerald-500/50 rounded-t-lg transition h-[70%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">910</span></div>
+                    <div class="flex-1 bg-emerald-500/80 hover:bg-emerald-500 rounded-t-lg transition h-[95%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">1,450</span></div>
+                    <div class="flex-1 bg-emerald-400 hover:bg-emerald-300 rounded-t-lg transition h-[80%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition">1,210</span></div>
                 </div>
-                <div class="flex justify-between text-[11px] text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-2 font-medium">
-                    <span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span>
+                <div class="flex justify-between text-[11px] text-slate-400 px-2 font-mono">
+                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 5: USER PROFILE -->
+        <section id="view-profile" class="hidden space-y-8">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 space-y-6 relative overflow-hidden">
+                <div class="flex flex-col sm:flex-row items-center gap-6">
+                    <div class="w-24 h-24 rounded-3xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-4xl shadow-xl shadow-emerald-500/20">
+                        MN
+                    </div>
+                    <div class="text-center sm:text-left space-y-2">
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                            <h1 class="text-2xl font-black text-white" id="profileOwnerName">MOHIT NANDAGHAYE</h1>
+                            <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold px-2.5 py-0.5 rounded-full">Verified Owner</span>
+                        </div>
+                        <p class="text-sm text-slate-300 max-w-xl">
+                            Lead Architect & Sole Owner of BlogVerse. Sharing deep dives in web tech, personal development, software innovation, and original essays.
+                        </p>
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-400 pt-2">
+                            <span><i class="fa-solid fa-location-dot text-emerald-400 mr-1"></i> Global / Web</span>
+                            <span><i class="fa-solid fa-link text-teal-400 mr-1"></i> blogverse.studio</span>
+                            <span><i class="fa-solid fa-calendar mr-1"></i> Member since 2026</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Manage Articles Data Table -->
-            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-                <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                    <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Article Management</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 dark:bg-slate-800/50 text-[11px] uppercase font-bold text-slate-400">
-                                <th class="p-4">Title</th>
-                                <th class="p-4">Category</th>
-                                <th class="p-4">Status</th>
-                                <th class="p-4">Views</th>
-                                <th class="p-4">Likes</th>
-                                <th class="p-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dashboard-posts-table" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
-                            <!-- Injected by JS -->
-                        </tbody>
-                    </table>
+            <!-- Published Posts by Owner -->
+            <div class="space-y-4">
+                <h3 class="font-bold text-white text-lg">Published Articles by MOHIT NANDAGHAYE</h3>
+                <div class="grid md:grid-cols-2 gap-6" id="ownerArticlesContainer">
+                    <!-- Injected via JS -->
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- ================= PAGE 6: USER PROFILE ================= -->
-        <div id="page-profile" class="hidden space-y-8 max-w-4xl mx-auto">
-            <!-- Profile Card -->
-            <div id="profile-card-header" class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                <!-- Profile details injected by JS -->
+        <!-- VIEW 6: ARTICLE READER / DETAIL VIEW -->
+        <section id="view-article" class="hidden max-w-3xl mx-auto space-y-8">
+            <button onclick="navigateTo('home')" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-semibold rounded-xl border border-slate-800 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left"></i> Back to Feed
+            </button>
+            
+            <div id="articleDetailContent" class="space-y-6">
+                <!-- Article Content dynamically loaded here -->
             </div>
-
-            <!-- Profile Tabs -->
-            <div class="border-b border-slate-200 dark:border-slate-800 flex gap-6 text-sm font-semibold text-slate-500">
-                <button onclick="switchProfileTab('published')" id="profile-tab-published" class="pb-3 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400">Published Stories</button>
-                <button onclick="switchProfileTab('liked')" id="profile-tab-liked" class="pb-3 hover:text-slate-900 dark:hover:text-white">Liked Posts</button>
-            </div>
-
-            <!-- Profile Content Grid -->
-            <div id="profile-posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Dynamic Posts -->
-            </div>
-        </div>
+        </section>
 
     </main>
 
-    <!-- DYNAMIC RIGHTS FOOTER -->
-    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 mt-16 py-8">
+    <!-- RIGHTS & BRAND MANAGER MODAL -->
+    <div id="rightsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative">
+            <button onclick="closeRightsModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="space-y-2">
+                <div class="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-certificate"></i> Digital Rights & Licensing
+                </div>
+                <h2 class="text-xl font-bold text-white">Brand Ownership Certificate</h2>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-3 text-xs text-slate-300">
+                <div class="flex justify-between border-b border-slate-800/80 pb-2">
+                    <span class="text-slate-400">Application Name:</span>
+                    <span class="font-bold text-white">BlogVerse</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-800/80 pb-2">
+                    <span class="text-slate-400">Sole Owner & Creator:</span>
+                    <span class="font-bold text-emerald-400" id="modalOwnerDisplay">MOHIT NANDAGHAYE</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-800/80 pb-2">
+                    <span class="text-slate-400">Tagline:</span>
+                    <span class="font-medium text-slate-200">"Your thoughts. Your creativity. Your story."</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">Rights Status:</span>
+                    <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check"></i> Registered & Protected</span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Update Custom Ownership Info</h3>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Owner / Rights Holder Name</label>
+                    <input type="text" id="ownerNameInput" value="MOHIT NANDAGHAYE" class="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Copyright Notice Text</label>
+                    <input type="text" id="copyrightInput" value="© 2026 MOHIT NANDAGHAYE. All rights reserved." class="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button onclick="saveBrandSettings()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm rounded-xl transition shadow-lg shadow-emerald-500/20">
+                    Save Ownership Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-8 mt-auto">
         <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
             <div class="flex items-center justify-center gap-2">
-                <div id="brand-footer-icon" class="w-6 h-6 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
-                    B
-                </div>
-                <span id="brand-footer-name" class="font-extrabold text-slate-900 dark:text-white text-base">BlogVerse</span>
+                <span class="font-black text-lg bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">BlogVerse</span>
+                <span class="text-slate-500 text-xs">|</span>
+                <span class="text-xs text-slate-400">Powered & Owned by <strong class="text-emerald-400" id="footerOwnerName">MOHIT NANDAGHAYE</strong></span>
             </div>
-            
-            <p id="brand-footer-tagline" class="text-xs text-slate-400">
-                “Your thoughts. Your creativity. Your story.” — Powered by Alex Rivera.
+            <p class="text-xs text-slate-500" id="footerCopyrightText">
+                © 2026 MOHIT NANDAGHAYE. All rights reserved. Your thoughts. Your creativity. Your story.
             </p>
-
-            <div class="pt-2 border-t border-slate-100 dark:border-slate-800/60 max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
-                <span id="brand-footer-copyright">All Rights Reserved © 2026 Alex Rivera / BlogVerse.</span>
-                <div class="flex items-center gap-3 font-semibold">
-                    <button onclick="openModal('rights-info-modal')" class="hover:text-blue-600 transition">Legal Disclaimer</button>
-                    <span>•</span>
-                    <button onclick="openModal('brand-settings-modal')" class="hover:text-blue-600 transition">Brand Settings</button>
-                </div>
-            </div>
         </div>
     </footer>
 
-    <!-- MODAL 1: SINGLE ARTICLE DETAIL -->
-    <div id="post-detail-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md hidden flex items-center justify-center z-50 p-4 overflow-y-auto">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full my-8 shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
-            
-            <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between sticky top-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur z-10">
-                <div class="flex items-center gap-2">
-                    <span id="modal-blog-category" class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">Category</span>
-                    <span id="modal-blog-readtime" class="text-xs text-slate-400">5 min read</span>
-                </div>
-                <button onclick="closeModal('post-detail-modal')" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-700">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <div class="p-6 sm:p-8 overflow-y-auto custom-scrollbar space-y-6">
-                <div>
-                    <h1 id="modal-blog-title" class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-tight">Blog Title</h1>
-                    <p id="modal-blog-subtitle" class="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-2">Subtitle Narrative...</p>
-                </div>
-
-                <!-- Author Row & Rights Badge -->
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-y border-slate-100 dark:border-slate-800/80 gap-3">
-                    <div class="flex items-center gap-3">
-                        <img id="modal-author-avatar" src="" class="w-10 h-10 rounded-full object-cover">
-                        <div>
-                            <div class="flex items-center gap-1.5">
-                                <h4 id="modal-author-name" class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Author Name</h4>
-                                <span id="modal-verified-stamp" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
-                                    <i data-lucide="shield-check" class="w-3 h-3"></i> Rights Holder
-                                </span>
-                            </div>
-                            <p id="modal-blog-date" class="text-[11px] text-slate-400">Oct 12, 2026</p>
-                        </div>
-                    </div>
-                    <button id="modal-follow-btn" class="px-3.5 py-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950 dark:hover:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-xl text-xs font-semibold transition self-start sm:self-auto">
-                        Follow
-                    </button>
-                </div>
-
-                <!-- Article Cover -->
-                <div id="modal-cover-wrapper" class="rounded-2xl overflow-hidden h-64 sm:h-80 w-full bg-slate-100 dark:bg-slate-800">
-                    <img id="modal-blog-cover" src="" class="w-full h-full object-cover">
-                </div>
-
-                <!-- Article Content Body -->
-                <div id="modal-blog-body" class="article-body text-slate-800 dark:text-slate-200 text-sm sm:text-base leading-relaxed space-y-4">
-                    <!-- Body HTML -->
-                </div>
-
-                <!-- Dynamic Watermark Box -->
-                <div id="modal-watermark-box" class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 flex items-center justify-between text-xs text-slate-500">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="copyright" class="w-4 h-4 text-amber-500"></i>
-                        <span>Protected Content • Property of <strong class="text-slate-800 dark:text-slate-200 brand-text-owner">Alex Rivera</strong></span>
-                    </div>
-                    <span class="text-[10px] font-mono text-slate-400 font-bold uppercase">BlogVerse Stamp</span>
-                </div>
-
-                <!-- Interactive Toolbar -->
-                <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center gap-3">
-                        <button id="modal-like-btn" class="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-500 font-bold text-xs transition">
-                            <i data-lucide="heart" class="w-4 h-4"></i> <span id="modal-like-count">0</span>
-                        </button>
-                        <button onclick="sharePost()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold transition">
-                            <i data-lucide="share-2" class="w-4 h-4"></i> Share Link
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Comments -->
-                <div class="pt-6 space-y-4">
-                    <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
-                        <i data-lucide="message-square" class="w-4 h-4 text-blue-500"></i> Reader Discussion (<span id="modal-comment-count">0</span>)
-                    </h3>
-
-                    <div class="flex gap-3">
-                        <img id="current-user-comment-avatar" src="" class="w-8 h-8 rounded-full object-cover">
-                        <div class="flex-1 space-y-2">
-                            <textarea id="comment-input" rows="2" placeholder="Write a thoughtful comment..." class="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                            <button onclick="submitComment()" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold float-right transition">Post Comment</button>
-                        </div>
-                    </div>
-
-                    <div id="modal-comments-list" class="space-y-3 pt-4 clear-both">
-                        <!-- Dynamic Comments -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 2: BRAND & OWNERSHIP RIGHTS SETTINGS -->
-    <div id="brand-settings-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-amber-500"></i>
-                    <h3 class="text-xl font-black text-slate-900 dark:text-white">Brand & Rights Manager</h3>
-                </div>
-                <button onclick="closeModal('brand-settings-modal')" class="text-slate-400 hover:text-slate-600">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <p class="text-xs text-slate-500">
-                Personalize the full platform ownership. Updating these settings dynamically locks all platform footers, headers, watermarks, and legal stamps to your name.
-            </p>
-
-            <form onsubmit="handleSaveBrandSettings(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Your Full Name (Owner)</label>
-                    <input type="text" id="setting-owner-name" required class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Application Brand Name</label>
-                    <input type="text" id="setting-app-name" required class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Brand Tagline</label>
-                    <input type="text" id="setting-tagline" required class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Copyright Year</label>
-                        <input type="text" id="setting-copyright-year" required class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Logo Initial / Icon Text</label>
-                        <input type="text" id="setting-logo-text" maxLength="2" required class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Custom Legal Rights Statement</label>
-                    <textarea id="setting-license-terms" rows="2" class="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none"></textarea>
-                </div>
-
-                <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md transition">
-                    Apply Ownership Across Platform
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL 3: LEGAL DISCLAIMER & RIGHTS INFO -->
-    <div id="rights-info-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="shield-alert" class="w-5 h-5 text-blue-500"></i>
-                    <h3 class="text-xl font-black text-slate-900 dark:text-white">Intellectual Property & Terms</h3>
-                </div>
-                <button onclick="closeModal('rights-info-modal')" class="text-slate-400 hover:text-slate-600">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <div class="space-y-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                <p>
-                    <strong>Exclusive Platform License:</strong> This application, code base, design UI, and published articles are the exclusive property of <span class="brand-text-owner font-bold text-blue-600 dark:text-blue-400">Alex Rivera</span>.
-                </p>
-                <div class="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-1">
-                    <span class="font-bold text-slate-800 dark:text-slate-200">Registered Statement:</span>
-                    <p id="rights-modal-statement-text" class="text-slate-500 font-mono text-[11px]">
-                        Exclusive Intellectual Property & Reserved Content Rights of Alex Rivera.
-                    </p>
-                </div>
-                <p>
-                    Unauthorized distribution, reproduction, or scraping without written permission from the platform owner is strictly prohibited.
-                </p>
-            </div>
-
-            <button onclick="closeModal('rights-info-modal')" class="w-full py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-xs hover:bg-slate-200 transition">
-                I Understand
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL 4: USER / CREATOR PROFILE SWITCHER -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
-            <div class="flex items-center justify-between">
-                <h3 class="text-xl font-black text-slate-900 dark:text-white">Active Account Profile</h3>
-                <button onclick="closeModal('auth-modal')" class="text-slate-400 hover:text-slate-600">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Full Name</label>
-                    <input type="text" id="auth-name" required class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Handle / Tag</label>
-                    <input type="text" id="auth-handle" required class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Bio</label>
-                    <textarea id="auth-bio" rows="2" class="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none"></textarea>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Avatar Image URL</label>
-                    <input type="url" id="auth-avatar" class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none">
-                </div>
-
-                <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md transition">
-                    Save Profile Details
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT APPLICATION CORE -->
     <script>
-        // Preset Cover Imagery
-        const STOCK_COVERS = [
-            "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=1000",
-            "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=1000",
-            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000",
-            "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=1000",
-            "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=1000"
-        ];
+        const CATEGORIES = ["Technology", "Stories", "Poetry", "Travel", "Life", "Education", "Business", "Creativity"];
 
-        // Global Dynamic Brand Settings Default
-        let brandConfig = {
-            ownerName: 'Alex Rivera',
-            appName: 'BlogVerse',
-            tagline: 'Your thoughts. Your creativity. Your story.',
-            copyrightYear: '2026',
-            logoText: 'B',
-            licenseTerms: 'Exclusive Intellectual Property & Reserved Content Rights of Alex Rivera.'
+        let appState = {
+            ownerName: "MOHIT NANDAGHAYE",
+            copyrightText: "© 2026 MOHIT NANDAGHAYE. All rights reserved.",
+            activeCategory: "All",
+            isFollowingOwner: false,
+            followersCount: 1240,
+            posts: [
+                {
+                    id: 101,
+                    title: "Building Modern Web Experiences with Pure Creativity",
+                    category: "Technology",
+                    author: "MOHIT NANDAGHAYE",
+                    date: "Oct 6, 2026",
+                    cover: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80",
+                    excerpt: "An exploration into crafting performant, beautifully styled web applications without overwhelming dependencies.",
+                    content: "<p>The web application landscape is evolving rapidly. By keeping design frameworks clean and prioritizing user experience, developers can build scalable platforms that load instantly and provide seamless interactivity.</p><p>BlogVerse represents a clean, single-file architecture built for creators who want total control over their intellectual property and brand identity.</p>",
+                    likes: 142,
+                    comments: [
+                        { author: "Sarah Jenkins", text: "Inspiring article! Loved the focus on performance." },
+                        { author: "David Chen", text: "Clean architecture design." }
+                    ],
+                    featured: true
+                },
+                {
+                    id: 102,
+                    title: "The Art of Mindful Storytelling in the Digital Age",
+                    category: "Stories",
+                    author: "MOHIT NANDAGHAYE",
+                    date: "Oct 5, 2026",
+                    cover: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80",
+                    excerpt: "How authentic personal stories connect people across digital platforms better than automated content.",
+                    content: "<p>Storytelling remains the most powerful tool for human connection. In an era saturated with generic noise, authentic voices stand out effortlessly.</p>",
+                    likes: 89,
+                    comments: [
+                        { author: "Elena Rostova", text: "Resonates so deeply with me!" }
+                    ],
+                    featured: false
+                },
+                {
+                    id: 103,
+                    title: "Innovating Beyond Boundaries: A Business Playbook",
+                    category: "Business",
+                    author: "MOHIT NANDAGHAYE",
+                    date: "Oct 4, 2026",
+                    cover: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+                    excerpt: "Key principles for independent creators turning original ideas into sustainable digital brands.",
+                    content: "<p>Building a recognizable brand requires consistency, ownership, and clarity of purpose. Here are three core pillars to focus on...</p>",
+                    likes: 112,
+                    comments: [],
+                    featured: false
+                }
+            ],
+            creators: [
+                { name: "MOHIT NANDAGHAYE", handle: "@mohit_n", role: "Owner & Lead Author", avatar: "MN" },
+                { name: "Aria Sharma", handle: "@aria_dev", role: "Tech Writer", avatar: "AS" },
+                { name: "Lucas Vance", handle: "@lucas_v", role: "Creative Essayist", avatar: "LV" }
+            ]
         };
 
-        // Seed Creators
-        const SEED_CREATORS = [
-            {
-                id: 'c_owner',
-                name: 'Alex Rivera',
-                handle: '@alex_rivera',
-                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
-                bio: 'Creator & Platform Owner of BlogVerse. Essayist, software craftsman, and storytelling enthusiast.',
-                followers: 3120,
-                isOwner: true
-            },
-            {
-                id: 'c2',
-                name: 'Marcus Vance',
-                handle: '@marcus_v',
-                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
-                bio: 'Travel photographer & story hunter. Documenting hidden European landscapes.',
-                followers: 2190,
-                isOwner: false
-            },
-            {
-                id: 'c3',
-                name: 'Aria Sterling',
-                handle: '@aria_poetry',
-                avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150',
-                bio: 'Poet, storyteller, and designer. Crafting prose on quiet morning moments.',
-                followers: 1250,
-                isOwner: false
-            }
-        ];
-
-        // Seed Blogs Dataset
-        const SEED_BLOGS = [
-            {
-                id: 'b1',
-                title: 'Building Modern Web Applications with Scalable Compilation Architecture',
-                subtitle: 'How compiler-first frameworks are redefining frontend performance.',
-                category: 'Technology',
-                tags: ['WebDev', 'JavaScript', 'Architecture'],
-                coverUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=1000',
-                body: '<p>The modern web ecosystem is undergoing a fundamental evolution. For years, heavy client side abstractions dominated our designs. Now compiler-first paradigms bring back instant page speeds and clean simplicity.</p><h2>1. The Shift to Minimal Runtimes</h2><p>Rather than executing heavy virtual DOM checks in client browsers, modern tools compile interactive components directly into lightweight vanilla JS.</p><blockquote>"The most sustainable software is that which runs effortlessly with minimal overhead."</blockquote><p>This allows creators to focus on deliverable ideas rather than framework bloat.</p>',
-                authorId: 'c_owner',
-                status: 'published',
-                readTime: '5 min read',
-                createdAt: '2026-10-02',
-                views: 3120,
-                likes: 410,
-                watermarkEnabled: true,
-                comments: [
-                    { id: 'cm1', author: 'Marcus Vance', avatar: SEED_CREATORS[1].avatar, text: 'Fantastic analysis! The compile step saving client bundle size is key.', date: '2 days ago' }
-                ]
-            },
-            {
-                id: 'b2',
-                title: 'Scottish Highlands in Autumn: A Photography Travel Log',
-                subtitle: 'Mist-shrouded valleys and ancient stone castles under amber skies.',
-                category: 'Travel',
-                tags: ['Photography', 'Scotland', 'Travel'],
-                coverUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000',
-                body: '<p>Waking up in Glen Coe at dawn brings a peaceful quietness. Rain showers routinely clear into bright light flares across pine mountains.</p>',
-                authorId: 'c2',
-                status: 'published',
-                readTime: '4 min read',
-                createdAt: '2026-10-04',
-                views: 1840,
-                likes: 285,
-                watermarkEnabled: false,
-                comments: []
-            },
-            {
-                id: 'b3',
-                title: 'Whispers in Rain: A Reflective Prose Series',
-                subtitle: 'Short thoughts on quiet coffee shops and pouring afternoon rain.',
-                category: 'Poetry',
-                tags: ['Poetry', 'Writing', 'Reflections'],
-                coverUrl: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=1000',
-                body: '<p>Rain strikes glass softly,<br>A steady rhythm as hours pass.<br>Warm ceramic cups in hand,<br>Silent stories crafted across the land.</p>',
-                authorId: 'c3',
-                status: 'published',
-                readTime: '2 min read',
-                createdAt: '2026-10-05',
-                views: 910,
-                likes: 195,
-                watermarkEnabled: false,
-                comments: []
-            }
-        ];
-
-        // App State
-        let currentUser = SEED_CREATORS[0];
-        let blogs = [];
-        let creators = [];
-        let likedBlogIds = new Set();
-        let followedCreatorIds = new Set(['c2']);
-        let currentFeedLayout = 'grid';
-        let activeBlogDetailId = null;
-        let activeProfileTab = 'published';
-
+        // Initialize on load
         window.addEventListener('DOMContentLoaded', () => {
-            loadTheme();
-            initializeLocalStorage();
+            loadFromLocalStorage();
             updateBrandUI();
-            renderNavigationUser();
-            renderStockPresets();
-            navigateTo('home');
-            lucide.createIcons();
+            renderCategoryPills();
+            renderHomeFeed();
+            updateDashboardStats();
         });
 
-        function loadTheme() {
-            if (localStorage.getItem('blogverse_theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
+        function loadFromLocalStorage() {
+            const savedOwner = localStorage.getItem('bv_owner');
+            if (savedOwner) appState.ownerName = savedOwner;
+            
+            const savedPosts = localStorage.getItem('bv_posts');
+            if (savedPosts) appState.posts = JSON.parse(savedPosts);
         }
 
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('blogverse_theme', isDark ? 'dark' : 'light');
-        }
-
-        function initializeLocalStorage() {
-            const storedConfig = localStorage.getItem('blogverse_brand_config');
-            if (storedConfig) {
-                try { brandConfig = { ...brandConfig, ...JSON.parse(storedConfig) }; } catch(e){}
-            }
-
-            const storedBlogs = localStorage.getItem('blogverse_blogs');
-            if (storedBlogs) {
-                try { blogs = JSON.parse(storedBlogs); } catch(e) { blogs = SEED_BLOGS; }
-            } else {
-                blogs = SEED_BLOGS;
-                saveBlogs();
-            }
-
-            const storedCreators = localStorage.getItem('blogverse_creators');
-            if (storedCreators) {
-                try { creators = JSON.parse(storedCreators); } catch(e) { creators = SEED_CREATORS; }
-            } else {
-                creators = SEED_CREATORS;
-                saveCreators();
-            }
-
-            // Sync creator owner name with brand config
-            const ownerCreator = creators.find(c => c.isOwner || c.id === 'c_owner');
-            if (ownerCreator) {
-                ownerCreator.name = brandConfig.ownerName;
-            }
-
-            const storedLikes = localStorage.getItem('blogverse_likes');
-            if (storedLikes) {
-                try { likedBlogIds = new Set(JSON.parse(storedLikes)); } catch(e) {}
-            }
-        }
-
-        function saveBlogs() {
-            localStorage.setItem('blogverse_blogs', JSON.stringify(blogs));
-        }
-
-        function saveCreators() {
-            localStorage.setItem('blogverse_creators', JSON.stringify(creators));
-        }
-
-        function saveLikes() {
-            localStorage.setItem('blogverse_likes', JSON.stringify(Array.from(likedBlogIds)));
-        }
-
-        function saveBrandConfig() {
-            localStorage.setItem('blogverse_brand_config', JSON.stringify(brandConfig));
+        function saveToLocalStorage() {
+            localStorage.setItem('bv_owner', appState.ownerName);
+            localStorage.setItem('bv_posts', JSON.stringify(appState.posts));
         }
 
         function updateBrandUI() {
-            document.title = `${brandConfig.appName} - Studio & Story Hub`;
-            
-            // Text Elements
-            document.querySelectorAll('.brand-text-app').forEach(el => el.innerText = brandConfig.appName);
-            document.querySelectorAll('.brand-text-owner').forEach(el => el.innerText = brandConfig.ownerName);
-            document.querySelectorAll('.brand-text-tagline').forEach(el => el.innerText = brandConfig.tagline);
-            
-            document.getElementById('brand-header-name').innerText = brandConfig.appName;
-            document.getElementById('brand-header-owner').innerText = `Owned & Managed by ${brandConfig.ownerName}`;
-            document.getElementById('brand-logo-icon').innerText = brandConfig.logoText || 'B';
-            
-            document.getElementById('brand-footer-name').innerText = brandConfig.appName;
-            document.getElementById('brand-footer-icon').innerText = brandConfig.logoText || 'B';
-            document.getElementById('brand-footer-tagline').innerText = `“${brandConfig.tagline}” — Powered by ${brandConfig.ownerName}.`;
-            document.getElementById('brand-footer-copyright').innerText = `All Rights Reserved © ${brandConfig.copyrightYear} ${brandConfig.ownerName} / ${brandConfig.appName}.`;
-            document.getElementById('rights-modal-statement-text').innerText = brandConfig.licenseTerms;
-
-            // Form Fields in Settings Modal
-            document.getElementById('setting-owner-name').value = brandConfig.ownerName;
-            document.getElementById('setting-app-name').value = brandConfig.appName;
-            document.getElementById('setting-tagline').value = brandConfig.tagline;
-            document.getElementById('setting-copyright-year').value = brandConfig.copyrightYear;
-            document.getElementById('setting-logo-text').value = brandConfig.logoText;
-            document.getElementById('setting-license-terms').value = brandConfig.licenseTerms;
+            const owner = appState.ownerName;
+            document.getElementById('heroOwnerName').innerText = owner;
+            document.getElementById('sidebarOwnerName').innerText = owner;
+            document.getElementById('profileOwnerName').innerText = owner;
+            document.getElementById('editorOwnerDisplay').innerText = owner;
+            document.getElementById('footerOwnerName').innerText = owner;
+            document.getElementById('modalOwnerDisplay').innerText = owner;
+            document.getElementById('ownerNameInput').value = owner;
+            document.getElementById('copyrightInput').value = `© 2026 ${owner}. All rights reserved.`;
+            document.getElementById('footerCopyrightText').innerText = `© 2026 ${owner}. All rights reserved. Your thoughts. Your creativity. Your story.`;
         }
 
-        function handleSaveBrandSettings(e) {
-            e.preventDefault();
-            brandConfig.ownerName = document.getElementById('setting-owner-name').value.trim();
-            brandConfig.appName = document.getElementById('setting-app-name').value.trim();
-            brandConfig.tagline = document.getElementById('setting-tagline').value.trim();
-            brandConfig.copyrightYear = document.getElementById('setting-copyright-year').value.trim();
-            brandConfig.logoText = document.getElementById('setting-logo-text').value.trim();
-            brandConfig.licenseTerms = document.getElementById('setting-license-terms').value.trim();
-
-            const ownerCreator = creators.find(c => c.isOwner || c.id === 'c_owner');
-            if (ownerCreator) {
-                ownerCreator.name = brandConfig.ownerName;
-                saveCreators();
-            }
-
-            saveBrandConfig();
-            updateBrandUI();
-            renderNavigationUser();
-            closeModal('brand-settings-modal');
-            showToast('Brand & ownership settings updated successfully!');
-            
-            if (!document.getElementById('page-home').classList.contains('hidden')) renderHomePage();
-            if (!document.getElementById('page-dashboard').classList.contains('hidden')) renderDashboardPage();
-        }
-
-        function navigateTo(pageId) {
-            const pages = ['home', 'explore', 'community', 'editor', 'dashboard', 'profile'];
-            pages.forEach(p => {
-                const el = document.getElementById(`page-${p}`);
+        function navigateTo(viewId) {
+            ['home', 'explore', 'create', 'dashboard', 'profile', 'article'].forEach(v => {
+                const el = document.getElementById(`view-${v}`);
                 if (el) el.classList.add('hidden');
-
-                const navBtn = document.getElementById(`nav-link-${p}`);
+                
+                const navBtn = document.getElementById(`nav-${v}`);
                 if (navBtn) {
-                    navBtn.className = p === pageId 
-                        ? "px-3.5 py-2 rounded-xl transition text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 font-semibold"
-                        : "px-3.5 py-2 rounded-xl transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium";
+                    navBtn.className = "nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900";
                 }
             });
 
-            const activePage = document.getElementById(`page-${pageId}`);
-            if (activePage) activePage.classList.remove('hidden');
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${viewId}`);
+            if (activeNav) {
+                activeNav.className = "nav-btn px-3 py-2 rounded-xl text-sm font-semibold text-emerald-400 bg-emerald-500/10";
+            }
 
-            if (pageId === 'home') renderHomePage();
-            if (pageId === 'explore') renderExplorePage();
-            if (pageId === 'community') renderCommunityPage();
-            if (pageId === 'dashboard') renderDashboardPage();
-            if (pageId === 'profile') renderProfilePage();
-
+            if (viewId === 'explore') renderExploreView();
+            if (viewId === 'profile') renderProfileArticles();
+            if (viewId === 'dashboard') updateDashboardStats();
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            lucide.createIcons();
         }
 
-        function renderNavigationUser() {
-            const container = document.getElementById('auth-user-button-container');
+        function renderCategoryPills() {
+            const container = document.getElementById('categoryPills');
             container.innerHTML = `
-                <button onclick="openModal('auth-modal')" class="flex items-center gap-2 p-1 pl-2 pr-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-2xl transition border border-slate-200 dark:border-slate-700">
-                    <img src="${currentUser.avatar}" class="w-7 h-7 rounded-full object-cover border border-blue-500">
-                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 hidden sm:inline">${escapeHtml(currentUser.name.split(' ')[0])}</span>
+                <button onclick="filterCategory('All')" class="px-4 py-1.5 rounded-full text-xs font-bold transition ${appState.activeCategory === 'All' ? 'bg-emerald-500 text-slate-950' : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'}">
+                    All Topics
                 </button>
-            `;
-            document.getElementById('current-user-comment-avatar').src = currentUser.avatar;
-            document.getElementById('auth-name').value = currentUser.name;
-            document.getElementById('auth-handle').value = currentUser.handle;
-            document.getElementById('auth-bio').value = currentUser.bio;
-            document.getElementById('auth-avatar').value = currentUser.avatar;
-        }
-
-        function renderHomePage() {
-            const categories = ['Technology', 'Stories', 'Poetry', 'Travel', 'Life', 'Education', 'Business', 'Creativity'];
-            const pillsContainer = document.getElementById('home-category-pills');
-            pillsContainer.innerHTML = categories.map(cat => `
-                <button onclick="filterCategoryFromHome('${cat}')" class="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 rounded-2xl text-xs font-semibold whitespace-nowrap text-slate-700 dark:text-slate-300 transition shadow-sm">
+            ` + CATEGORIES.map(cat => `
+                <button onclick="filterCategory('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${appState.activeCategory === cat ? 'bg-emerald-500 text-slate-950' : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'}">
                     ${cat}
                 </button>
             `).join('');
-
-            const published = blogs.filter(b => b.status === 'published');
-            const sortedByPopular = [...published].sort((a,b) => b.likes - a.likes);
-            document.getElementById('trending-blogs-container').innerHTML = sortedByPopular.slice(0, 3).map((blog, idx) => createBlogCardHtml(blog, idx + 1)).join('');
-
-            renderLatestPostsFeed();
         }
 
-        function renderLatestPostsFeed() {
-            const container = document.getElementById('latest-blogs-container');
-            const published = blogs.filter(b => b.status === 'published');
-
-            if (currentFeedLayout === 'grid') {
-                container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
-                container.innerHTML = published.map(blog => createBlogCardHtml(blog)).join('');
-            } else {
-                container.className = "space-y-4";
-                container.innerHTML = published.map(blog => createBlogListRowHtml(blog)).join('');
-            }
-            lucide.createIcons();
+        function filterCategory(cat) {
+            appState.activeCategory = cat;
+            renderCategoryPills();
+            renderHomeFeed();
         }
 
-        function setFeedLayout(layout) {
-            currentFeedLayout = layout;
-            document.getElementById('btn-layout-grid').className = layout === 'grid' 
-                ? "p-1.5 rounded-lg text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-800 shadow-sm" 
-                : "p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white";
-            document.getElementById('btn-layout-list').className = layout === 'list' 
-                ? "p-1.5 rounded-lg text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-800 shadow-sm" 
-                : "p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white";
-            renderLatestPostsFeed();
-        }
+        function renderHomeFeed() {
+            const filtered = appState.activeCategory === 'All' 
+                ? appState.posts 
+                : appState.posts.filter(p => p.category === appState.activeCategory);
 
-        function filterCategoryFromHome(category) {
-            document.getElementById('explore-category').value = category;
-            navigateTo('explore');
-        }
+            document.getElementById('postCountBadge').innerText = `${filtered.length} posts available`;
+            document.getElementById('ownerPostCount').innerText = appState.posts.filter(p => p.author === appState.ownerName).length;
 
-        function createBlogCardHtml(blog, rank = null) {
-            const author = creators.find(c => c.id === blog.authorId) || currentUser;
-            const isLiked = likedBlogIds.has(blog.id);
-
-            return `
-                <div onclick="openBlogDetail('${blog.id}')" class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer relative">
-                    ${rank ? `<span class="absolute top-3 left-3 bg-slate-950/80 backdrop-blur text-white text-[11px] font-black px-2.5 py-1 rounded-full border border-white/20 z-10">#${rank} Trending</span>` : ''}
-                    
-                    <div>
-                        <div class="h-48 w-full overflow-hidden relative bg-slate-100 dark:bg-slate-800">
-                            <img src="${blog.coverUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <div class="p-5 space-y-3">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="px-2.5 py-0.5 rounded-md font-bold uppercase tracking-wide bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 text-[10px]">
-                                    ${blog.category}
-                                </span>
-                                <span class="text-slate-400 text-[11px]">${blog.readTime}</span>
-                            </div>
-                            <h3 class="font-bold text-base text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition line-clamp-2 leading-snug">
-                                ${escapeHtml(blog.title)}
-                            </h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                                ${escapeHtml(blog.subtitle || '')}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="p-5 pt-0 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/60 mt-3 pt-3">
-                        <div class="flex items-center gap-2">
-                            <img src="${author.avatar}" class="w-6 h-6 rounded-full object-cover">
-                            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[100px]">${escapeHtml(author.name)}</span>
-                            ${author.isOwner ? `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-500" title="Platform Owner"></i>` : ''}
-                        </div>
-                        <div class="flex items-center gap-3 text-xs text-slate-400">
-                            <span class="flex items-center gap-1 ${isLiked ? 'text-rose-500 font-bold' : ''}">
-                                <i data-lucide="heart" class="w-3.5 h-3.5 ${isLiked ? 'fill-rose-500' : ''}"></i> ${blog.likes}
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <i data-lucide="message-square" class="w-3.5 h-3.5"></i> ${blog.comments ? blog.comments.length : 0}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function createBlogListRowHtml(blog) {
-            const author = creators.find(c => c.id === blog.authorId) || currentUser;
-            return `
-                <div onclick="openBlogDetail('${blog.id}')" class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-md transition cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-4 flex-1">
-                        <img src="${blog.coverUrl}" class="w-16 h-16 rounded-xl object-cover">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">${blog.category}</span>
-                                ${blog.watermarkEnabled ? `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">Watermarked</span>` : ''}
-                            </div>
-                            <h4 class="font-bold text-sm text-slate-900 dark:text-white hover:text-blue-600 transition">${escapeHtml(blog.title)}</h4>
-                            <p class="text-xs text-slate-400">By ${author.name} • ${blog.createdAt}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4 text-xs text-slate-400 self-end sm:self-center">
-                        <span class="flex items-center gap-1"><i data-lucide="heart" class="w-3.5 h-3.5"></i> ${blog.likes}</span>
-                        <span class="flex items-center gap-1"><i data-lucide="message-square" class="w-3.5 h-3.5"></i> ${blog.comments ? blog.comments.length : 0}</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderExplorePage() {
-            const search = document.getElementById('explore-search').value.toLowerCase().trim();
-            const category = document.getElementById('explore-category').value;
-            const sort = document.getElementById('explore-sort').value;
-
-            let filtered = blogs.filter(b => b.status === 'published');
-
-            if (search) {
-                filtered = filtered.filter(b => 
-                    b.title.toLowerCase().includes(search) || 
-                    b.category.toLowerCase().includes(search) ||
-                    (b.tags && b.tags.some(t => t.toLowerCase().includes(search)))
-                );
-            }
-
-            if (category !== 'ALL') {
-                filtered = filtered.filter(b => b.category === category);
-            }
-
-            if (sort === 'popular') filtered.sort((a,b) => b.likes - a.likes);
-            if (sort === 'views') filtered.sort((a,b) => b.views - a.views);
-
-            const container = document.getElementById('explore-results-container');
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 text-sm">No stories found matching your filter criteria.</div>`;
-            } else {
-                container.innerHTML = filtered.map(blog => createBlogCardHtml(blog)).join('');
-            }
-            lucide.createIcons();
-        }
-
-        function handleGlobalSearch(query) {
-            document.getElementById('explore-search').value = query;
-            navigateTo('explore');
-        }
-
-        function renderCommunityPage() {
-            const container = document.getElementById('community-creators-grid');
-            container.innerHTML = creators.map(creator => {
-                const isFollowing = followedCreatorIds.has(creator.id);
-                return `
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-4 shadow-sm relative">
-                        ${creator.isOwner ? `<span class="absolute top-4 right-4 text-[10px] font-black px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">Platform Owner</span>` : ''}
-                        
-                        <div class="flex items-start gap-4">
-                            <img src="${creator.avatar}" class="w-14 h-14 rounded-full object-cover border-2 border-blue-500/20">
-                            <div>
-                                <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-1.5">
-                                    ${escapeHtml(creator.name)}
-                                    ${creator.isOwner ? `<i data-lucide="shield-check" class="w-4 h-4 text-blue-500"></i>` : ''}
-                                </h3>
-                                <span class="text-xs text-blue-600 dark:text-blue-400 font-semibold">${creator.handle}</span>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">${escapeHtml(creator.bio)}</p>
+            // Render Featured Post
+            const featured = filtered.find(p => p.featured) || filtered[0];
+            const featuredContainer = document.getElementById('featuredPostContainer');
+            if (featured) {
+                featuredContainer.innerHTML = `
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-slate-700 transition cursor-pointer" onclick="openArticle(${featured.id})">
+                        <div class="h-64 sm:h-80 w-full overflow-hidden relative">
+                            <img src="${featured.cover}" alt="${featured.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div class="absolute top-4 left-4 bg-emerald-500 text-slate-950 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                                Featured • ${featured.category}
                             </div>
                         </div>
-                        
-                        <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3">
-                            <span class="text-xs font-bold text-slate-400">${creator.followers} Followers</span>
-                            ${!creator.isOwner ? `
-                                <button onclick="toggleFollowCreator('${creator.id}')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${isFollowing ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300' : 'bg-blue-600 hover:bg-blue-700 text-white'}">
-                                    ${isFollowing ? 'Following' : 'Follow'}
-                                </button>
-                            ` : `<span class="text-xs text-slate-400 italic">Verified Owner</span>`}
+                        <div class="p-6 space-y-3">
+                            <div class="flex items-center gap-3 text-xs text-slate-400">
+                                <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-user text-[10px] mr-1"></i> ${featured.author}</span>
+                                <span>•</span>
+                                <span>${featured.date}</span>
+                            </div>
+                            <h2 class="text-2xl font-black text-white hover:text-emerald-400 transition">${featured.title}</h2>
+                            <p class="text-slate-300 text-sm leading-relaxed">${featured.excerpt}</p>
+                            <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs text-slate-400">
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-heart text-rose-500"></i> ${featured.likes} Likes</span>
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-comment text-teal-400"></i> ${featured.comments.length} Comments</span>
+                                <span class="text-emerald-400 font-bold">Read Article <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                            </div>
                         </div>
                     </div>
                 `;
-            }).join('');
-            lucide.createIcons();
-        }
-
-        function toggleFollowCreator(id) {
-            if (followedCreatorIds.has(id)) {
-                followedCreatorIds.delete(id);
-                showToast('Unfollowed author');
             } else {
-                followedCreatorIds.add(id);
-                showToast('Following author updates!');
+                featuredContainer.innerHTML = '';
             }
-            renderHomePage();
-            renderCommunityPage();
-        }
 
-        function renderStockPresets() {
-            const container = document.getElementById('stock-cover-presets');
-            container.innerHTML = STOCK_COVERS.map(url => `
-                <img src="${url}" onclick="selectStockCover('${url}')" class="w-14 h-10 rounded-lg object-cover cursor-pointer hover:opacity-80 border border-slate-200 dark:border-slate-700 flex-shrink-0">
+            // Render Latest Posts
+            const latestContainer = document.getElementById('latestPostsContainer');
+            const remaining = filtered.filter(p => p !== featured);
+            if (remaining.length === 0 && !featured) {
+                latestContainer.innerHTML = `<p class="text-slate-500 text-sm italic">No posts found in this category.</p>`;
+                return;
+            }
+
+            latestContainer.innerHTML = remaining.map(post => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row gap-5 hover:border-slate-700 transition cursor-pointer" onclick="openArticle(${post.id})">
+                    <img src="${post.cover}" class="w-full sm:w-40 h-32 object-cover rounded-xl">
+                    <div class="flex-1 space-y-2">
+                        <div class="flex items-center justify-between text-xs text-slate-400">
+                            <span class="text-emerald-400 font-semibold">${post.category}</span>
+                            <span>${post.date}</span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg hover:text-emerald-400 transition">${post.title}</h3>
+                        <p class="text-slate-300 text-xs line-clamp-2">${post.excerpt}</p>
+                        <div class="flex items-center justify-between pt-2 text-xs text-slate-400">
+                            <span><i class="fa-solid fa-user text-[10px] mr-1"></i> ${post.author}</span>
+                            <span class="flex items-center gap-3">
+                                <span><i class="fa-solid fa-heart text-rose-500 mr-1"></i> ${post.likes}</span>
+                                <span><i class="fa-solid fa-comment text-teal-400 mr-1"></i> ${post.comments.length}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Featured Creators
+            document.getElementById('featuredCreatorsContainer').innerHTML = appState.creators.map(c => `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-800 text-emerald-400 font-bold text-xs flex items-center justify-center border border-slate-700">
+                            ${c.avatar}
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">${c.name}</h4>
+                            <p class="text-[10px] text-slate-400">${c.role}</p>
+                        </div>
+                    </div>
+                    <button class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 rounded-lg transition">Follow</button>
+                </div>
             `).join('');
         }
 
-        function selectStockCover(url) {
-            document.getElementById('editor-cover-url').value = url;
-            previewCoverImage(url);
+        function openArticle(id) {
+            const post = appState.posts.find(p => p.id === id);
+            if (!post) return;
+
+            const detail = document.getElementById('articleDetailContent');
+            detail.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                        <span>${post.category}</span> • <span>${post.date}</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl font-black text-white leading-tight">${post.title}</h1>
+                    <div class="flex items-center gap-3 pb-4 border-b border-slate-800">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-sm">
+                            MN
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-white">${post.author}</p>
+                            <p class="text-[11px] text-emerald-400 font-semibold">Verified Author & Owner</p>
+                        </div>
+                    </div>
+                    <img src="${post.cover}" class="w-full h-72 sm:h-96 object-cover rounded-2xl">
+                    <div class="text-slate-200 leading-relaxed space-y-4 text-base pt-4">
+                        ${post.content}
+                    </div>
+                    
+                    <!-- Community Interactions -->
+                    <div class="pt-8 border-t border-slate-800 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <button onclick="likePost(${post.id})" class="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 font-bold text-xs rounded-xl transition flex items-center gap-2">
+                                <i class="fa-solid fa-heart"></i> Like (${post.likes})
+                            </button>
+                            <span class="text-xs text-slate-400"><i class="fa-solid fa-shield-check text-emerald-400"></i> Copyright Registered to MOHIT NANDAGHAYE</span>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div class="space-y-4 pt-4">
+                            <h3 class="text-lg font-bold text-white">Community Discussion (${post.comments.length})</h3>
+                            <div class="flex gap-2">
+                                <input type="text" id="commentInput" placeholder="Write a constructive comment..." class="flex-1 px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
+                                <button onclick="addComment(${post.id})" class="px-4 py-2 bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl hover:bg-emerald-600 transition">Comment</button>
+                            </div>
+                            <div class="space-y-3 pt-2">
+                                ${post.comments.map(c => `
+                                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-1">
+                                        <p class="text-xs font-bold text-white">${c.author}</p>
+                                        <p class="text-xs text-slate-300">${c.text}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            navigateTo('article');
         }
 
-        function previewCoverImage(url) {
-            const container = document.getElementById('cover-preview-container');
-            const img = document.getElementById('cover-preview-img');
-            if (url) {
-                img.src = url;
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
+        function likePost(id) {
+            const post = appState.posts.find(p => p.id === id);
+            if (post) {
+                post.likes++;
+                saveToLocalStorage();
+                openArticle(id);
+            }
+        }
+
+        function addComment(id) {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const post = appState.posts.find(p => p.id === id);
+            if (post) {
+                post.comments.push({ author: "Community Member", text: text });
+                saveToLocalStorage();
+                openArticle(id);
             }
         }
 
@@ -1237,403 +774,130 @@
             document.execCommand(cmd, false, value);
         }
 
-        function insertCodeBlock() {
-            const code = prompt("Paste your code block here:");
-            if (code) {
-                document.execCommand('insertHTML', false, `<pre class="bg-slate-900 text-blue-300 p-3 rounded-xl text-xs font-mono my-2 overflow-x-auto"><code>${escapeHtml(code)}</code></pre>`);
-            }
-        }
+        function publishArticle() {
+            const title = document.getElementById('postTitleInput').value.trim();
+            const category = document.getElementById('postCategoryInput').value;
+            const cover = document.getElementById('postCoverInput').value.trim() || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80";
+            const content = document.getElementById('postContentInput').innerHTML.trim();
 
-        function updateWordCount() {
-            const text = document.getElementById('editor-content').innerText.trim();
-            const words = text ? text.split(/\s+/).length : 0;
-            const readTime = Math.max(1, Math.ceil(words / 200));
-
-            document.getElementById('editor-word-count').innerText = `${words} words`;
-            document.getElementById('editor-read-time').innerText = `~${readTime} min read`;
-        }
-
-        function publishBlog() {
-            saveBlogWithStatus('published');
-        }
-
-        function saveBlogDraft() {
-            saveBlogWithStatus('draft');
-        }
-
-        function saveBlogWithStatus(status) {
-            const id = document.getElementById('editor-post-id').value || 'b_' + Date.now();
-            const title = document.getElementById('editor-title').value.trim();
-            const subtitle = document.getElementById('editor-subtitle').value.trim();
-            const category = document.getElementById('editor-category').value;
-            const tags = document.getElementById('editor-tags').value.split(',').map(t => t.trim()).filter(Boolean);
-            const coverUrl = document.getElementById('editor-cover-url').value || STOCK_COVERS[0];
-            const body = document.getElementById('editor-content').innerHTML;
-            const watermarkEnabled = document.getElementById('editor-watermark-check').checked;
-
-            if (!title) {
-                showToast('Please enter an article title!', 'error');
+            if (!title || !content) {
+                alert("Please provide both an article title and content.");
                 return;
             }
 
-            const text = document.getElementById('editor-content').innerText.trim();
-            const words = text ? text.split(/\s+/).length : 0;
-            const readTime = `${Math.max(1, Math.ceil(words / 200))} min read`;
-
-            const existingIdx = blogs.findIndex(b => b.id === id);
-            const blogObject = {
-                id,
-                title,
-                subtitle,
-                category,
-                tags,
-                coverUrl,
-                body,
-                authorId: currentUser.id,
-                status,
-                readTime,
-                watermarkEnabled,
-                createdAt: new Date().toISOString().slice(0, 10),
-                views: existingIdx >= 0 ? blogs[existingIdx].views : 0,
-                likes: existingIdx >= 0 ? blogs[existingIdx].likes : 0,
-                comments: existingIdx >= 0 ? blogs[existingIdx].comments : []
+            const newPost = {
+                id: Date.now(),
+                title: title,
+                category: category,
+                author: appState.ownerName,
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                cover: cover,
+                excerpt: content.replace(/<[^>]*>?/gm, '').substring(0, 120) + "...",
+                content: content,
+                likes: 0,
+                comments: [],
+                featured: false
             };
 
-            if (existingIdx >= 0) {
-                blogs[existingIdx] = blogObject;
-            } else {
-                blogs.unshift(blogObject);
-            }
+            appState.posts.unshift(newPost);
+            saveToLocalStorage();
 
-            saveBlogs();
-            showToast(status === 'published' ? 'Article published to platform!' : 'Draft saved in Studio!');
-            
-            // Reset form
-            document.getElementById('editor-form').reset();
-            document.getElementById('editor-post-id').value = '';
-            document.getElementById('editor-content').innerHTML = '<p>Begin writing your story here...</p>';
-            previewCoverImage('');
+            // Reset Form
+            document.getElementById('postTitleInput').value = '';
+            document.getElementById('postCoverInput').value = '';
+            document.getElementById('postContentInput').innerHTML = 'Write your creative ideas, thoughts, or story here...';
 
-            navigateTo('dashboard');
+            renderHomeFeed();
+            navigateTo('home');
         }
 
-        function renderDashboardPage() {
-            const userBlogs = blogs.filter(b => b.authorId === currentUser.id);
-            const totalPosts = userBlogs.length;
-            const totalViews = userBlogs.reduce((acc, b) => acc + (b.views || 0), 0);
-            const totalLikes = userBlogs.reduce((acc, b) => acc + (b.likes || 0), 0);
-            const totalComments = userBlogs.reduce((acc, b) => acc + (b.comments ? b.comments.length : 0), 0);
-
-            const statsGrid = document.getElementById('dashboard-stats-grid');
-            statsGrid.innerHTML = `
-                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-                    <span class="text-slate-400 text-[11px] block font-semibold">Total Posts</span>
-                    <span class="text-2xl font-black text-slate-900 dark:text-white mt-1 block">${totalPosts}</span>
-                </div>
-                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-                    <span class="text-slate-400 text-[11px] block font-semibold">Total Views</span>
-                    <span class="text-2xl font-black text-blue-600 dark:text-blue-400 mt-1 block">${totalViews.toLocaleString()}</span>
-                </div>
-                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-                    <span class="text-slate-400 text-[11px] block font-semibold">Total Likes</span>
-                    <span class="text-2xl font-black text-rose-500 mt-1 block">${totalLikes}</span>
-                </div>
-                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-                    <span class="text-slate-400 text-[11px] block font-semibold">Comments</span>
-                    <span class="text-2xl font-black text-purple-500 mt-1 block">${totalComments}</span>
-                </div>
-                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 col-span-2 md:col-span-1">
-                    <span class="text-slate-400 text-[11px] block font-semibold">Followers</span>
-                    <span class="text-2xl font-black text-emerald-500 mt-1 block">${currentUser.followers}</span>
-                </div>
-            `;
-
-            const tableBody = document.getElementById('dashboard-posts-table');
-            if (userBlogs.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400">No articles drafted yet. Click "New Post" to start writing!</td></tr>`;
-                return;
-            }
-
-            tableBody.innerHTML = userBlogs.map(blog => `
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                    <td class="p-4 font-bold text-slate-900 dark:text-white">${escapeHtml(blog.title)}</td>
-                    <td class="p-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300">${blog.category}</span></td>
-                    <td class="p-4"><span class="capitalize font-semibold text-xs ${blog.status === 'published' ? 'text-emerald-500' : 'text-amber-500'}">${blog.status}</span></td>
-                    <td class="p-4 text-slate-500">${blog.views || 0}</td>
-                    <td class="p-4 text-slate-500">${blog.likes || 0}</td>
-                    <td class="p-4 text-right space-x-2">
-                        <button onclick="editBlog('${blog.id}')" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-blue-600 rounded-lg" title="Edit"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-                        <button onclick="deleteBlog('${blog.id}')" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-rose-500 rounded-lg" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-            lucide.createIcons();
+        function saveDraftArticle() {
+            alert("Draft article saved locally.");
         }
 
-        function editBlog(id) {
-            const blog = blogs.find(b => b.id === id);
-            if (!blog) return;
+        function renderExploreView() {
+            const search = (document.getElementById('exploreSearchInput')?.value || '').toLowerCase();
+            const filtered = appState.posts.filter(p => 
+                p.title.toLowerCase().includes(search) || 
+                p.category.toLowerCase().includes(search) ||
+                p.author.toLowerCase().includes(search)
+            );
 
-            document.getElementById('editor-post-id').value = blog.id;
-            document.getElementById('editor-title').value = blog.title;
-            document.getElementById('editor-subtitle').value = blog.subtitle || '';
-            document.getElementById('editor-category').value = blog.category;
-            document.getElementById('editor-tags').value = (blog.tags || []).join(', ');
-            document.getElementById('editor-cover-url').value = blog.coverUrl;
-            document.getElementById('editor-content').innerHTML = blog.body;
-            document.getElementById('editor-watermark-check').checked = !!blog.watermarkEnabled;
-            previewCoverImage(blog.coverUrl);
-
-            document.getElementById('editor-heading').innerText = 'Edit Article';
-            navigateTo('editor');
-        }
-
-        function deleteBlog(id) {
-            if (confirm("Are you sure you want to delete this post permanently?")) {
-                blogs = blogs.filter(b => b.id !== id);
-                saveBlogs();
-                renderDashboardPage();
-                showToast('Article removed');
-            }
-        }
-
-        function renderProfilePage() {
-            const header = document.getElementById('profile-card-header');
-            header.innerHTML = `
-                <img src="${currentUser.avatar}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-blue-500/20">
-                <div class="flex-1 space-y-2 text-center sm:text-left">
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 justify-between">
-                        <div>
-                            <div class="flex items-center justify-center sm:justify-start gap-1.5">
-                                <h2 class="text-2xl font-black text-slate-900 dark:text-white">${escapeHtml(currentUser.name)}</h2>
-                                ${currentUser.isOwner ? `<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">Verified Rights Holder</span>` : ''}
-                            </div>
-                            <span class="text-xs text-blue-600 dark:text-blue-400 font-bold">${currentUser.handle}</span>
+            const container = document.getElementById('exploreResultsContainer');
+            container.innerHTML = filtered.map(post => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition cursor-pointer" onclick="openArticle(${post.id})">
+                    <img src="${post.cover}" class="w-full h-40 object-cover">
+                    <div class="p-5 space-y-2">
+                        <span class="text-xs font-bold text-emerald-400">${post.category}</span>
+                        <h3 class="font-bold text-white text-base hover:text-emerald-400 transition">${post.title}</h3>
+                        <p class="text-xs text-slate-400 line-clamp-2">${post.excerpt}</p>
+                        <div class="pt-2 flex justify-between text-[11px] text-slate-500">
+                            <span>By ${post.author}</span>
+                            <span>${post.date}</span>
                         </div>
-                        <button onclick="openModal('auth-modal')" class="px-4 py-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-xs font-semibold self-center sm:self-auto">
-                            Edit Profile
-                        </button>
                     </div>
-                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xl">${escapeHtml(currentUser.bio)}</p>
-                    <div class="flex items-center justify-center sm:justify-start gap-4 pt-2 text-xs font-bold text-slate-400">
-                        <span>${currentUser.followers} Followers</span>
-                        <span>•</span>
-                        <span>${blogs.filter(b => b.authorId === currentUser.id).length} Stories Published</span>
-                    </div>
-                </div>
-            `;
-
-            switchProfileTab(activeProfileTab);
-        }
-
-        function switchProfileTab(tab) {
-            activeProfileTab = tab;
-            document.getElementById('profile-tab-published').className = tab === 'published' 
-                ? "pb-3 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400" 
-                : "pb-3 hover:text-slate-900 dark:hover:text-white";
-            document.getElementById('profile-tab-liked').className = tab === 'liked' 
-                ? "pb-3 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400" 
-                : "pb-3 hover:text-slate-900 dark:hover:text-white";
-
-            const container = document.getElementById('profile-posts-grid');
-            let feed = [];
-
-            if (tab === 'published') {
-                feed = blogs.filter(b => b.authorId === currentUser.id && b.status === 'published');
-            } else {
-                feed = blogs.filter(b => likedBlogIds.has(b.id));
-            }
-
-            if (feed.length === 0) {
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 text-sm">No articles in this tab.</div>`;
-            } else {
-                container.innerHTML = feed.map(blog => createBlogCardHtml(blog)).join('');
-            }
-            lucide.createIcons();
-        }
-
-        function openBlogDetail(id) {
-            const blog = blogs.find(b => b.id === id);
-            if (!blog) return;
-
-            activeBlogDetailId = id;
-            blog.views = (blog.views || 0) + 1;
-            saveBlogs();
-
-            const author = creators.find(c => c.id === blog.authorId) || currentUser;
-
-            document.getElementById('modal-blog-category').innerText = blog.category;
-            document.getElementById('modal-blog-readtime').innerText = blog.readTime;
-            document.getElementById('modal-blog-title').innerText = blog.title;
-            document.getElementById('modal-blog-subtitle').innerText = blog.subtitle || '';
-            document.getElementById('modal-blog-cover').src = blog.coverUrl;
-            document.getElementById('modal-blog-body').innerHTML = blog.body;
-            document.getElementById('modal-author-avatar').src = author.avatar;
-            document.getElementById('modal-author-name').innerText = author.name;
-            document.getElementById('modal-blog-date').innerText = blog.createdAt;
-
-            // Watermark Toggle inside post modal
-            const watermarkBox = document.getElementById('modal-watermark-box');
-            if (blog.watermarkEnabled || author.isOwner) {
-                watermarkBox.classList.remove('hidden');
-            } else {
-                watermarkBox.classList.add('hidden');
-            }
-
-            // Likes
-            document.getElementById('modal-like-count').innerText = blog.likes;
-            const likeBtn = document.getElementById('modal-like-btn');
-            const isLiked = likedBlogIds.has(blog.id);
-            likeBtn.onclick = () => toggleLikePost(blog.id);
-            likeBtn.className = `flex items-center gap-1.5 px-4 py-2 rounded-xl border font-bold text-xs transition ${isLiked ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-950/40 dark:border-rose-900' : 'border-slate-200 dark:border-slate-800 text-slate-600'}`;
-
-            // Follow Button
-            const followBtn = document.getElementById('modal-follow-btn');
-            if (author.isOwner) {
-                followBtn.classList.add('hidden');
-            } else {
-                followBtn.classList.remove('hidden');
-                const isFollowing = followedCreatorIds.has(author.id);
-                followBtn.innerText = isFollowing ? 'Following' : 'Follow Author';
-                followBtn.onclick = () => {
-                    toggleFollowCreator(author.id);
-                    followBtn.innerText = followedCreatorIds.has(author.id) ? 'Following' : 'Follow Author';
-                };
-            }
-
-            renderCommentsList(blog);
-            openModal('post-detail-modal');
-            lucide.createIcons();
-        }
-
-        function toggleLikePost(id) {
-            const blog = blogs.find(b => b.id === id);
-            if (!blog) return;
-
-            if (likedBlogIds.has(id)) {
-                likedBlogIds.delete(id);
-                blog.likes = Math.max(0, blog.likes - 1);
-            } else {
-                likedBlogIds.add(id);
-                blog.likes += 1;
-            }
-
-            saveLikes();
-            saveBlogs();
-            openBlogDetail(id);
-            renderHomePage();
-        }
-
-        function renderCommentsList(blog) {
-            const list = document.getElementById('modal-comments-list');
-            const count = document.getElementById('modal-comment-count');
-            const comments = blog.comments || [];
-
-            count.innerText = comments.length;
-
-            if (comments.length === 0) {
-                list.innerHTML = `<p class="text-xs text-slate-400 py-2">No comments yet. Be the first to start the discussion!</p>`;
-                return;
-            }
-
-            list.innerHTML = comments.map(c => `
-                <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl space-y-1">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <img src="${c.avatar}" class="w-5 h-5 rounded-full object-cover">
-                            <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${escapeHtml(c.author)}</span>
-                        </div>
-                        <span class="text-[10px] text-slate-400">${c.date || 'Just now'}</span>
-                    </div>
-                    <p class="text-xs text-slate-600 dark:text-slate-300 pl-7">${escapeHtml(c.text)}</p>
                 </div>
             `).join('');
         }
 
-        function submitComment() {
-            const text = document.getElementById('comment-input').value.trim();
-            if (!text || !activeBlogDetailId) return;
-
-            const blog = blogs.find(b => b.id === activeBlogDetailId);
-            if (!blog) return;
-
-            if (!blog.comments) blog.comments = [];
-            blog.comments.unshift({
-                id: 'cm_' + Date.now(),
-                author: currentUser.name,
-                avatar: currentUser.avatar,
-                text,
-                date: 'Just now'
-            });
-
-            saveBlogs();
-            document.getElementById('comment-input').value = '';
-            renderCommentsList(blog);
-            showToast('Comment submitted!');
+        function renderProfileArticles() {
+            const ownerPosts = appState.posts.filter(p => p.author === appState.ownerName);
+            const container = document.getElementById('ownerArticlesContainer');
+            container.innerHTML = ownerPosts.map(post => `
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2 cursor-pointer" onclick="openArticle(${post.id})">
+                    <span class="text-xs font-bold text-emerald-400">${post.category}</span>
+                    <h3 class="font-bold text-white text-base">${post.title}</h3>
+                    <p class="text-xs text-slate-400 line-clamp-2">${post.excerpt}</p>
+                </div>
+            `).join('');
         }
 
-        function sharePost() {
-            navigator.clipboard.writeText(window.location.href);
-            showToast('Article link copied to clipboard!');
+        function updateDashboardStats() {
+            document.getElementById('statTotalPosts').innerText = appState.posts.length;
+            const totalLikes = appState.posts.reduce((a, b) => a + b.likes, 0);
+            document.getElementById('statTotalLikes').innerText = totalLikes;
         }
 
-        function exportPlatformData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
-                brandConfig,
-                blogs,
-                creators
-            }, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `${brandConfig.appName.toLowerCase().replace(/\s+/g, '_')}_backup.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            showToast('Exported platform JSON data!');
+        function toggleFollowOwner() {
+            appState.isFollowingOwner = !appState.isFollowingOwner;
+            const btn = document.getElementById('followOwnerBtn');
+            if (appState.isFollowingOwner) {
+                btn.className = "w-full py-2 bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition";
+                btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Following MOHIT`;
+                appState.followersCount++;
+            } else {
+                btn.className = "w-full py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl transition";
+                btn.innerHTML = `<i class="fa-solid fa-user-plus mr-1"></i> Follow MOHIT`;
+                appState.followersCount--;
+            }
+            document.getElementById('ownerFollowerCount').innerText = appState.followersCount.toLocaleString();
         }
 
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            currentUser.name = document.getElementById('auth-name').value;
-            currentUser.handle = document.getElementById('auth-handle').value;
-            currentUser.bio = document.getElementById('auth-bio').value;
-            currentUser.avatar = document.getElementById('auth-avatar').value;
+        function openRightsModal() {
+            document.getElementById('rightsModal').classList.remove('hidden');
+        }
 
-            if (currentUser.isOwner) {
-                brandConfig.ownerName = currentUser.name;
-                saveBrandConfig();
+        function closeRightsModal() {
+            document.getElementById('rightsModal').classList.add('hidden');
+        }
+
+        function saveBrandSettings() {
+            const newOwner = document.getElementById('ownerNameInput').value.trim();
+            if (newOwner) {
+                appState.ownerName = newOwner;
+                saveToLocalStorage();
                 updateBrandUI();
+                closeRightsModal();
             }
-
-            renderNavigationUser();
-            closeModal('auth-modal');
-            showToast('Profile details updated!');
         }
 
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        function showToast(msg) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = "bg-slate-900 text-white px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-2xl border border-slate-800 pointer-events-auto flex items-center gap-2";
-            toast.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> ${msg}`;
-            container.appendChild(toast);
-            lucide.createIcons();
-
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        function handleGlobalSearch(e) {
+            if (e.key === 'Enter') {
+                const term = e.target.value;
+                navigateTo('explore');
+                document.getElementById('exploreSearchInput').value = term;
+                renderExploreView();
+            }
         }
     </script>
 </body>
