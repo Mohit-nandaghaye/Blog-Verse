@@ -123,14 +123,13 @@
         document.getElementById('year').innerText = new Date().getFullYear();
         const OWNER_NAME = "MOHIT NANDAGHAYE";
 
-        // Step 1 ki Firebase config values yahan daalein
         const firebaseConfig = {
             apiKey: "AIzaSyBRe5ja_JmKkZwlXjRY0UmBEgwdLeM8vNw",
-  authDomain: "blogverse-f45bf.firebaseapp.com",
-  projectId: "blogverse-f45bf",
-  storageBucket: "blogverse-f45bf.firebasestorage.app",
-  messagingSenderId: "903299334786",
-  appId: "1:903299334786:web:cba3a6f203db7504106a9b",
+            authDomain: "blogverse-f45bf.firebaseapp.com",
+            projectId: "blogverse-f45bf",
+            storageBucket: "blogverse-f45bf.firebasestorage.app",
+            messagingSenderId: "903299334786",
+            appId: "1:903299334786:web:cba3a6f203db7504106a9b",
         };
 
         // Initialize Firebase
@@ -157,6 +156,10 @@
 
             articlesGrid.innerHTML = snapshot.docs.map(doc => {
                 const art = doc.data();
+                const docId = doc.id;
+                const likes = art.likes || [];
+                const isLiked = currentUser && likes.includes(currentUser.uid);
+
                 return `
                     <div class="bg-slate-800/50 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 transition flex flex-col justify-between">
                         <div>
@@ -167,9 +170,34 @@
                             <h4 class="text-lg font-bold text-slate-100 mb-2">${art.title}</h4>
                             <p class="text-slate-400 text-sm leading-relaxed mb-4">${art.excerpt}</p>
                         </div>
-                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                            <span>By <strong class="text-slate-200">${art.author}</strong></span>
-                            <span class="text-emerald-400 font-semibold cursor-pointer">Read Article →</span>
+                        <div>
+                            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                                <span>By <strong class="text-slate-200">${art.author}</strong></span>
+                                <div class="flex items-center space-x-4">
+                                    <!-- Like Button -->
+                                    <button onclick="handleLike('${docId}')" class="flex items-center space-x-1 ${isLiked ? 'text-rose-500 font-bold' : 'hover:text-rose-400'} transition">
+                                        <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart text-sm"></i>
+                                        <span>${likes.length}</span>
+                                    </button>
+                                    <!-- Comment Toggle Button -->
+                                    <button onclick="toggleComments('${docId}')" class="flex items-center space-x-1 hover:text-emerald-400 transition">
+                                        <i class="fa-regular fa-comment text-sm"></i>
+                                        <span id="comment-count-${docId}">Comments</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Comment Section (Hidden by default) -->
+                            <div id="comments-section-${docId}" class="hidden mt-4 pt-4 border-t border-slate-700/50 space-y-3">
+                                <div id="comments-list-${docId}" class="space-y-2 max-h-40 overflow-y-auto text-xs pr-1">
+                                    <p class="text-slate-500">Loading comments...</p>
+                                </div>
+                                
+                                <form onsubmit="handleAddComment(event, '${docId}')" class="flex gap-2 mt-2">
+                                    <input type="text" id="comment-input-${docId}" placeholder="Write a comment..." required class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                                    <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs transition">Post</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -229,6 +257,7 @@
                 category: category,
                 excerpt: excerpt,
                 author: authorName,
+                likes: [],
                 date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
@@ -238,6 +267,91 @@
             btn.innerText = "Publish Now";
             btn.disabled = false;
             toggleEditor(false);
+        }
+
+        // Like / Unlike Handler
+        async function handleLike(articleId) {
+            if (!currentUser) {
+                openAuthModal('login');
+                return;
+            }
+
+            const docRef = db.collection("articles").doc(articleId);
+            const doc = await docRef.get();
+
+            if (doc.exists) {
+                const likes = doc.data().likes || [];
+                const userId = currentUser.uid;
+
+                if (likes.includes(userId)) {
+                    await docRef.update({
+                        likes: firebase.firestore.FieldValue.arrayRemove(userId)
+                    });
+                } else {
+                    await docRef.update({
+                        likes: firebase.firestore.FieldValue.arrayUnion(userId)
+                    });
+                }
+            }
+        }
+
+        // Toggle Comment Box & Listen to Real-time Comments
+        function toggleComments(articleId) {
+            const commentSec = document.getElementById(`comments-section-${articleId}`);
+            commentSec.classList.toggle('hidden');
+
+            if (!commentSec.classList.contains('hidden')) {
+                db.collection("articles").doc(articleId).collection("comments")
+                  .orderBy("timestamp", "asc")
+                  .onSnapshot(snapshot => {
+                      const list = document.getElementById(`comments-list-${articleId}`);
+                      const countSpan = document.getElementById(`comment-count-${articleId}`);
+
+                      countSpan.innerText = `${snapshot.size} Comments`;
+
+                      if (snapshot.empty) {
+                          list.innerHTML = `<p class="text-slate-500 italic">No comments yet. Write the first one!</p>`;
+                          return;
+                      }
+
+                      list.innerHTML = snapshot.docs.map(cDoc => {
+                          const c = cDoc.data();
+                          return `
+                              <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                                  <div class="flex justify-between items-center text-[10px] text-slate-400 font-medium mb-1">
+                                      <span class="text-emerald-400">${c.author}</span>
+                                      <span>${c.date}</span>
+                                  </div>
+                                  <p class="text-slate-200 text-xs">${c.text}</p>
+                              </div>
+                          `;
+                      }).join('');
+                  });
+            }
+        }
+
+        // Add Comment Handler
+        async function handleAddComment(e, articleId) {
+            e.preventDefault();
+            if (!currentUser) {
+                openAuthModal('login');
+                return;
+            }
+
+            const input = document.getElementById(`comment-input-${articleId}`);
+            const commentText = input.value.trim();
+            if (!commentText) return;
+
+            const authorName = currentUser.displayName || currentUser.email.split('@')[0];
+
+            await db.collection("articles").doc(articleId).collection("comments").add({
+                text: commentText,
+                author: authorName,
+                date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            input.value = '';
         }
 
         function openAuthModal(mode) {
