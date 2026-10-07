@@ -46,10 +46,9 @@
 
             <!-- Nav Links -->
             <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
-                <a href="#" class="text-blue-400 font-bold border-b-2 border-blue-500 pb-0.5">Home</a>
-                <a href="#" class="hover:text-white transition">Explore</a>
-                <a href="#" class="hover:text-white transition">Categories</a>
-                <a href="#" class="hover:text-white transition">About</a>
+                <a href="#" onclick="filterCategory('All')" class="text-blue-400 font-bold border-b-2 border-blue-500 pb-0.5">Home</a>
+                <a href="#articles-grid" class="hover:text-white transition">Explore</a>
+                <a href="#category-section" class="hover:text-white transition">Categories</a>
             </nav>
 
             <!-- Search Bar -->
@@ -72,6 +71,7 @@
                     <i class="fa-solid fa-bookmark text-amber-400"></i> Saved
                 </button>
 
+                <!-- User Profile / Auth Area -->
                 <div class="flex items-center space-x-2" id="auth-nav-area"></div>
             </div>
         </div>
@@ -84,7 +84,6 @@
         <section class="bg-gradient-to-br from-slate-900 via-slate-800/90 to-blue-950/40 border border-slate-800 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 
-                <!-- Hero Left Content -->
                 <div class="lg:col-span-7 space-y-5">
                     <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">IDEAS. STORIES. PERSPECTIVES. ONE UNIVERSE.</p>
                     <h2 class="text-4xl md:text-5xl font-black text-white leading-tight">
@@ -101,14 +100,8 @@
                             Explore Blogs <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
                     </div>
-                    <div class="flex flex-wrap items-center gap-6 pt-4 text-xs text-slate-400 border-t border-slate-800/80">
-                        <span class="flex items-center gap-1.5"><i class="fa-regular fa-lightbulb text-blue-400"></i> Share Your Ideas</span>
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-users text-blue-400"></i> Discover New Perspectives</span>
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-globe text-blue-400"></i> Connect With Writers</span>
-                    </div>
                 </div>
 
-                <!-- Hero Right Graphic Card -->
                 <div class="lg:col-span-5 relative">
                     <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 shadow-2xl relative z-10 backdrop-blur-sm">
                         <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80" alt="Workspace" class="rounded-xl w-full h-56 object-cover mb-3">
@@ -117,14 +110,13 @@
                             <span class="text-blue-400 font-bold">MOHIT NANDAGHAYE</span>
                         </div>
                     </div>
-                    <div class="absolute -top-4 -right-4 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl"></div>
                 </div>
 
             </div>
         </section>
 
         <!-- Category Pills Filter Bar -->
-        <section class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs font-semibold">
+        <section id="category-section" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs font-semibold">
             <button onclick="filterCategory('All')" class="category-pill active bg-blue-600 text-white px-4 py-2 rounded-xl border border-blue-500 flex items-center gap-1.5 whitespace-nowrap shadow-sm">
                 <i class="fa-solid fa-border-all"></i> All
             </button>
@@ -142,18 +134,6 @@
             </button>
             <button onclick="filterCategory('Travel')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
                 <i class="fa-solid fa-plane text-emerald-400"></i> Travel
-            </button>
-            <button onclick="filterCategory('Mental Health')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-                <i class="fa-solid fa-brain text-teal-400"></i> Mental Health
-            </button>
-            <button onclick="filterCategory('Food')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-                <i class="fa-solid fa-utensils text-orange-400"></i> Food
-            </button>
-            <button onclick="filterCategory('Business')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-                <i class="fa-solid fa-chart-line text-purple-400"></i> Business
-            </button>
-            <button onclick="filterCategory('Creativity')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-                <i class="fa-solid fa-palette text-pink-400"></i> Creativity
             </button>
         </section>
 
@@ -176,10 +156,6 @@
                             <option value="Career">Career</option>
                             <option value="Life Style">Life Style</option>
                             <option value="Travel">Travel</option>
-                            <option value="Mental Health">Mental Health</option>
-                            <option value="Food">Food</option>
-                            <option value="Business">Business</option>
-                            <option value="Creativity">Creativity</option>
                         </select>
                     </div>
                     <div>
@@ -189,7 +165,7 @@
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Content / Story</label>
-                    <textarea id="post-content" rows="4" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm" placeholder="Write your full article here..."></textarea>
+                    <textarea id="post-content" rows="6" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm" placeholder="Write your full article story here..."></textarea>
                 </div>
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="toggleEditor(false)" class="px-4 py-2 text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</button>
@@ -198,95 +174,10 @@
             </form>
         </section>
 
-        <!-- Featured Posts Section -->
-        <section class="space-y-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h3 class="text-xl font-bold flex items-center gap-2 text-white">
-                        <i class="fa-solid fa-star text-amber-400"></i> Featured Posts
-                    </h3>
-                    <p class="text-xs text-slate-400">Handpicked stories from our community</p>
-                </div>
-                <a href="#articles-grid" class="text-xs font-bold text-blue-400 hover:underline flex items-center gap-1">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
-            </div>
-
-            <!-- Featured Cards Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="featured-posts-grid">
-                <!-- Dynamically populated or static demo cards -->
-                <div class="bg-slate-800/60 card-bg border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition flex flex-col justify-between">
-                    <div>
-                        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Travel" class="w-full h-36 object-cover">
-                        <div class="p-4 space-y-2">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-rose-400 bg-rose-950/60 px-2.5 py-0.5 rounded-md border border-rose-800/50">Life Style</span>
-                            <h4 class="font-bold text-sm text-slate-100 line-clamp-2">Small Steps, Big Changes: My Journey to a Better Me</h4>
-                        </div>
-                    </div>
-                    <div class="px-4 pb-4 pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                        <span class="font-semibold text-slate-300">Aarav Sharma</span>
-                        <div class="flex items-center space-x-3 text-[11px]">
-                            <span><i class="fa-regular fa-heart"></i> 1.2K</span>
-                            <span><i class="fa-regular fa-comment"></i> 48</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-800/60 card-bg border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition flex flex-col justify-between">
-                    <div>
-                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" alt="Tech" class="w-full h-36 object-cover">
-                        <div class="p-4 space-y-2">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-950/60 px-2.5 py-0.5 rounded-md border border-blue-800/50">Technology</span>
-                            <h4 class="font-bold text-sm text-slate-100 line-clamp-2">How AI is Changing the Way We Learn in 2026</h4>
-                        </div>
-                    </div>
-                    <div class="px-4 pb-4 pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                        <span class="font-semibold text-slate-300">Neha Verma</span>
-                        <div class="flex items-center space-x-3 text-[11px]">
-                            <span><i class="fa-regular fa-heart"></i> 856</span>
-                            <span><i class="fa-regular fa-comment"></i> 32</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-800/60 card-bg border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition flex flex-col justify-between">
-                    <div>
-                        <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=600&q=80" alt="Travel" class="w-full h-36 object-cover">
-                        <div class="p-4 space-y-2">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50">Travel</span>
-                            <h4 class="font-bold text-sm text-slate-100 line-clamp-2">10 Hidden Gems in India You Must Visit</h4>
-                        </div>
-                    </div>
-                    <div class="px-4 pb-4 pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                        <span class="font-semibold text-slate-300">Rohan Mehta</span>
-                        <div class="flex items-center space-x-3 text-[11px]">
-                            <span><i class="fa-regular fa-heart"></i> 732</span>
-                            <span><i class="fa-regular fa-comment"></i> 28</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-800/60 card-bg border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition flex flex-col justify-between">
-                    <div>
-                        <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80" alt="Education" class="w-full h-36 object-cover">
-                        <div class="p-4 space-y-2">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-950/60 px-2.5 py-0.5 rounded-md border border-indigo-800/50">Education</span>
-                            <h4 class="font-bold text-sm text-slate-100 line-clamp-2">How I Stay Consistent While Studying</h4>
-                        </div>
-                    </div>
-                    <div class="px-4 pb-4 pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                        <span class="font-semibold text-slate-300">Sneha Patil</span>
-                        <div class="flex items-center space-x-3 text-[11px]">
-                            <span><i class="fa-regular fa-heart"></i> 1.1K</span>
-                            <span><i class="fa-regular fa-comment"></i> 41</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Main Feed Grid with Sidebar -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
             
-            <!-- Left Main Feed (8 Columns) -->
+            <!-- Left Feed (8 Cols) -->
             <section class="lg:col-span-8 space-y-6">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                     <div>
@@ -294,11 +185,6 @@
                             <i class="fa-solid fa-newspaper text-blue-400"></i> Latest Posts
                         </h3>
                         <p class="text-xs text-slate-400">Fresh ideas from our amazing writers</p>
-                    </div>
-                    <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700 text-xs">
-                        <button onclick="sortFeed('latest')" id="tab-latest" class="px-3 py-1 rounded-lg font-bold bg-blue-600 text-white">Latest</button>
-                        <button onclick="sortFeed('popular')" id="tab-popular" class="px-3 py-1 rounded-lg font-bold text-slate-400 hover:text-white">Popular</button>
-                        <button onclick="sortFeed('trending')" id="tab-trending" class="px-3 py-1 rounded-lg font-bold text-slate-400 hover:text-white">Trending</button>
                     </div>
                 </div>
 
@@ -308,75 +194,36 @@
                 </div>
             </section>
 
-            <!-- Right Sidebar (4 Columns) -->
+            <!-- Right Sidebar (4 Cols) -->
             <aside class="lg:col-span-4 space-y-6">
-                
                 <!-- Trending Authors Widget -->
                 <div class="bg-slate-800/50 card-bg border border-slate-800 rounded-2xl p-5 space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                            <i class="fa-solid fa-fire text-amber-500"></i> Trending Authors
-                        </h4>
-                        <a href="#" class="text-xs text-blue-400 hover:underline font-semibold">View All →</a>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between text-xs">
-                            <div class="flex items-center space-x-3">
-                                <span class="font-bold text-amber-400">1</span>
-                                <div class="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-500/50 flex items-center justify-center font-bold text-blue-400">AS</div>
-                                <div>
-                                    <p class="font-bold text-slate-200">Aarav Sharma</p>
-                                    <p class="text-[10px] text-slate-400">24 Posts</p>
-                                </div>
-                            </div>
-                            <button onclick="alert('Followed Aarav Sharma!')" class="bg-slate-800 hover:bg-blue-600 hover:text-white border border-slate-700 text-slate-300 text-[11px] font-bold px-3 py-1 rounded-full transition">Follow</button>
-                        </div>
-
-                        <div class="flex items-center justify-between text-xs">
-                            <div class="flex items-center space-x-3">
-                                <span class="font-bold text-slate-400">2</span>
-                                <div class="w-8 h-8 rounded-full bg-emerald-600/30 border border-emerald-500/50 flex items-center justify-center font-bold text-emerald-400">NV</div>
-                                <div>
-                                    <p class="font-bold text-slate-200">Neha Verma</p>
-                                    <p class="text-[10px] text-slate-400">18 Posts</p>
-                                </div>
-                            </div>
-                            <button onclick="alert('Followed Neha Verma!')" class="bg-slate-800 hover:bg-blue-600 hover:text-white border border-slate-700 text-slate-300 text-[11px] font-bold px-3 py-1 rounded-full transition">Follow</button>
-                        </div>
-
-                        <div class="flex items-center justify-between text-xs">
-                            <div class="flex items-center space-x-3">
-                                <span class="font-bold text-slate-400">3</span>
-                                <div class="w-8 h-8 rounded-full bg-purple-600/30 border border-purple-500/50 flex items-center justify-center font-bold text-purple-400">RM</div>
-                                <div>
-                                    <p class="font-bold text-slate-200">Rohan Mehta</p>
-                                    <p class="text-[10px] text-slate-400">16 Posts</p>
-                                </div>
-                            </div>
-                            <button onclick="alert('Followed Rohan Mehta!')" class="bg-slate-800 hover:bg-blue-600 hover:text-white border border-slate-700 text-slate-300 text-[11px] font-bold px-3 py-1 rounded-full transition">Follow</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Newsletter Widget -->
-                <div class="bg-gradient-to-br from-blue-950/60 to-slate-800/80 border border-blue-500/30 rounded-2xl p-5 space-y-3">
                     <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                        <i class="fa-regular fa-paper-plane text-blue-400"></i> Stay Updated
+                        <i class="fa-solid fa-fire text-amber-500"></i> Trending Authors
                     </h4>
-                    <p class="text-xs text-slate-300 leading-relaxed">Get the latest blogs and updates directly in your inbox.</p>
-                    <form onsubmit="handleSubscribe(event)" class="space-y-2">
-                        <input type="email" required placeholder="Enter your email address" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-xl text-xs transition">Subscribe</button>
-                    </form>
+                    <div class="space-y-3" id="authors-list">
+                        <!-- Populated dynamically -->
+                    </div>
                 </div>
-
             </aside>
 
         </div>
 
     </main>
 
-    <!-- Login / Sign Up Modal -->
+    <!-- Full Article Reader Modal -->
+    <div id="article-reader-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 card-bg border border-slate-800 rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl relative my-8">
+            <button onclick="closeArticleModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modal-article-content" class="space-y-4">
+                <!-- Filled via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
     <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 card-bg border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100">
@@ -401,7 +248,7 @@
                     <label class="block text-xs text-slate-400 mb-1">Password</label>
                     <input type="password" id="auth-password" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm" placeholder="••••••••">
                 </div>
-                <p id="auth-error" class="text-xs text-red-400 hidden"></p>
+                <p id="auth-error" class="text-xs text-rose-400 hidden font-semibold bg-rose-950/50 p-2 rounded-lg border border-rose-800/50"></p>
                 <button type="submit" id="auth-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition mt-4 text-sm">Sign In</button>
             </form>
         </div>
@@ -413,7 +260,6 @@
 
     <script>
         document.getElementById('year').innerText = new Date().getFullYear();
-        const OWNER_NAME = "MOHIT NANDAGHAYE";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBRe5ja_JmKkZwlXjRY0UmBEgwdLeM8vNw",
@@ -433,7 +279,9 @@
         let showingBookmarksOnly = false;
         let selectedCategory = 'All';
         let searchQuery = '';
+        let userFollowingList = [];
         let savedBookmarkedIds = JSON.parse(localStorage.getItem('bv_bookmarks') || '[]');
+        let latestArticlesSnapshot = null;
 
         // Scroll Progress
         window.addEventListener('scroll', () => {
@@ -443,7 +291,6 @@
             document.getElementById('scroll-progress').style.width = scrolled + "%";
         });
 
-        // Theme Switcher
         function changeTheme(theme) {
             const body = document.getElementById('app-body');
             body.classList.remove('sepia-mode', 'light-mode');
@@ -451,16 +298,28 @@
             if (theme === 'light') body.classList.add('light-mode');
         }
 
-        // Auth Monitor
-        auth.onAuthStateChanged(user => {
+        // Auth Listener & Real-time Follow State Sync
+        auth.onAuthStateChanged(async user => {
             currentUser = user;
             renderNav();
+            if (currentUser) {
+                // Fetch followings persistent from Firestore
+                db.collection("users").doc(currentUser.uid).collection("following")
+                  .onSnapshot(snap => {
+                      userFollowingList = snap.docs.map(doc => doc.id);
+                      renderAuthorsList();
+                      renderArticles();
+                  });
+            } else {
+                userFollowingList = [];
+                renderAuthorsList();
+                renderArticles();
+            }
         });
 
         function calculateReadTime(text) {
             const words = text ? text.trim().split(/\s+/).length : 0;
-            const minutes = Math.ceil(words / 200);
-            return `${minutes} min read`;
+            return `${Math.ceil(words / 200)} min read`;
         }
 
         function toggleBookmark(docId) {
@@ -490,13 +349,6 @@
 
         function filterCategory(cat) {
             selectedCategory = cat;
-            document.querySelectorAll('.category-pill').forEach(btn => {
-                if (btn.innerText.includes(cat)) {
-                    btn.className = "category-pill active bg-blue-600 text-white px-4 py-2 rounded-xl border border-blue-500 flex items-center gap-1.5 whitespace-nowrap shadow-sm";
-                } else {
-                    btn.className = "category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap";
-                }
-            });
             renderArticles();
         }
 
@@ -505,8 +357,7 @@
             renderArticles();
         }
 
-        let latestArticlesSnapshot = null;
-
+        // Live Firestore Articles Listener
         db.collection("articles").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             latestArticlesSnapshot = snapshot;
             renderArticles();
@@ -515,7 +366,6 @@
         function renderArticles() {
             if (!latestArticlesSnapshot) return;
             const articlesGrid = document.getElementById('articles-grid');
-
             let docs = latestArticlesSnapshot.docs;
 
             if (showingBookmarksOnly) {
@@ -536,7 +386,7 @@
             }
 
             if (docs.length === 0) {
-                articlesGrid.innerHTML = `<p class="text-slate-400 text-sm py-4">${showingBookmarksOnly ? 'No saved articles found.' : 'No articles found. Be the first to publish one!'}</p>`;
+                articlesGrid.innerHTML = `<p class="text-slate-400 text-sm py-4">No articles found.</p>`;
                 return;
             }
 
@@ -544,7 +394,6 @@
                 const art = doc.data();
                 const docId = doc.id;
                 const likes = art.likes || [];
-                const reactions = art.reactions || { fire: 0, idea: 0, clap: 0 };
                 const isLiked = currentUser && likes.includes(currentUser.uid);
                 const isBookmarked = savedBookmarkedIds.includes(docId);
                 const readTime = calculateReadTime(art.excerpt || '');
@@ -552,7 +401,7 @@
 
                 return `
                     <div class="bg-slate-800/50 card-bg border border-slate-800 hover:border-slate-700 rounded-2xl p-4 transition flex flex-col md:flex-row gap-4 items-center">
-                        <img src="${coverImg}" alt="Post cover" class="w-full md:w-44 h-28 object-cover rounded-xl">
+                        <img src="${coverImg}" alt="Post cover" class="w-full md:w-44 h-28 object-cover rounded-xl cursor-pointer" onclick="openFullArticle('${docId}')">
                         <div class="flex-1 w-full space-y-2">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-2">
@@ -560,39 +409,26 @@
                                     <span class="text-[11px] text-slate-400"><i class="fa-regular fa-clock"></i> ${readTime}</span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <button onclick="toggleBookmark('${docId}')" class="text-slate-400 hover:text-amber-400 transition" title="Save Article">
+                                    <button onclick="toggleBookmark('${docId}')" class="text-slate-400 hover:text-amber-400 transition">
                                         <i class="${isBookmarked ? 'fa-solid text-amber-400' : 'fa-regular'} fa-bookmark"></i>
                                     </button>
                                     <span class="text-xs text-slate-500">${art.date}</span>
                                 </div>
                             </div>
 
-                            <h4 class="text-base font-bold text-slate-100 hover:text-blue-400 transition cursor-pointer">${art.title}</h4>
+                            <!-- Clickable Title to Expand Article -->
+                            <h4 onclick="openFullArticle('${docId}')" class="text-base font-bold text-slate-100 hover:text-blue-400 transition cursor-pointer">${art.title}</h4>
                             <p class="text-slate-400 text-xs leading-relaxed line-clamp-2">${art.excerpt}</p>
 
                             <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
                                 <span>By <strong class="text-slate-200">${art.author}</strong></span>
                                 <div class="flex items-center space-x-4">
-                                    <button onclick="handleLike('${docId}')" class="flex items-center space-x-1 ${isLiked ? 'text-rose-500 font-bold' : 'hover:text-rose-400'} transition">
+                                    <button onclick="openFullArticle('${docId}')" class="text-blue-400 font-bold hover:underline">Read Article →</button>
+                                    <button onclick="handleLike('${docId}')" class="flex items-center space-x-1 ${isLiked ? 'text-rose-500 font-bold' : 'hover:text-rose-400'}">
                                         <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart text-xs"></i>
                                         <span>${likes.length}</span>
                                     </button>
-                                    <button onclick="toggleComments('${docId}')" class="flex items-center space-x-1 hover:text-blue-400 transition">
-                                        <i class="fa-regular fa-comment text-xs"></i>
-                                        <span id="comment-count-${docId}">Comments</span>
-                                    </button>
                                 </div>
-                            </div>
-
-                            <!-- Comment Section -->
-                            <div id="comments-section-${docId}" class="hidden mt-3 pt-3 border-t border-slate-700/50 space-y-3">
-                                <div id="comments-list-${docId}" class="space-y-2 max-h-36 overflow-y-auto text-xs pr-1">
-                                    <p class="text-slate-500">Loading comments...</p>
-                                </div>
-                                <form onsubmit="handleAddComment(event, '${docId}')" class="flex gap-2 mt-2">
-                                    <input type="text" id="comment-input-${docId}" placeholder="Write a comment..." required class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
-                                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition">Post</button>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -600,25 +436,93 @@
             }).join('');
         }
 
-        async function handleReaction(articleId, reactionType) {
+        // Open Full Article Expand Modal
+        async function openFullArticle(docId) {
+            const modal = document.getElementById('article-reader-modal');
+            const content = document.getElementById('modal-article-content');
+            
+            content.innerHTML = `<p class="text-slate-400 text-center text-sm py-8">Loading story...</p>`;
+            modal.classList.remove('hidden');
+
+            const doc = await db.collection("articles").doc(docId).get();
+            if (doc.exists) {
+                const art = doc.data();
+                const coverImg = art.imageUrl || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80";
+
+                content.innerHTML = `
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider bg-blue-950/60 px-2.5 py-1 rounded-md border border-blue-800/50">${art.category}</span>
+                    <h2 class="text-2xl font-black text-white mt-2">${art.title}</h2>
+                    <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
+                        <span>By <strong class="text-slate-200">${art.author}</strong></span>
+                        <span>${art.date}</span>
+                    </div>
+                    <img src="${coverImg}" class="w-full h-64 object-cover rounded-2xl">
+                    <p class="text-slate-200 text-sm leading-relaxed whitespace-pre-line">${art.excerpt}</p>
+                `;
+            }
+        }
+
+        function closeArticleModal() {
+            document.getElementById('article-reader-modal').classList.add('hidden');
+        }
+
+        // Render Authors List & Follow/Unfollow State
+        const sampleAuthors = [
+            { id: "author_1", name: "Aarav Sharma", count: "24 Posts" },
+            { id: "author_2", name: "Neha Verma", count: "18 Posts" },
+            { id: "author_3", name: "Rohan Mehta", count: "16 Posts" }
+        ];
+
+        function renderAuthorsList() {
+            const list = document.getElementById('authors-list');
+            if (!list) return;
+
+            list.innerHTML = sampleAuthors.map(author => {
+                const isFollowing = userFollowingList.includes(author.id);
+                return `
+                    <div class="flex items-center justify-between text-xs">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-500/50 flex items-center justify-center font-bold text-blue-400">${author.name.charAt(0)}</div>
+                            <div>
+                                <p class="font-bold text-slate-200">${author.name}</p>
+                                <p class="text-[10px] text-slate-400">${author.count}</p>
+                            </div>
+                        </div>
+                        <button onclick="toggleFollowAuthor('${author.id}')" class="text-[11px] font-bold px-3 py-1 rounded-full transition ${isFollowing ? 'bg-slate-700 text-slate-300 border border-slate-600' : 'bg-blue-600 hover:bg-blue-500 text-white'}">
+                            ${isFollowing ? 'Unfollow' : 'Follow'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function toggleFollowAuthor(authorId) {
             if (!currentUser) {
                 openAuthModal('login');
                 return;
             }
-            const docRef = db.collection("articles").doc(articleId);
-            await docRef.update({
-                [`reactions.${reactionType}`]: firebase.firestore.FieldValue.increment(1)
-            });
+
+            const docRef = db.collection("users").doc(currentUser.uid).collection("following").doc(authorId);
+            const doc = await docRef.get();
+
+            if (doc.exists) {
+                await docRef.delete(); // Unfollow
+            } else {
+                await docRef.set({ followedAt: firebase.firestore.FieldValue.serverTimestamp() }); // Follow
+            }
         }
 
+        // Header User Navigation Display
         function renderNav() {
             const navArea = document.getElementById('auth-nav-area');
             if (currentUser) {
                 const displayName = currentUser.displayName || currentUser.email.split('@')[0];
                 navArea.innerHTML = `
                     <button onclick="toggleEditor(true)" class="text-xs bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2 rounded-lg transition"><i class="fa-solid fa-pen mr-1"></i> Write</button>
-                    <span class="text-xs font-medium text-slate-200 hidden sm:inline-block"><i class="fa-solid fa-user-circle text-blue-400"></i> ${displayName}</span>
-                    <button onclick="logout()" class="text-xs bg-slate-800 text-slate-400 hover:text-slate-200 px-3 py-2 rounded-lg border border-slate-700">Logout</button>
+                    <span class="text-xs font-semibold text-slate-200 bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-user text-blue-400 text-sm"></i> ${displayName}
+                    </span>
+                    <button onclick="logout()" class="text-xs bg-slate-800 text-slate-400 hover:text-white px-3 py-2 rounded-lg border border-slate-700">Logout</button>
                 `;
             } else {
                 navArea.innerHTML = `
@@ -666,8 +570,8 @@
                 excerpt: excerpt,
                 imageUrl: imageUrl,
                 author: authorName,
+                authorId: currentUser.uid,
                 likes: [],
-                reactions: { fire: 0, idea: 0, clap: 0 },
                 date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
@@ -690,84 +594,12 @@
 
             if (doc.exists) {
                 const likes = doc.data().likes || [];
-                const userId = currentUser.uid;
-
-                if (likes.includes(userId)) {
-                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayRemove(userId) });
+                if (likes.includes(currentUser.uid)) {
+                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) });
                 } else {
-                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayUnion(userId) });
+                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
                 }
             }
-        }
-
-        function toggleComments(articleId) {
-            const commentSec = document.getElementById(`comments-section-${articleId}`);
-            commentSec.classList.toggle('hidden');
-
-            if (!commentSec.classList.contains('hidden')) {
-                db.collection("articles").doc(articleId).collection("comments")
-                  .orderBy("timestamp", "asc")
-                  .onSnapshot(snapshot => {
-                      const list = document.getElementById(`comments-list-${articleId}`);
-                      const countSpan = document.getElementById(`comment-count-${articleId}`);
-
-                      countSpan.innerText = `${snapshot.size} Comments`;
-
-                      if (snapshot.empty) {
-                          list.innerHTML = `<p class="text-slate-500 italic">No comments yet. Write the first one!</p>`;
-                          return;
-                      }
-
-                      list.innerHTML = snapshot.docs.map(cDoc => {
-                          const c = cDoc.data();
-                          return `
-                              <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800">
-                                  <div class="flex justify-between items-center text-[10px] text-slate-400 font-medium mb-1">
-                                      <span class="text-blue-400">${c.author}</span>
-                                      <span>${c.date}</span>
-                                  </div>
-                                  <p class="text-slate-200 text-xs">${c.text}</p>
-                              </div>
-                          `;
-                      }).join('');
-                  });
-            }
-        }
-
-        async function handleAddComment(e, articleId) {
-            e.preventDefault();
-            if (!currentUser) {
-                openAuthModal('login');
-                return;
-            }
-
-            const input = document.getElementById(`comment-input-${articleId}`);
-            const commentText = input.value.trim();
-            if (!commentText) return;
-
-            const authorName = currentUser.displayName || currentUser.email.split('@')[0];
-
-            await db.collection("articles").doc(articleId).collection("comments").add({
-                text: commentText,
-                author: authorName,
-                date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            input.value = '';
-        }
-
-        function handleSubscribe(e) {
-            e.preventDefault();
-            alert("Thank you for subscribing to BlogVerse!");
-            e.target.reset();
-        }
-
-        function sortFeed(type) {
-            document.getElementById('tab-latest').className = type === 'latest' ? 'px-3 py-1 rounded-lg font-bold bg-blue-600 text-white' : 'px-3 py-1 rounded-lg font-bold text-slate-400 hover:text-white';
-            document.getElementById('tab-popular').className = type === 'popular' ? 'px-3 py-1 rounded-lg font-bold bg-blue-600 text-white' : 'px-3 py-1 rounded-lg font-bold text-slate-400 hover:text-white';
-            document.getElementById('tab-trending').className = type === 'trending' ? 'px-3 py-1 rounded-lg font-bold bg-blue-600 text-white' : 'px-3 py-1 rounded-lg font-bold text-slate-400 hover:text-white';
-            renderArticles();
         }
 
         function openAuthModal(mode) {
@@ -801,12 +633,17 @@
             }
         }
 
+        // Authentication with Strict Password Validation
         async function handleAuthSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
             const errBox = document.getElementById('auth-error');
+            const authBtn = document.getElementById('auth-btn');
+
             errBox.classList.add('hidden');
+            authBtn.innerText = "Verifying...";
+            authBtn.disabled = true;
 
             try {
                 if (currentAuthMode === 'signup') {
@@ -814,12 +651,16 @@
                     const res = await auth.createUserWithEmailAndPassword(email, password);
                     await res.user.updateProfile({ displayName: name });
                 } else {
+                    // Strict password check with Firebase Auth
                     await auth.signInWithEmailAndPassword(email, password);
                 }
                 closeAuthModal();
             } catch (err) {
                 errBox.innerText = err.message;
                 errBox.classList.remove('hidden');
+            } finally {
+                authBtn.innerText = currentAuthMode === 'signup' ? "Create Account" : "Sign In";
+                authBtn.disabled = false;
             }
         }
 
