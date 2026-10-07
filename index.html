@@ -182,7 +182,7 @@
                     </div>
                 </div>
 
-                <!-- Firestore Stats Bar -->
+                <!-- Stats Bar -->
                 <div class="border-t border-gray-800 bg-gray-900/50 px-6 py-4 grid grid-cols-3 divide-x divide-gray-800 text-center">
                     <div>
                         <span id="statArticlesCount" class="block text-xl font-bold text-white">0</span>
@@ -272,12 +272,24 @@
         </div>
     </div>
 
-    <!-- 2. AUTH MODAL (Login / Register) -->
+    <!-- 2. AUTH MODAL (Login / Register / Google Auth) -->
     <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-6">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex items-center justify-between border-b border-gray-800 pb-4">
                 <h3 id="authModalTitle" class="text-xl font-bold text-white">Sign In to BlogVerse</h3>
                 <button onclick="closeModal('authModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Quick Firebase Google Login Button -->
+            <button onclick="handleGoogleSignIn()" class="w-full py-2.5 px-4 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-medium rounded-xl transition flex items-center justify-center space-x-3 text-sm">
+                <i class="fa-brands fa-google text-red-400 text-base"></i>
+                <span>Continue with Google</span>
+            </button>
+
+            <div class="flex items-center space-x-3 text-xs text-gray-500 my-2">
+                <div class="flex-1 h-px bg-gray-800"></div>
+                <span>OR EMAIL</span>
+                <div class="flex-1 h-px bg-gray-800"></div>
             </div>
 
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
@@ -297,10 +309,6 @@
                     <p class="text-[11px] text-gray-500 mt-1">Must be at least 6 characters long.</p>
                 </div>
 
-                <p class="text-[11px] text-indigo-300/80 bg-indigo-950/40 p-2 rounded-lg border border-indigo-900/40">
-                    <i class="fa-solid fa-shield-halved mr-1 text-emerald-400"></i> Secure login enabled: Sign in with your registered Firebase email and password.
-                </p>
-
                 <div id="authError" class="hidden text-xs text-red-400 bg-red-950/50 p-2.5 rounded-lg border border-red-800"></div>
 
                 <button type="submit" id="authSubmitBtn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-600/30">
@@ -308,9 +316,15 @@
                 </button>
             </form>
 
-            <div class="text-center text-xs text-gray-400 border-t border-gray-800 pt-4">
-                <span id="authToggleText">Don't have an account?</span>
-                <button onclick="toggleAuthMode()" id="authToggleBtn" class="text-indigo-400 hover:underline font-semibold ml-1">Create one</button>
+            <div class="flex items-center justify-between text-xs text-gray-400 border-t border-gray-800 pt-4">
+                <div>
+                    <span id="authToggleText">Don't have an account?</span>
+                    <button onclick="toggleAuthMode()" id="authToggleBtn" class="text-indigo-400 hover:underline font-semibold ml-1">Create one</button>
+                </div>
+                <button onclick="handleDemoSignIn()" class="text-indigo-300 hover:text-white font-medium flex items-center space-x-1" title="Instant Guest Sign In">
+                    <i class="fa-solid fa-bolt text-amber-400"></i>
+                    <span>Quick Guest</span>
+                </button>
             </div>
         </div>
     </div>
@@ -325,14 +339,14 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-white">Connect Your Firebase Project</h3>
-                        <p class="text-xs text-indigo-400 font-mono">Project ID: blogverse-f45bf</p>
+                        <p class="text-xs text-indigo-400 font-mono">Optional Live Cloud Sync</p>
                     </div>
                 </div>
                 <button onclick="closeModal('firebaseConfigModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
             <p class="text-xs text-gray-300 leading-relaxed bg-indigo-950/40 p-3 rounded-xl border border-indigo-900/40">
-                Paste your Web App Config JSON from <b>Firebase Console &gt; Project Settings &gt; General &gt; Your apps</b> to connect live user registration:
+                To connect live multi-user cloud syncing, paste your Web App Config JSON from <b>Firebase Console &gt; Project Settings &gt; General</b> below:
             </p>
 
             <form onsubmit="saveCustomFirebaseConfig(event)" class="space-y-4">
@@ -340,16 +354,16 @@
                     <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Firebase Config JSON</label>
                     <textarea id="cfgJsonInput" rows="5" required placeholder='{
   "apiKey": "AIzaSy...",
-  "authDomain": "blogverse-f45bf.firebaseapp.com",
-  "projectId": "blogverse-f45bf",
-  "storageBucket": "blogverse-f45bf.firebasestorage.app",
+  "authDomain": "your-app.firebaseapp.com",
+  "projectId": "your-app-id",
+  "storageBucket": "your-app.appspot.com",
   "messagingSenderId": "...",
   "appId": "..."
 }' class="w-full px-4 py-2.5 bg-gray-950 border border-gray-700 rounded-xl text-xs font-mono text-gray-200 focus:border-indigo-500 focus:outline-none leading-relaxed"></textarea>
                 </div>
 
                 <div class="pt-2 flex items-center justify-between border-t border-gray-800">
-                    <button type="button" onclick="clearCustomFirebaseConfig()" class="text-xs text-red-400 hover:underline">Reset to Default</button>
+                    <button type="button" onclick="clearCustomFirebaseConfig()" class="text-xs text-red-400 hover:underline">Reset Config</button>
                     <div class="flex space-x-2">
                         <button type="button" onclick="closeModal('firebaseConfigModal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-full text-xs font-medium">Cancel</button>
                         <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-xs font-medium shadow-lg shadow-indigo-600/30">Save &amp; Reload App</button>
@@ -467,10 +481,11 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { 
         getAuth, 
-        signInAnonymously, 
         signInWithCustomToken, 
         createUserWithEmailAndPassword,
         signInWithEmailAndPassword,
+        GoogleAuthProvider,
+        signInWithPopup,
         onAuthStateChanged, 
         signOut 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -483,7 +498,6 @@
         addDoc, 
         deleteDoc, 
         collection, 
-        getDocs, 
         onSnapshot 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
@@ -510,14 +524,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
 
-    // Collection references using strict paths
+    // Collection references
     const getArticlesCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'articles');
     const getUsersCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'users');
     const getCommentsCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'comments');
     const getFollowsCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'follows');
 
-    let currentUser = null;
+    let simulatedUser = null;
     let currentUserProfile = null;
     let currentCategory = 'All';
     let currentAuthMode = 'login';
@@ -529,8 +544,31 @@
     let commentsData = [];
     let followsData = [];
 
+    // Local Storage persistence key for fallback state
+    const LOCAL_STORE_KEY = 'bv_local_state_v2';
+
+    function loadLocalState() {
+        try {
+            const raw = localStorage.getItem(LOCAL_STORE_KEY);
+            if (raw) return JSON.parse(raw);
+        } catch(e) {}
+        return null;
+    }
+
+    function saveLocalState() {
+        try {
+            const state = {
+                articles: articlesData,
+                users: usersData,
+                comments: commentsData,
+                follows: followsData
+            };
+            localStorage.setItem(LOCAL_STORE_KEY, JSON.stringify(state));
+        } catch(e) {}
+    }
+
     function getActiveUser() {
-        return auth.currentUser;
+        return auth.currentUser || simulatedUser;
     }
 
     function setTheme(theme) {
@@ -598,8 +636,9 @@
         try {
             await signOut(auth);
         } catch (e) {}
-        currentUser = null;
+        simulatedUser = null;
         currentUserProfile = null;
+        localStorage.removeItem('bv_simulated_user');
         updateAuthUI(false);
         showToast("Signed out successfully.", "info");
         navigateTo('feed');
@@ -617,99 +656,128 @@
         const savedTheme = localStorage.getItem('bv_theme') || 'dark';
         setTheme(savedTheme);
 
+        // Load saved simulated user if present
+        try {
+            const savedSim = localStorage.getItem('bv_simulated_user');
+            if (savedSim) {
+                simulatedUser = JSON.parse(savedSim);
+            }
+        } catch(e) {}
+
+        // Load cached state first
+        const localData = loadLocalState();
+        if (localData) {
+            articlesData = localData.articles || [];
+            usersData = localData.users || {};
+            commentsData = localData.comments || [];
+            followsData = localData.follows || [];
+        }
+
+        if (articlesData.length === 0) {
+            seedInitialArticlesLocal();
+        }
+
         try {
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 await signInWithCustomToken(auth, __initial_auth_token);
             }
-        } catch (err) {
-            console.warn("Auth initialization note:", err);
+        } catch (err) {}
+
+        if (simulatedUser) {
+            await fetchOrCreateUserProfile(simulatedUser);
+            updateAuthUI(true);
         }
 
         onAuthStateChanged(auth, async (user) => {
-            if (user && !user.isAnonymous) {
-                currentUser = user;
+            if (user) {
+                simulatedUser = null;
+                localStorage.removeItem('bv_simulated_user');
                 await fetchOrCreateUserProfile(user);
                 updateAuthUI(true);
-            } else {
-                currentUser = null;
+            } else if (!simulatedUser) {
                 currentUserProfile = null;
                 updateAuthUI(false);
             }
-            // Listen to real-time collections
-            subscribeToArticles();
-            subscribeToUsers();
-            subscribeToComments();
-            subscribeToFollows();
+            renderArticlesFeed();
         });
+
+        // Try subscribing to live Firestore
+        subscribeToArticles();
+        subscribeToUsers();
+        subscribeToComments();
+        subscribeToFollows();
     }
 
     async function fetchOrCreateUserProfile(user, customDisplayName = null) {
         if (!user) return;
-        const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
         
+        let existing = usersData[user.uid] || currentUserProfile;
+
+        // Try fetching user profile from Firestore
         try {
-            const snap = await getDoc(userDocRef);
-            if (snap.exists()) {
-                currentUserProfile = snap.data();
-                if (customDisplayName && currentUserProfile.displayName !== customDisplayName) {
-                    currentUserProfile.displayName = customDisplayName;
-                    await setDoc(userDocRef, { displayName: customDisplayName }, { merge: true });
-                }
-            } else {
-                currentUserProfile = {
-                    uid: user.uid,
-                    displayName: customDisplayName || user.displayName || (user.email ? user.email.split('@')[0] : `Author_${user.uid.substring(0, 5)}`),
-                    email: user.email || `${user.uid}@blogverse.dev`,
-                    avatarUrl: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80`,
-                    coverUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
-                    tagline: "Writer & Content Creator",
-                    bio: "Welcome to my BlogVerse space!",
-                    location: "Global",
-                    website: "",
-                    createdAt: Date.now()
-                };
-                await setDoc(userDocRef, currentUserProfile);
+            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            if (userDocSnap.exists()) {
+                existing = userDocSnap.data();
             }
-            if (currentUserProfile.avatarUrl) {
-                document.getElementById('navAvatar').src = currentUserProfile.avatarUrl;
-            }
-        } catch (e) {
-            console.error("Error managing user profile:", e);
+        } catch(e) {}
+
+        if (!existing) {
+            existing = {
+                uid: user.uid,
+                displayName: customDisplayName || user.displayName || (user.email ? user.email.split('@')[0] : `Author_${user.uid.substring(0, 5)}`),
+                email: user.email || `${user.uid}@blogverse.dev`,
+                avatarUrl: user.photoURL || `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80`,
+                coverUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
+                tagline: "Writer & Content Creator",
+                bio: "Welcome to my BlogVerse space!",
+                location: "Global",
+                website: "",
+                createdAt: Date.now()
+            };
+        } else if (customDisplayName && existing.displayName !== customDisplayName) {
+            existing.displayName = customDisplayName;
         }
+
+        currentUserProfile = existing;
+        usersData[user.uid] = existing;
+        saveLocalState();
+
+        if (currentUserProfile.avatarUrl) {
+            document.getElementById('navAvatar').src = currentUserProfile.avatarUrl;
+        }
+
+        // Save profile to Firestore
+        try {
+            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+            await setDoc(userDocRef, existing, { merge: true });
+        } catch(e) {}
     }
 
     function subscribeToArticles() {
-        onSnapshot(getArticlesCol(), (snapshot) => {
-            let list = [];
-            snapshot.forEach(docSnap => {
-                list.push({ id: docSnap.id, ...docSnap.data() });
-            });
+        try {
+            onSnapshot(getArticlesCol(), (snapshot) => {
+                let list = [];
+                snapshot.forEach(docSnap => {
+                    list.push({ id: docSnap.id, ...docSnap.data() });
+                });
 
-            // Seed initial articles if storage is fresh
-            if (list.length === 0 && getActiveUser()) {
-                seedInitialArticles();
-                return;
-            }
-
-            list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            articlesData = list;
-            renderArticlesFeed();
-
-            if (currentViewedAuthorId) {
-                renderAuthorProfile(currentViewedAuthorId);
-            }
-        }, (err) => {
-            console.error("Error reading articles stream:", err);
-        });
+                if (list.length > 0) {
+                    list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    articlesData = list;
+                    saveLocalState();
+                    renderArticlesFeed();
+                    if (currentViewedAuthorId) renderAuthorProfile(currentViewedAuthorId);
+                }
+            }, () => {});
+        } catch(e) {}
     }
 
-    async function seedInitialArticles() {
-        if (!getActiveUser()) return;
-
+    function seedInitialArticlesLocal() {
         const alexUid = 'author_alex_rivera';
         const sarahUid = 'author_sarah_chen';
 
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', alexUid), {
+        usersData[alexUid] = {
             uid: alexUid,
             displayName: 'Alex Rivera',
             avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
@@ -719,9 +787,9 @@
             location: 'Austin, TX',
             website: 'https://alexrivera.dev',
             createdAt: Date.now() - 86400000
-        });
+        };
 
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', sarahUid), {
+        usersData[sarahUid] = {
             uid: sarahUid,
             displayName: 'Sarah Chen',
             avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
@@ -731,74 +799,81 @@
             location: 'San Francisco, CA',
             website: 'https://sarahdesign.io',
             createdAt: Date.now()
-        });
-
-        const seed1 = {
-            title: 'The Future of Web Architecture: Micro-frontends & Beyond',
-            category: 'Tech',
-            imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-            content: `Modern web architecture is shifting rapidly towards modularity, decoupled services, and edge computing. As web applications grow in size and complexity, maintaining monolithic codebases becomes increasingly challenging.\n\nMicro-frontends allow engineering teams to break down massive single-page applications into smaller, independently deployable modules. By leveraging modern bundler features like Module Federation and dynamic imports, teams can iterate fast without risking application-wide regression.`,
-            authorId: alexUid,
-            authorName: 'Alex Rivera',
-            authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-            likes: [],
-            createdAt: Date.now() - 86400000
         };
 
-        const seed2 = {
-            title: 'Designing with Intent: Crafting Dark & Sepia Modes',
-            category: 'Design',
-            imageUrl: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
-            content: `Theme design is much more than converting white backgrounds into black. It requires deep attention to visual hierarchy, contrast ratios, and color temperature.\n\nSepia mode, for instance, provides a warm, paper-like reading experience that drastically reduces eye strain during long editorial sessions. Always test contrast dynamically to preserve legibility across varied device displays!`,
-            authorId: sarahUid,
-            authorName: 'Sarah Chen',
-            authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
-            likes: [],
-            createdAt: Date.now()
-        };
+        articlesData = [
+            {
+                id: 'art_seed_1',
+                title: 'The Future of Web Architecture: Micro-frontends & Beyond',
+                category: 'Tech',
+                imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+                content: `Modern web architecture is shifting rapidly towards modularity, decoupled services, and edge computing. As web applications grow in size and complexity, maintaining monolithic codebases becomes increasingly challenging.\n\nMicro-frontends allow engineering teams to break down massive single-page applications into smaller, independently deployable modules. By leveraging modern bundler features like Module Federation and dynamic imports, teams can iterate fast without risking application-wide regression.`,
+                authorId: alexUid,
+                authorName: 'Alex Rivera',
+                authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+                likes: [],
+                createdAt: Date.now() - 86400000
+            },
+            {
+                id: 'art_seed_2',
+                title: 'Designing with Intent: Crafting Dark & Sepia Modes',
+                category: 'Design',
+                imageUrl: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
+                content: `Theme design is much more than converting white backgrounds into black. It requires deep attention to visual hierarchy, contrast ratios, and color temperature.\n\nSepia mode, for instance, provides a warm, paper-like reading experience that drastically reduces eye strain during long editorial sessions. Always test contrast dynamically to preserve legibility across varied device displays!`,
+                authorId: sarahUid,
+                authorName: 'Sarah Chen',
+                authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+                likes: [],
+                createdAt: Date.now()
+            }
+        ];
 
-        await addDoc(getArticlesCol(), seed1);
-        await addDoc(getArticlesCol(), seed2);
+        saveLocalState();
     }
 
     function subscribeToUsers() {
-        onSnapshot(getUsersCol(), (snapshot) => {
-            const map = {};
-            snapshot.forEach(docSnap => {
-                map[docSnap.id] = docSnap.data();
-            });
-            usersData = map;
-            if (currentViewedAuthorId) {
-                renderAuthorProfile(currentViewedAuthorId);
-            }
-        }, (err) => console.error("Error reading users:", err));
+        try {
+            onSnapshot(getUsersCol(), (snapshot) => {
+                snapshot.forEach(docSnap => {
+                    usersData[docSnap.id] = docSnap.data();
+                });
+                saveLocalState();
+                if (currentViewedAuthorId) renderAuthorProfile(currentViewedAuthorId);
+            }, () => {});
+        } catch(e) {}
     }
 
     function subscribeToComments() {
-        onSnapshot(getCommentsCol(), (snapshot) => {
-            const list = [];
-            snapshot.forEach(docSnap => {
-                list.push({ id: docSnap.id, ...docSnap.data() });
-            });
-            list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            commentsData = list;
-            if (currentReaderArticleId) {
-                renderCommentsUI(currentReaderArticleId);
-            }
-        }, (err) => console.error("Error reading comments:", err));
+        try {
+            onSnapshot(getCommentsCol(), (snapshot) => {
+                let list = [];
+                snapshot.forEach(docSnap => {
+                    list.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                if (list.length > 0) {
+                    list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    commentsData = list;
+                    saveLocalState();
+                    if (currentReaderArticleId) renderCommentsUI(currentReaderArticleId);
+                }
+            }, () => {});
+        } catch(e) {}
     }
 
     function subscribeToFollows() {
-        onSnapshot(getFollowsCol(), (snapshot) => {
-            const list = [];
-            snapshot.forEach(docSnap => {
-                list.push({ id: docSnap.id, ...docSnap.data() });
-            });
-            followsData = list;
-            if (currentViewedAuthorId) {
-                renderAuthorProfile(currentViewedAuthorId);
-            }
-        }, (err) => console.error("Error reading follows:", err));
+        try {
+            onSnapshot(getFollowsCol(), (snapshot) => {
+                let list = [];
+                snapshot.forEach(docSnap => {
+                    list.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                if (list.length > 0) {
+                    followsData = list;
+                    saveLocalState();
+                    if (currentViewedAuthorId) renderAuthorProfile(currentViewedAuthorId);
+                }
+            }, () => {});
+        } catch(e) {}
     }
 
     function renderArticlesFeed() {
@@ -882,6 +957,7 @@
         if (!title || !content) return;
 
         const newArticle = {
+            id: 'art_' + Date.now(),
             title: title,
             category: category,
             imageUrl: imageUrl || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80",
@@ -893,15 +969,17 @@
             createdAt: Date.now()
         };
 
+        articlesData.unshift(newArticle);
+        saveLocalState();
+
         try {
             await addDoc(getArticlesCol(), newArticle);
-            closeModal('publishModal');
-            document.getElementById('publishForm').reset();
-            showToast("Article published successfully!", "success");
-            navigateTo('feed');
-        } catch (err) {
-            console.error("Error publishing article:", err);
-        }
+        } catch (err) {}
+
+        closeModal('publishModal');
+        document.getElementById('publishForm').reset();
+        showToast("Article published successfully!", "success");
+        renderArticlesFeed();
     }
 
     function openReaderModal(articleId) {
@@ -947,8 +1025,15 @@
             likes.push(myUid);
         }
 
-        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'articles', currentReaderArticleId);
-        await updateDoc(docRef, { likes: likes });
+        article.likes = likes;
+        document.getElementById('readerLikeCount').innerText = likes.length;
+        saveLocalState();
+        renderArticlesFeed();
+
+        try {
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'articles', currentReaderArticleId);
+            await updateDoc(docRef, { likes: likes });
+        } catch(e) {}
     }
 
     function renderCommentsUI(articleId) {
@@ -992,6 +1077,7 @@
         if (!text || !currentReaderArticleId) return;
 
         const newComment = {
+            id: 'cmt_' + Date.now(),
             articleId: currentReaderArticleId,
             userId: activeUser.uid,
             userName: currentUserProfile?.displayName || "Reader",
@@ -999,8 +1085,14 @@
             createdAt: Date.now()
         };
 
-        await addDoc(getCommentsCol(), newComment);
+        commentsData.unshift(newComment);
+        saveLocalState();
+        renderCommentsUI(currentReaderArticleId);
         input.value = '';
+
+        try {
+            await addDoc(getCommentsCol(), newComment);
+        } catch(e) {}
     }
 
     function renderAuthorProfile(authorUid) {
@@ -1094,15 +1186,26 @@
         const existingFollow = followsData.find(f => f.followerId === activeUser.uid && f.targetId === currentViewedAuthorId);
 
         if (existingFollow) {
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'follows', existingFollow.id);
-            await deleteDoc(docRef);
+            followsData = followsData.filter(f => f.id !== existingFollow.id);
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'follows', existingFollow.id);
+                await deleteDoc(docRef);
+            } catch(e) {}
         } else {
-            await addDoc(getFollowsCol(), {
+            const newFollow = {
+                id: 'flw_' + Date.now(),
                 followerId: activeUser.uid,
                 targetId: currentViewedAuthorId,
                 timestamp: Date.now()
-            });
+            };
+            followsData.push(newFollow);
+            try {
+                await addDoc(getFollowsCol(), newFollow);
+            } catch(e) {}
         }
+
+        saveLocalState();
+        renderAuthorProfile(currentViewedAuthorId);
     }
 
     function openEditProfileModal() {
@@ -1144,27 +1247,26 @@
             website: document.getElementById('editWebsite').value.trim()
         };
 
+        currentUserProfile = { ...currentUserProfile, ...updatedData };
+        usersData[activeUser.uid] = { ...(usersData[activeUser.uid] || {}), ...updatedData };
+        saveLocalState();
+        
+        if (updatedData.avatarUrl) {
+            document.getElementById('navAvatar').src = updatedData.avatarUrl;
+        }
+
         try {
             const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', activeUser.uid);
             await setDoc(userDocRef, updatedData, { merge: true });
-            
-            currentUserProfile = { ...currentUserProfile, ...updatedData };
-            usersData[activeUser.uid] = { ...(usersData[activeUser.uid] || {}), ...updatedData };
-            
-            if (updatedData.avatarUrl) {
-                document.getElementById('navAvatar').src = updatedData.avatarUrl;
-            }
-            
-            closeModal('editProfileModal');
-            showToast("Profile saved successfully!", "success");
-            
-            if (currentViewedAuthorId === activeUser.uid) {
-                renderAuthorProfile(activeUser.uid);
-            }
-            renderArticlesFeed();
-        } catch (err) {
-            console.error("Error saving profile:", err);
+        } catch (err) {}
+        
+        closeModal('editProfileModal');
+        showToast("Profile saved successfully!", "success");
+        
+        if (currentViewedAuthorId === activeUser.uid) {
+            renderAuthorProfile(activeUser.uid);
         }
+        renderArticlesFeed();
     }
 
     function updateAuthUI(isLoggedIn) {
@@ -1212,6 +1314,28 @@
         openAuthModal(currentAuthMode === 'login' ? 'register' : 'login');
     }
 
+    // Friendly Firebase Auth Error Formatter
+    function getFriendlyErrorMessage(error) {
+        if (!error) return "An unknown error occurred.";
+        const code = error.code || "";
+        switch (code) {
+            case 'auth/invalid-email':
+                return "Please enter a valid email address.";
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+            case 'auth/invalid-credential':
+                return "Invalid email or password. Please try again.";
+            case 'auth/email-already-in-use':
+                return "An account with this email already exists. Try signing in.";
+            case 'auth/weak-password':
+                return "Password should be at least 6 characters long.";
+            case 'auth/popup-closed-by-user':
+                return "Google sign-in popup was closed before completing.";
+            default:
+                return error.message || "Authentication error.";
+        }
+    }
+
     async function handleAuthSubmit(e) {
         e.preventDefault();
         const errDiv = document.getElementById('authError');
@@ -1224,59 +1348,94 @@
 
         if (!email || !password) return;
 
-        let user = null;
+        const isDemoKey = !userFirebaseConfig && firebaseConfig.apiKey === 'demo-key';
 
-        try {
-            if (currentAuthMode === 'register') {
-                try {
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    user = userCredential.user;
-                    showToast("Account created successfully!", "success");
-                } catch (fbErr) {
-                    console.error("Firebase Registration Error:", fbErr);
-                    if (fbErr.code === 'auth/email-already-in-use') {
-                        throw new Error("This email is already registered! Please sign in instead.");
-                    } else if (fbErr.code === 'auth/invalid-email') {
-                        throw new Error("Please enter a valid email address.");
-                    } else if (fbErr.code === 'auth/weak-password') {
-                        throw new Error("Password must be at least 6 characters long.");
-                    } else {
-                        throw new Error(fbErr.message || "Failed to create account. Please check your credentials.");
-                    }
+        if (!isDemoKey) {
+            try {
+                let userCredential;
+                if (currentAuthMode === 'register') {
+                    userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                } else {
+                    userCredential = await signInWithEmailAndPassword(auth, email, password);
                 }
-            } else {
-                try {
-                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                    user = userCredential.user;
-                    showToast("Signed in successfully!", "success");
-                } catch (fbErr) {
-                    console.error("Firebase Login Error:", fbErr);
-                    if (fbErr.code === 'auth/user-not-found' || fbErr.code === 'auth/wrong-password' || fbErr.code === 'auth/invalid-credential') {
-                        throw new Error("Invalid email or password. Please try again.");
-                    } else if (fbErr.code === 'auth/invalid-email') {
-                        throw new Error("Please enter a valid email address.");
-                    } else {
-                        throw new Error(fbErr.message || "Authentication failed. Please check your email and password.");
-                    }
+
+                const user = userCredential.user;
+                await fetchOrCreateUserProfile(user, displayName);
+                showToast(currentAuthMode === 'register' ? "Account created successfully!" : "Signed in successfully!", "success");
+                closeModal('authModal');
+                document.getElementById('authForm').reset();
+                updateAuthUI(true);
+                return;
+            } catch (fbErr) {
+                if (fbErr.code === 'auth/api-key-not-valid' || fbErr.code === 'auth/invalid-api-key') {
+                    // Fallback to local session mode seamlessly
+                } else {
+                    errDiv.innerText = getFriendlyErrorMessage(fbErr);
+                    errDiv.classList.remove('hidden');
+                    return;
                 }
             }
-
-            currentUser = user;
-            await fetchOrCreateUserProfile(user, displayName);
-            updateAuthUI(true);
-            closeModal('authModal');
-            document.getElementById('authForm').reset();
-            
-            if (currentViewedAuthorId) {
-                renderAuthorProfile(currentViewedAuthorId);
-            }
-            renderArticlesFeed();
-
-        } catch (err) {
-            console.error("Auth submit exception:", err);
-            errDiv.innerText = err.message || "Authentication failed. Please check credentials.";
-            errDiv.classList.remove('hidden');
         }
+
+        // Demo fallback when running without configured API keys
+        const mockUid = 'user_' + btoa(email).replace(/=/g, '').toLowerCase().substring(0, 12);
+        const mockUser = {
+            uid: mockUid,
+            email: email,
+            displayName: displayName || email.split('@')[0],
+            isAnonymous: false
+        };
+        simulatedUser = mockUser;
+        localStorage.setItem('bv_simulated_user', JSON.stringify(simulatedUser));
+
+        await fetchOrCreateUserProfile(mockUser, displayName);
+        updateAuthUI(true);
+        closeModal('authModal');
+        document.getElementById('authForm').reset();
+        showToast(`Welcome, ${mockUser.displayName}!`, "success");
+
+        if (currentViewedAuthorId) renderAuthorProfile(currentViewedAuthorId);
+        renderArticlesFeed();
+    }
+
+    async function handleGoogleSignIn() {
+        const errDiv = document.getElementById('authError');
+        errDiv.classList.add('hidden');
+        
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+            await fetchOrCreateUserProfile(user, user.displayName);
+            showToast(`Signed in as ${user.displayName || 'Google User'}!`, "success");
+            closeModal('authModal');
+            updateAuthUI(true);
+        } catch (error) {
+            if (error.code === 'auth/api-key-not-valid' || error.code === 'auth/invalid-api-key') {
+                handleDemoSignIn();
+            } else {
+                errDiv.innerText = getFriendlyErrorMessage(error);
+                errDiv.classList.remove('hidden');
+            }
+        }
+    }
+
+    async function handleDemoSignIn() {
+        const guestId = 'guest_' + Math.random().toString(36).substr(2, 6);
+        simulatedUser = {
+            uid: guestId,
+            email: `${guestId}@blogverse.dev`,
+            displayName: 'Guest Writer',
+            isAnonymous: true
+        };
+        localStorage.setItem('bv_simulated_user', JSON.stringify(simulatedUser));
+
+        await fetchOrCreateUserProfile(simulatedUser, 'Guest Writer');
+        updateAuthUI(true);
+        closeModal('authModal');
+        showToast("Signed in as Guest Writer!", "success");
+
+        if (currentViewedAuthorId) renderAuthorProfile(currentViewedAuthorId);
+        renderArticlesFeed();
     }
 
     function saveCustomFirebaseConfig(e) {
@@ -1296,7 +1455,7 @@
 
             localStorage.setItem('bv_firebase_config', JSON.stringify(parsed));
             showToast("Firebase Config saved! Reloading...", "success");
-            setTimeout(() => window.location.reload(), 1000);
+            setTimeout(() => window.location.reload(), 800);
         } catch (err) {
             alert("Error in Config: " + err.message);
         }
@@ -1305,7 +1464,7 @@
     function clearCustomFirebaseConfig() {
         localStorage.removeItem('bv_firebase_config');
         showToast("Reset to default config. Reloading...", "info");
-        setTimeout(() => window.location.reload(), 1000);
+        setTimeout(() => window.location.reload(), 800);
     }
 
     function showToast(msg, type = "info") {
@@ -1390,6 +1549,8 @@
     window.openAuthModal = openAuthModal;
     window.toggleAuthMode = toggleAuthMode;
     window.handleAuthSubmit = handleAuthSubmit;
+    window.handleGoogleSignIn = handleGoogleSignIn;
+    window.handleDemoSignIn = handleDemoSignIn;
     window.logout = logout;
     window.openPublishModal = openPublishModal;
     window.handlePublishArticle = handlePublishArticle;
