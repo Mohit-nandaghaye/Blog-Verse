@@ -297,6 +297,10 @@
                     <p class="text-[11px] text-gray-500 mt-1">Must be at least 6 characters long.</p>
                 </div>
 
+                <p class="text-[11px] text-indigo-300/80 bg-indigo-950/40 p-2 rounded-lg border border-indigo-900/40">
+                    <i class="fa-solid fa-shield-halved mr-1 text-emerald-400"></i> Secure login enabled: Sign in with your registered Firebase email and password.
+                </p>
+
                 <div id="authError" class="hidden text-xs text-red-400 bg-red-950/50 p-2.5 rounded-lg border border-red-800"></div>
 
                 <button type="submit" id="authSubmitBtn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-600/30">
@@ -515,7 +519,6 @@
 
     let currentUser = null;
     let currentUserProfile = null;
-    let mockUser = null;
     let currentCategory = 'All';
     let currentAuthMode = 'login';
     let currentViewedAuthorId = null;
@@ -527,7 +530,7 @@
     let followsData = [];
 
     function getActiveUser() {
-        return auth.currentUser || mockUser;
+        return auth.currentUser;
     }
 
     function setTheme(theme) {
@@ -595,8 +598,6 @@
         try {
             await signOut(auth);
         } catch (e) {}
-        mockUser = null;
-        localStorage.removeItem('bv_mock_user');
         currentUser = null;
         currentUserProfile = null;
         updateAuthUI(false);
@@ -616,26 +617,18 @@
         const savedTheme = localStorage.getItem('bv_theme') || 'dark';
         setTheme(savedTheme);
 
-        const savedMock = localStorage.getItem('bv_mock_user');
-        if (savedMock) {
-            try { mockUser = JSON.parse(savedMock); } catch(e){}
-        }
-
         try {
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
             }
         } catch (err) {
-            console.warn("Fallback auth mode active:", err);
+            console.warn("Auth initialization note:", err);
         }
 
         onAuthStateChanged(auth, async (user) => {
-            const activeUser = user || mockUser;
-            if (activeUser) {
-                currentUser = activeUser;
-                await fetchOrCreateUserProfile(activeUser);
+            if (user && !user.isAnonymous) {
+                currentUser = user;
+                await fetchOrCreateUserProfile(user);
                 updateAuthUI(true);
             } else {
                 currentUser = null;
@@ -648,16 +641,6 @@
             subscribeToComments();
             subscribeToFollows();
         });
-
-        if (mockUser && !auth.currentUser) {
-            currentUser = mockUser;
-            await fetchOrCreateUserProfile(mockUser);
-            updateAuthUI(true);
-            subscribeToArticles();
-            subscribeToUsers();
-            subscribeToComments();
-            subscribeToFollows();
-        }
     }
 
     async function fetchOrCreateUserProfile(user, customDisplayName = null) {
@@ -1252,13 +1235,13 @@
                 } catch (fbErr) {
                     console.error("Firebase Registration Error:", fbErr);
                     if (fbErr.code === 'auth/email-already-in-use') {
-                        throw new Error("This email is already registered! Please select 'Sign In'.");
-                    } else if (fbErr.code === 'auth/invalid-api-key' || fbErr.code === 'auth/api-key-not-valid') {
-                        throw new Error("API key is invalid. Click 'Firebase Keys' in the header to enter your valid Firebase Config.");
+                        throw new Error("This email is already registered! Please sign in instead.");
+                    } else if (fbErr.code === 'auth/invalid-email') {
+                        throw new Error("Please enter a valid email address.");
                     } else if (fbErr.code === 'auth/weak-password') {
                         throw new Error("Password must be at least 6 characters long.");
                     } else {
-                        throw new Error(`Auth Error: ${fbErr.message}`);
+                        throw new Error(fbErr.message || "Failed to create account. Please check your credentials.");
                     }
                 }
             } else {
@@ -1269,11 +1252,11 @@
                 } catch (fbErr) {
                     console.error("Firebase Login Error:", fbErr);
                     if (fbErr.code === 'auth/user-not-found' || fbErr.code === 'auth/wrong-password' || fbErr.code === 'auth/invalid-credential') {
-                        throw new Error("Invalid email or password.");
-                    } else if (fbErr.code === 'auth/invalid-api-key' || fbErr.code === 'auth/api-key-not-valid') {
-                        throw new Error("API key is invalid. Click 'Firebase Keys' to update your configuration.");
+                        throw new Error("Invalid email or password. Please try again.");
+                    } else if (fbErr.code === 'auth/invalid-email') {
+                        throw new Error("Please enter a valid email address.");
                     } else {
-                        throw new Error(`Login Error: ${fbErr.message}`);
+                        throw new Error(fbErr.message || "Authentication failed. Please check your email and password.");
                     }
                 }
             }
