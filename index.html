@@ -83,12 +83,6 @@
                         <button onclick="setTheme('light')" id="themeLightBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-gray-400" title="Light Mode"><i class="fa-solid fa-sun"></i></button>
                     </div>
 
-                    <!-- Firebase Keys Button -->
-                    <button onclick="openModal('firebaseConfigModal')" class="px-3 py-1.5 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/60 text-indigo-300 rounded-full text-xs flex items-center space-x-1.5 transition shadow-sm" title="Configure Firebase Project">
-                        <i class="fa-solid fa-key text-amber-400"></i>
-                        <span class="font-medium hidden sm:inline">Firebase Keys</span>
-                    </button>
-
                     <!-- Auth Controls (When Logged Out) -->
                     <div id="authActions" class="flex items-center space-x-2">
                         <button onclick="openAuthModal('login')" class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition">Sign In</button>
@@ -329,53 +323,7 @@
         </div>
     </div>
 
-    <!-- 3. FIREBASE CONFIG MODAL -->
-    <div id="firebaseConfigModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-        <div class="bg-gray-900 border border-indigo-900/60 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5 my-8">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
-                <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-600/20 text-indigo-400 flex items-center justify-center">
-                        <i class="fa-solid fa-sliders"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-white">Connect Your Firebase Project</h3>
-                        <p class="text-xs text-indigo-400 font-mono">Optional Live Cloud Sync</p>
-                    </div>
-                </div>
-                <button onclick="closeModal('firebaseConfigModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <p class="text-xs text-gray-300 leading-relaxed bg-indigo-950/40 p-3 rounded-xl border border-indigo-900/40">
-                To connect live multi-user cloud syncing, paste your Web App Config from <b>Firebase Console &gt; Project Settings &gt; General</b> below (both JS object code or JSON are supported):
-            </p>
-
-            <form onsubmit="saveCustomFirebaseConfig(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Firebase Config Code / JSON</label>
-                    <textarea id="cfgJsonInput" rows="6" required placeholder='Paste your Firebase config object or JSON here...
-
-const firebaseConfig = {
-  apiKey: "AIzaSy...",
-  authDomain: "your-app.firebaseapp.com",
-  projectId: "your-app-id",
-  storageBucket: "your-app.appspot.com",
-  messagingSenderId: "...",
-  appId: "..."
-};' class="w-full px-4 py-2.5 bg-gray-950 border border-gray-700 rounded-xl text-xs font-mono text-gray-200 focus:border-indigo-500 focus:outline-none leading-relaxed"></textarea>
-                </div>
-
-                <div class="pt-2 flex items-center justify-between border-t border-gray-800">
-                    <button type="button" onclick="clearCustomFirebaseConfig()" class="text-xs text-red-400 hover:underline">Reset Config</button>
-                    <div class="flex space-x-2">
-                        <button type="button" onclick="closeModal('firebaseConfigModal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-full text-xs font-medium">Cancel</button>
-                        <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-xs font-medium shadow-lg shadow-indigo-600/30">Save &amp; Reload App</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 4. PUBLISH ARTICLE MODAL -->
+    <!-- 3. PUBLISH ARTICLE MODAL -->
     <div id="publishModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
         <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-2xl p-6 shadow-2xl space-y-6 my-8">
             <div class="flex items-center justify-between border-b border-gray-800 pb-4">
@@ -417,7 +365,7 @@ const firebaseConfig = {
         </div>
     </div>
 
-    <!-- 5. FULL ARTICLE READER MODAL -->
+    <!-- 4. FULL ARTICLE READER MODAL -->
     <div id="readerModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
         <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-3xl my-8 overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             <!-- Reader Header -->
@@ -505,24 +453,16 @@ const firebaseConfig = {
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'blogverse-pub-v1';
 
-    // Load custom Firebase config if saved locally
-    let userFirebaseConfig = null;
-    try {
-        const saved = localStorage.getItem('bv_firebase_config');
-        if (saved) userFirebaseConfig = JSON.parse(saved);
-    } catch(e) {}
-
-    const firebaseConfig = userFirebaseConfig || (typeof __firebase_config !== 'undefined' 
-        ? JSON.parse(__firebase_config) 
-        : {
-            apiKey: "demo-key",
-            authDomain: "blogverse-f45bf.firebaseapp.com",
-            projectId: "blogverse-f45bf",
-            storageBucket: "blogverse-f45bf.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:demo"
-        });
-
+    // DIRECT FIREBASE CONFIGURATION PASTE HERE:
+    const firebaseConfig = {
+  apiKey: "AIzaSyBRe5ja_JmKkZwlXjRY0UmBEgwdLeM8vNw",
+  authDomain: "blogverse-f45bf.firebaseapp.com",
+  projectId: "blogverse-f45bf",
+  storageBucket: "blogverse-f45bf.firebasestorage.app",
+  messagingSenderId: "903299334786",
+  appId: "1:903299334786:web:f40f8e90aa4f2dd1106a9b",
+  measurementId: "G-SFDHQT4WTS"
+};
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
@@ -1316,7 +1256,6 @@ const firebaseConfig = {
         openAuthModal(currentAuthMode === 'login' ? 'register' : 'login');
     }
 
-    // Friendly Firebase Auth Error Formatter
     function getFriendlyErrorMessage(error) {
         if (!error) return "An unknown error occurred.";
         const code = error.code || "";
@@ -1350,54 +1289,39 @@ const firebaseConfig = {
 
         if (!email || !password) return;
 
-        const isDemoKey = !userFirebaseConfig && firebaseConfig.apiKey === 'demo-key';
+        try {
+            let userCredential;
+            if (currentAuthMode === 'register') {
+                userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            } else {
+                userCredential = await signInWithEmailAndPassword(auth, email, password);
+            }
 
-        if (!isDemoKey) {
-            try {
-                let userCredential;
-                if (currentAuthMode === 'register') {
-                    userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                } else {
-                    userCredential = await signInWithEmailAndPassword(auth, email, password);
-                }
-
-                const user = userCredential.user;
-                await fetchOrCreateUserProfile(user, displayName);
-                showToast(currentAuthMode === 'register' ? "Account created successfully!" : "Signed in successfully!", "success");
+            const user = userCredential.user;
+            await fetchOrCreateUserProfile(user, displayName);
+            showToast(currentAuthMode === 'register' ? "Account created successfully!" : "Signed in successfully!", "success");
+            closeModal('authModal');
+            document.getElementById('authForm').reset();
+            updateAuthUI(true);
+            return;
+        } catch (fbErr) {
+            // Fallback to local guest mode if Firebase keys are dummy values
+            if (fbErr.code === 'auth/api-key-not-valid' || fbErr.code === 'auth/invalid-api-key') {
+                const mockUid = 'user_' + btoa(email).replace(/=/g, '').toLowerCase().substring(0, 12);
+                const mockUser = { uid: mockUid, email: email, displayName: displayName || email.split('@')[0] };
+                simulatedUser = mockUser;
+                localStorage.setItem('bv_simulated_user', JSON.stringify(simulatedUser));
+                await fetchOrCreateUserProfile(mockUser, displayName);
+                updateAuthUI(true);
                 closeModal('authModal');
                 document.getElementById('authForm').reset();
-                updateAuthUI(true);
+                showToast(`Welcome, ${mockUser.displayName}!`, "success");
+                renderArticlesFeed();
                 return;
-            } catch (fbErr) {
-                if (fbErr.code === 'auth/api-key-not-valid' || fbErr.code === 'auth/invalid-api-key') {
-                    // Fallback to local session mode seamlessly
-                } else {
-                    errDiv.innerText = getFriendlyErrorMessage(fbErr);
-                    errDiv.classList.remove('hidden');
-                    return;
-                }
             }
+            errDiv.innerText = getFriendlyErrorMessage(fbErr);
+            errDiv.classList.remove('hidden');
         }
-
-        // Demo fallback when running without configured API keys
-        const mockUid = 'user_' + btoa(email).replace(/=/g, '').toLowerCase().substring(0, 12);
-        const mockUser = {
-            uid: mockUid,
-            email: email,
-            displayName: displayName || email.split('@')[0],
-            isAnonymous: false
-        };
-        simulatedUser = mockUser;
-        localStorage.setItem('bv_simulated_user', JSON.stringify(simulatedUser));
-
-        await fetchOrCreateUserProfile(mockUser, displayName);
-        updateAuthUI(true);
-        closeModal('authModal');
-        document.getElementById('authForm').reset();
-        showToast(`Welcome, ${mockUser.displayName}!`, "success");
-
-        if (currentViewedAuthorId) renderAuthorProfile(currentViewedAuthorId);
-        renderArticlesFeed();
     }
 
     async function handleGoogleSignIn() {
@@ -1438,45 +1362,6 @@ const firebaseConfig = {
 
         if (currentViewedAuthorId) renderAuthorProfile(currentViewedAuthorId);
         renderArticlesFeed();
-    }
-
-    function saveCustomFirebaseConfig(e) {
-        e.preventDefault();
-        let raw = document.getElementById('cfgJsonInput').value.trim();
-        try {
-            // 1. Remove JS variable prefix if present (e.g., const firebaseConfig = {...})
-            raw = raw.replace(/^(const|let|var)\s+\w+\s*=\s*/i, '');
-            // 2. Remove trailing semicolon if present
-            raw = raw.replace(/;\s*$/, '');
-
-            let parsed = null;
-            try {
-                parsed = JSON.parse(raw);
-            } catch (jsonErr) {
-                // Auto-fix JS object formatting (unquoted keys, single quotes, trailing commas)
-                let jsonLike = raw
-                    .replace(/([{,]\s*)([a-zA-Z0-9_$]+)\s*:/g, '$1"$2":') // Quote keys
-                    .replace(/'/g, '"') // Replace single quotes with double quotes
-                    .replace(/,\s*([}\]])/g, '$1'); // Remove trailing commas
-                parsed = JSON.parse(jsonLike);
-            }
-
-            if (!parsed || !parsed.apiKey || !parsed.projectId) {
-                throw new Error("Config must contain 'apiKey' and 'projectId'.");
-            }
-
-            localStorage.setItem('bv_firebase_config', JSON.stringify(parsed));
-            showToast("Firebase Config saved! Reloading...", "success");
-            setTimeout(() => window.location.reload(), 800);
-        } catch (err) {
-            alert("Error in Config: " + err.message + "\n\nPlease ensure you paste either valid JSON or the standard Firebase config object snippet.");
-        }
-    }
-
-    function clearCustomFirebaseConfig() {
-        localStorage.removeItem('bv_firebase_config');
-        showToast("Reset to default config. Reloading...", "info");
-        setTimeout(() => window.location.reload(), 800);
     }
 
     function showToast(msg, type = "info") {
@@ -1575,8 +1460,6 @@ const firebaseConfig = {
     window.toggleFollowAuthor = toggleFollowAuthor;
     window.handleSearch = handleSearch;
     window.viewAuthorProfileFromModal = viewAuthorProfileFromModal;
-    window.saveCustomFirebaseConfig = saveCustomFirebaseConfig;
-    window.clearCustomFirebaseConfig = clearCustomFirebaseConfig;
     window.openModal = openModal;
     window.closeModal = closeModal;
 
