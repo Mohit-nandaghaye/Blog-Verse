@@ -1,928 +1,1183 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlogVerse — Platform Owned by MOHIT NANDAGHAYE</title>
+    <title>BlogVerse - Modern Publishing Platform</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        sepia: {
+                            50: '#fbf9f5',
+                            100: '#f7f3e9',
+                            800: '#433422',
+                            900: '#2d2216',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
     <style>
-        .sepia-mode { background-color: #fbf0d9 !important; color: #433422 !important; }
-        .sepia-mode header, .sepia-mode footer { background-color: #f3e5ab !important; border-color: #d7c49e !important; }
-        .sepia-mode .card-bg { background-color: #f3e5ab !important; border-color: #d7c49e !important; }
-        .sepia-mode .text-slate-100, .sepia-mode .text-slate-200, .sepia-mode .text-slate-900, .sepia-mode .text-slate-800 { color: #2d2113 !important; }
-        .sepia-mode .text-slate-400, .sepia-mode .text-slate-500 { color: #6e5c47 !important; }
-
-        .light-mode { background-color: #f8fafc !important; color: #0f172a !important; }
-        .light-mode header, .light-mode footer { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
-        .light-mode .card-bg { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
-        .light-mode .text-slate-100, .light-mode .text-slate-200 { color: #0f172a !important; }
-        .light-mode .text-slate-400, .light-mode .text-slate-500 { color: #64748b !important; }
+        body { font-family: 'Inter', sans-serif; }
+        .article-body { font-family: 'Merriweather', serif; }
+        .sepia-mode { background-color: #f7f3e9; color: #433422; }
+        .sepia-card { background-color: #fbf9f5; border-color: #e2d7c5; }
     </style>
 </head>
-<body id="app-body" class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+<body class="bg-gray-950 text-gray-100 min-h-screen transition-colors duration-200 flex flex-col">
 
-    <!-- Scroll Progress Bar -->
-    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-blue-500 z-50 w-0 transition-all duration-75"></div>
-
-    <!-- Header Navigation -->
-    <header class="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-40 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-            <!-- Brand Logo -->
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="showMainHomeView()">
-                <div class="bg-blue-600 text-white font-black px-2.5 py-1 rounded-lg text-lg flex items-center gap-1.5">
-                    <i class="fa-solid fa-book-open"></i>
+    <header class="sticky top-0 z-40 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 transition-colors" id="mainHeader">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('feed')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-bold text-white text-xl shadow-lg shadow-indigo-500/20">
+                        BV
+                    </div>
+                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">BlogVerse</span>
                 </div>
-                <div>
-                    <h1 class="font-black text-xl tracking-tight text-white flex items-center gap-1">Blog<span class="text-blue-500">Verse</span></h1>
+
+                <!-- Live Search Bar -->
+                <div class="relative flex-1 max-w-md mx-4 hidden md:block">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search authors or topics..." 
+                            class="w-full pl-10 pr-4 py-2 bg-gray-800/80 border border-gray-700 rounded-full text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-gray-200 placeholder-gray-400 transition">
+                    </div>
+                    <!-- Suggestions Dropdown -->
+                    <div id="searchSuggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl overflow-hidden z-50"></div>
                 </div>
-            </div>
 
-            <!-- Nav Links -->
-            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
-                <a href="#" onclick="showMainHomeView()" class="text-blue-400 font-bold border-b-2 border-blue-500 pb-0.5">Home</a>
-                <a href="#" onclick="showMainHomeView()" class="hover:text-white transition">Explore</a>
-                <a href="#" onclick="showMainHomeView()" class="hover:text-white transition">Categories</a>
-            </nav>
+                <!-- Right Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Theme Selector -->
+                    <div class="flex bg-gray-800/80 border border-gray-700 p-1 rounded-full space-x-1">
+                        <button onclick="setTheme('dark')" id="themeDarkBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-indigo-400"><i class="fa-solid fa-moon"></i></button>
+                        <button onclick="setTheme('sepia')" id="themeSepiaBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-amber-600"><i class="fa-solid fa-book-open"></i></button>
+                        <button onclick="setTheme('light')" id="themeLightBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-gray-400"><i class="fa-solid fa-sun"></i></button>
+                    </div>
 
-            <!-- Search Bar with Dynamic Dropdown for Authors & Posts -->
-            <div class="hidden lg:flex items-center flex-1 max-w-xs relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 text-slate-400 text-xs"></i>
-                <input type="text" id="search-input" onkeyup="handleSearchInput()" placeholder="Search blogs, topics or authors..." class="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl pl-9 pr-4 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500 transition">
-                
-                <!-- Search Suggestions Dropdown -->
-                <div id="search-suggestions" class="hidden absolute top-10 left-0 right-0 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 max-h-60 overflow-y-auto p-2 text-xs"></div>
-            </div>
+                    <!-- Auth Controls -->
+                    <div id="authActions" class="flex items-center space-x-2">
+                        <button onclick="openAuthModal('login')" class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition">Sign In</button>
+                        <button onclick="openAuthModal('register')" class="px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-full transition shadow-lg shadow-indigo-600/30">Get Started</button>
+                    </div>
 
-            <!-- Header Controls & Auth -->
-            <div class="flex items-center space-x-3">
-                <select onchange="changeTheme(this.value)" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2 py-1.5 text-slate-200 focus:outline-none cursor-pointer">
-                    <option value="dark">🌙 Dark</option>
-                    <option value="sepia">📜 Sepia</option>
-                    <option value="light">☀️ Light</option>
-                </select>
-
-                <button onclick="toggleBookmarksView()" id="bookmark-filter-btn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-bookmark text-amber-400"></i> Saved
-                </button>
-
-                <div class="flex items-center space-x-2" id="auth-nav-area"></div>
+                    <!-- User Controls (When Logged In) -->
+                    <div id="userActions" class="hidden flex items-center space-x-3">
+                        <button onclick="openPublishModal()" class="px-3.5 py-1.5 text-sm font-medium bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-full flex items-center space-x-2 transition shadow-md">
+                            <i class="fa-solid fa-pen"></i>
+                            <span class="hidden sm:inline">Write</span>
+                        </button>
+                        <div class="relative group">
+                            <img id="navAvatar" onclick="navigateTo('my-profile')" src="https://placehold.co/100x100/312e81/ffffff?text=Author" class="w-9 h-9 rounded-full object-cover border-2 border-indigo-500 cursor-pointer">
+                        </div>
+                        <button onclick="logout()" class="text-gray-400 hover:text-red-400 p-2" title="Logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- MAIN HOME FEED VIEW -->
-        <div id="home-feed-view" class="space-y-10">
-            <!-- Hero Banner -->
-            <section class="bg-gradient-to-br from-slate-900 via-slate-800/90 to-blue-950/40 border border-slate-800 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-7 space-y-5">
-                        <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">IDEAS. STORIES. PERSPECTIVES. ONE UNIVERSE.</p>
-                        <h2 class="text-4xl md:text-5xl font-black text-white leading-tight">
-                            Welcome to <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">BlogVerse</span>
-                        </h2>
-                        <p class="text-slate-300 text-sm md:text-base leading-relaxed max-w-xl">
-                            A space where everyone can share their thoughts, ideas, stories and experiences. Read, write and explore a universe of creativity — every day.
-                        </p>
-                        <div class="flex flex-wrap items-center gap-3 pt-2">
-                            <button onclick="handleHeroWriteClick()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/30 transition flex items-center gap-2 text-sm">
-                                <i class="fa-solid fa-pen"></i> Start Writing
-                            </button>
-                            <a href="#articles-grid" class="border border-slate-700 hover:border-slate-500 text-slate-200 font-bold px-5 py-2.5 rounded-xl transition text-sm flex items-center gap-2">
-                                Explore Blogs <i class="fa-solid fa-arrow-right text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-5 relative">
-                        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 shadow-2xl relative z-10 backdrop-blur-sm">
-                            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80" alt="Workspace" class="rounded-xl w-full h-56 object-cover mb-3">
-                            <div class="flex items-center justify-between text-xs text-slate-400">
-                                <span class="font-bold text-slate-200">Platform Architecture & Ownership</span>
-                                <span class="text-blue-400 font-bold">MOHIT NANDAGHAYE</span>
-                            </div>
-                        </div>
-                    </div>
+        <!-- FEED VIEW -->
+        <div id="feedView" class="space-y-8">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <h1 class="text-2xl font-bold tracking-tight">Explore Articles</h1>
+                <div class="flex space-x-2 text-sm">
+                    <button onclick="filterCategory('All')" class="cat-filter active px-3 py-1 rounded-full bg-indigo-600 text-white">All</button>
+                    <button onclick="filterCategory('Tech')" class="cat-filter px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700">Tech</button>
+                    <button onclick="filterCategory('Lifestyle')" class="cat-filter px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700">Lifestyle</button>
+                    <button onclick="filterCategory('Design')" class="cat-filter px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700">Design</button>
                 </div>
-            </section>
-
-            <!-- Category Filter Bar -->
-            <section class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs font-semibold">
-                <button onclick="filterCategory('All')" class="category-pill active bg-blue-600 text-white px-4 py-2 rounded-xl border border-blue-500 flex items-center gap-1.5 whitespace-nowrap shadow-sm">
-                    <i class="fa-solid fa-border-all"></i> All
-                </button>
-                <button onclick="filterCategory('Technology')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-laptop text-blue-400"></i> Technology
-                </button>
-                <button onclick="filterCategory('Education')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-graduation-cap text-indigo-400"></i> Education
-                </button>
-                <button onclick="filterCategory('Career')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-briefcase text-amber-400"></i> Career
-                </button>
-                <button onclick="filterCategory('Life Style')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-heart text-rose-400"></i> Life Style
-                </button>
-                <button onclick="filterCategory('Travel')" class="category-pill bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-plane text-emerald-400"></i> Travel
-                </button>
-            </section>
-
-            <!-- Write Editor Section -->
-            <section id="editor-section" class="hidden bg-slate-800/90 card-bg border border-blue-500/50 rounded-2xl p-6 shadow-xl">
-                <h3 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-nib"></i> Publish New Article
-                </h3>
-                <form onsubmit="handlePublishArticle(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Article Title</label>
-                        <input type="text" id="post-title" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm" placeholder="Enter article title...">
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-slate-400 mb-1">Category</label>
-                            <select id="post-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm">
-                                <option value="Technology">Technology</option>
-                                <option value="Education">Education</option>
-                                <option value="Career">Career</option>
-                                <option value="Life Style">Life Style</option>
-                                <option value="Travel">Travel</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs text-slate-400 mb-1">Cover Image URL (Optional)</label>
-                            <input type="url" id="post-image" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm" placeholder="https://images.unsplash.com/...">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Content / Story</label>
-                        <textarea id="post-content" rows="6" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm" placeholder="Write your full story..."></textarea>
-                    </div>
-                    <div class="flex justify-end space-x-3">
-                        <button type="button" onclick="toggleEditor(false)" class="px-4 py-2 text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</button>
-                        <button type="submit" id="publish-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2 rounded-xl transition text-sm">Publish Now</button>
-                    </div>
-                </form>
-            </section>
-
-            <!-- Articles Feed & Sidebar -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
-                <section class="lg:col-span-8 space-y-6">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <div>
-                            <h3 class="text-xl font-bold flex items-center gap-2 text-white" id="feed-title">
-                                <i class="fa-solid fa-newspaper text-blue-400"></i> Latest Posts
-                            </h3>
-                            <p class="text-xs text-slate-400">Fresh ideas from our amazing writers</p>
-                        </div>
-                    </div>
-                    <div id="articles-grid" class="space-y-4">
-                        <p class="text-slate-400 text-sm">Loading articles...</p>
-                    </div>
-                </section>
-
-                <aside class="lg:col-span-4 space-y-6">
-                    <div class="bg-slate-800/50 card-bg border border-slate-800 rounded-2xl p-5 space-y-4">
-                        <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                            <i class="fa-solid fa-fire text-amber-500"></i> Popular Authors
-                        </h4>
-                        <div class="space-y-3" id="authors-list"></div>
-                    </div>
-                </aside>
             </div>
-        </div>
 
-        <!-- AUTHOR PROFILE VIEW (MATCHING ATTACHED IMAGE SPECIFICATION) -->
-        <div id="author-profile-view" class="hidden space-y-8">
+            <!-- Articles Feed Grid -->
+            <div id="articlesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic Content Loaded Here -->
+            </div>
             
-            <!-- Profile Hero Cover & Banner -->
-            <div class="bg-slate-800/60 card-bg border border-slate-800 rounded-3xl overflow-hidden relative shadow-2xl">
-                <!-- Cover Image -->
-                <div class="h-64 md:h-80 w-full relative bg-cover bg-center" id="profile-cover-bg" style="background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80');">
-                    <button class="absolute top-4 right-4 bg-slate-900/80 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-xl backdrop-blur-md border border-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-camera"></i> Edit Cover
-                    </button>
-                    <!-- Floating Quote overlay on banner -->
-                    <div class="absolute bottom-6 right-6 text-right hidden md:block">
-                        <p class="text-white font-serif italic text-lg opacity-90 drop-shadow-md">"Ideas. Stories. Perspectives. One Universe."</p>
-                    </div>
+            <!-- Empty Feed State -->
+            <div id="emptyFeedState" class="hidden text-center py-16 space-y-4">
+                <div class="w-16 h-16 mx-auto rounded-full bg-gray-800/80 flex items-center justify-center text-gray-500 text-2xl">
+                    <i class="fa-solid fa-newspaper"></i>
                 </div>
-
-                <!-- Profile Info Bar -->
-                <div class="p-6 md:p-8 pt-0 relative flex flex-col md:flex-row md:items-end justify-between gap-6">
-                    <div class="flex flex-col md:flex-row items-start md:items-end gap-6 -mt-16 md:-mt-20">
-                        <div class="relative">
-                            <img id="profile-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Avatar" class="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-slate-900 object-cover shadow-2xl">
-                            <button class="absolute bottom-1 right-1 bg-blue-600 text-white p-2 rounded-full text-xs shadow-lg border border-slate-900">
-                                <i class="fa-solid fa-camera"></i>
-                            </button>
-                        </div>
-
-                        <div class="space-y-1">
-                            <div class="flex items-center space-x-2">
-                                <h2 id="profile-author-name" class="text-2xl md:text-3xl font-black text-white">Mohit</h2>
-                                <i class="fa-solid fa-circle-check text-blue-500 text-lg" title="Verified Author"></i>
-                            </div>
-                            <div class="flex items-center space-x-2 text-xs">
-                                <span id="profile-author-handle" class="text-slate-400 font-semibold">@mohit</span>
-                                <span class="bg-blue-500/20 text-blue-400 px-2.5 py-0.5 rounded-full border border-blue-500/30 font-bold">Writer</span>
-                            </div>
-                            <p id="profile-author-bio" class="text-slate-300 text-xs md:text-sm max-w-lg leading-relaxed pt-1">
-                                Curious mind | Tech enthusiast | Learner | Sharing ideas, stories and perspectives through BlogVerse ✨
-                            </p>
-                            <div class="flex flex-wrap items-center gap-4 text-xs text-slate-400 pt-2">
-                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-rose-400"></i> Nagpur, India</span>
-                                <span class="flex items-center gap-1.5"><i class="fa-regular fa-calendar text-blue-400"></i> Joined Oct 2026</span>
-                                <a href="#" class="text-blue-400 hover:underline flex items-center gap-1"><i class="fa-solid fa-link text-xs"></i> blogverse.in/mohit</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Profile Action Buttons & Quick Stats -->
-                    <div class="flex flex-col items-start md:items-end space-y-4">
-                        <div class="flex items-center space-x-3">
-                            <button id="profile-action-btn" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition flex items-center gap-2 shadow-lg">
-                                <i class="fa-solid fa-pen-to-square"></i> Edit Profile
-                            </button>
-                            <button class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs p-2.5 rounded-xl border border-slate-700">
-                                <i class="fa-solid fa-share-nodes"></i>
-                            </button>
-                        </div>
-
-                        <!-- Stats Block -->
-                        <div class="flex items-center space-x-6 text-center bg-slate-900/60 p-3 rounded-2xl border border-slate-800/80">
-                            <div>
-                                <span id="stat-posts-count" class="block font-black text-lg text-white">24</span>
-                                <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Posts</span>
-                            </div>
-                            <div class="border-l border-slate-800 pl-6">
-                                <span id="stat-followers-count" class="block font-black text-lg text-white">1.2K</span>
-                                <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Followers</span>
-                            </div>
-                            <div class="border-l border-slate-800 pl-6">
-                                <span id="stat-following-count" class="block font-black text-lg text-white">356</span>
-                                <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Following</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Profile Tabs Bar -->
-                <div class="flex border-t border-slate-800 px-6 overflow-x-auto text-xs font-bold scrollbar-none">
-                    <button class="py-4 px-4 text-blue-400 border-b-2 border-blue-500 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-bars-staggered"></i> My Posts</button>
-                    <button class="py-4 px-4 text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fa-regular fa-bookmark"></i> Saved</button>
-                    <button class="py-4 px-4 text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fa-regular fa-heart"></i> Liked</button>
-                    <button class="py-4 px-4 text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fa-regular fa-file-lines"></i> Drafts</button>
-                    <button class="py-4 px-4 text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-chart-line"></i> Analytics</button>
-                    <button class="py-4 px-4 text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-gear"></i> Settings</button>
-                </div>
+                <h3 class="text-lg font-semibold text-gray-300">No articles published yet</h3>
+                <p class="text-gray-500 max-w-md mx-auto text-sm">Be the first author to publish a real article on BlogVerse!</p>
+                <button onclick="openPublishModal()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-sm font-medium transition shadow-lg">Write Article</button>
             </div>
-
-            <!-- Profile Main Content Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                <!-- Posts Feed Column (8 Cols) -->
-                <div class="lg:col-span-8 space-y-6">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-black text-white">My Posts</h3>
-                        <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700 text-xs">
-                            <button class="px-3 py-1 rounded-lg font-bold bg-blue-600 text-white">All</button>
-                            <button class="px-3 py-1 rounded-lg font-bold text-slate-400 hover:text-white">Published</button>
-                            <button class="px-3 py-1 rounded-lg font-bold text-slate-400 hover:text-white">Drafts</button>
-                            <button class="px-3 py-1 rounded-lg font-bold text-slate-400 hover:text-white">Archived</button>
-                            <button onclick="toggleEditor(true)" class="px-3 py-1 rounded-lg font-bold bg-blue-600 text-white ml-2">+ New Post</button>
-                        </div>
-                    </div>
-
-                    <!-- Author's Feed Container -->
-                    <div id="author-posts-grid" class="space-y-4"></div>
-                </div>
-
-                <!-- Right Profile Details Sidebar (4 Cols) -->
-                <div class="lg:col-span-4 space-y-6">
-                    
-                    <!-- About Me Card -->
-                    <div class="bg-slate-800/50 card-bg border border-slate-800 rounded-2xl p-5 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-sm text-white">About Me</h4>
-                            <i class="fa-solid fa-pen text-slate-400 text-xs cursor-pointer"></i>
-                        </div>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            I'm Mohit, a student, tech enthusiast and passionate writer. I love exploring new ideas, sharing my thoughts and learning from different perspectives. Through BlogVerse, I aim to connect with like-minded people and build a community of curious minds.
-                        </p>
-                        <div class="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-800">
-                            <p class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-slate-400"></i> Nagpur, India</p>
-                            <p class="flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-slate-400"></i> Student</p>
-                            <p class="flex items-center gap-2"><i class="fa-solid fa-envelope text-slate-400"></i> mohit@example.com</p>
-                            <p class="flex items-center gap-2"><i class="fa-solid fa-globe text-slate-400"></i> blogverse.in/mohit</p>
-                        </div>
-                    </div>
-
-                    <!-- My Interests -->
-                    <div class="bg-slate-800/50 card-bg border border-slate-800 rounded-2xl p-5 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-sm text-white">My Interests</h4>
-                            <i class="fa-solid fa-pen text-slate-400 text-xs cursor-pointer"></i>
-                        </div>
-                        <div class="flex flex-wrap gap-1.5 text-[11px] font-semibold">
-                            <span class="bg-blue-950 text-blue-400 px-3 py-1 rounded-full border border-blue-800/50">Technology</span>
-                            <span class="bg-emerald-950 text-emerald-400 px-3 py-1 rounded-full border border-emerald-800/50">Travel</span>
-                            <span class="bg-amber-950 text-amber-400 px-3 py-1 rounded-full border border-amber-800/50">Education</span>
-                            <span class="bg-purple-950 text-purple-400 px-3 py-1 rounded-full border border-purple-800/50">Personal Growth</span>
-                            <span class="bg-rose-950 text-rose-400 px-3 py-1 rounded-full border border-rose-800/50">Cyber Security</span>
-                            <span class="bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">Photography</span>
-                            <span class="bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">Books</span>
-                        </div>
-                    </div>
-
-                    <!-- Achievements -->
-                    <div class="bg-slate-800/50 card-bg border border-slate-800 rounded-2xl p-5 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-trophy text-amber-400"></i> Achievements</h4>
-                            <a href="#" class="text-xs text-blue-400 font-semibold">View All</a>
-                        </div>
-                        <div class="grid grid-cols-4 gap-2 text-center text-[10px]">
-                            <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-800">
-                                <span class="text-lg">🥇</span>
-                                <p class="font-bold text-slate-200 mt-1">First Post</p>
-                            </div>
-                            <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-800">
-                                <span class="text-lg">💖</span>
-                                <p class="font-bold text-slate-200 mt-1">100 Likes</p>
-                            </div>
-                            <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-800">
-                                <span class="text-lg">🎉</span>
-                                <p class="font-bold text-slate-200 mt-1">1K Followers</p>
-                            </div>
-                            <div class="bg-slate-900/60 p-2 rounded-xl border border-slate-800">
-                                <span class="text-lg">✍️</span>
-                                <p class="font-bold text-slate-200 mt-1">Top Writer</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
         </div>
 
+        <!-- AUTHOR PROFILE VIEW -->
+        <div id="profileView" class="hidden space-y-8">
+            <!-- Profile Banner & Header -->
+            <div class="relative bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl">
+                <div class="h-48 md:h-64 w-full bg-gray-800 relative">
+                    <img id="profileCoverImg" src="https://placehold.co/1200x400/1e1b4b/818cf8?text=BlogVerse+Cover" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+                </div>
+                
+                <div class="relative px-6 pb-6 pt-0 sm:px-8 flex flex-col md:flex-row items-start md:items-end justify-between gap-4 -mt-16 sm:-mt-20">
+                    <div class="flex flex-col sm:flex-row items-center sm:items-end space-y-4 sm:space-y-0 sm:space-x-6 text-center sm:text-left">
+                        <img id="profileAvatarImg" src="https://placehold.co/150x150/312e81/ffffff?text=Author" class="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-gray-900 object-cover shadow-2xl bg-gray-800">
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-center sm:justify-start space-x-2">
+                                <h2 id="profileDisplayName" class="text-2xl sm:text-3xl font-bold">Author Name</h2>
+                                <i class="fa-solid fa-circle-check text-indigo-400 text-lg" title="Verified Author"></i>
+                            </div>
+                            <p id="profileTagline" class="text-sm text-indigo-400 font-medium">Writer & Storyteller</p>
+                            <p id="profileBio" class="text-sm text-gray-400 max-w-xl">No bio provided yet.</p>
+                            
+                            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-gray-400 pt-2">
+                                <span id="profileLocation"><i class="fa-solid fa-location-dot mr-1 text-gray-500"></i> Global</span>
+                                <a id="profileWebsite" href="#" target="_blank" class="hover:text-indigo-400 transition"><i class="fa-solid fa-link mr-1 text-gray-500"></i> Website</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons for Profile -->
+                    <div class="w-full md:w-auto flex items-center justify-center space-x-3 pt-2">
+                        <button id="editProfileBtn" onclick="openEditProfileModal()" class="hidden px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-full text-sm font-medium border border-gray-700 transition flex items-center space-x-2">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span>Edit Profile</span>
+                        </button>
+                        <button id="followAuthorBtn" onclick="toggleFollowAuthor()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-sm font-medium transition shadow-lg shadow-indigo-600/30">
+                            Follow
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Real Firestore Stats Bar -->
+                <div class="border-t border-gray-800 bg-gray-900/50 px-6 py-4 grid grid-cols-3 divide-x divide-gray-800 text-center">
+                    <div>
+                        <span id="statArticlesCount" class="block text-xl font-bold text-white">0</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider">Articles</span>
+                    </div>
+                    <div>
+                        <span id="statFollowersCount" class="block text-xl font-bold text-white">0</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider">Followers</span>
+                    </div>
+                    <div>
+                        <span id="statFollowingCount" class="block text-xl font-bold text-white">0</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider">Following</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Author's Published Articles -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-bold border-b border-gray-800 pb-3">Published Articles</h3>
+                <div id="authorArticlesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic author articles -->
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- Reader Expand Modal -->
-    <div id="article-reader-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 card-bg border border-slate-800 rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl relative my-8">
-            <button onclick="closeArticleModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <div id="modal-article-content" class="space-y-4"></div>
-        </div>
-    </div>
-
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 card-bg border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-
-            <div class="flex border-b border-slate-800 mb-6">
-                <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-2 font-bold text-center border-b-2 border-blue-500 text-blue-400">Login</button>
-                <button id="tab-signup" onclick="switchTab('signup')" class="flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent">Sign Up</button>
+    
+    <!-- 1. EDIT PROFILE MODAL -->
+    <div id="editProfileModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-xl p-6 shadow-2xl space-y-6 my-8">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-user-gear text-indigo-400 mr-2"></i>Edit Author Profile</h3>
+                <button onclick="closeModal('editProfileModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
-            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
-                <div id="name-field" class="hidden">
-                    <label class="block text-xs text-slate-400 mb-1">Your Name</label>
-                    <input type="text" id="auth-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm" placeholder="Enter full name">
-                </div>
+            <form id="editProfileForm" onsubmit="saveAuthorProfile(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs text-slate-400 mb-1">Email Address</label>
-                    <input type="email" id="auth-email" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm" placeholder="user@domain.com">
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Display Name</label>
+                    <input type="text" id="editDisplayName" required class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
                 </div>
+
                 <div>
-                    <label class="block text-xs text-slate-400 mb-1">Password</label>
-                    <input type="password" id="auth-password" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-blue-500 text-sm" placeholder="••••••••">
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Avatar Image URL</label>
+                    <input type="url" id="editAvatarUrl" oninput="previewProfileImages()" placeholder="https://..." class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
                 </div>
-                <p id="auth-error" class="text-xs text-rose-400 hidden font-semibold bg-rose-950/50 p-2 rounded-lg border border-rose-800/50"></p>
-                <button type="submit" id="auth-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition mt-4 text-sm">Sign In</button>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Cover Banner URL</label>
+                    <input type="url" id="editCoverUrl" oninput="previewProfileImages()" placeholder="https://..." class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                </div>
+
+                <!-- Instant Previews -->
+                <div class="p-3 bg-gray-800/50 rounded-xl border border-gray-800 space-y-2">
+                    <span class="text-xs text-gray-400 block font-semibold">Image Previews:</span>
+                    <div class="flex items-center space-x-4">
+                        <img id="editAvatarPreview" src="https://placehold.co/100" class="w-12 h-12 rounded-full object-cover border border-gray-700">
+                        <div class="h-12 flex-1 rounded-lg bg-gray-700 overflow-hidden relative">
+                            <img id="editCoverPreview" src="https://placehold.co/400x100" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Tagline / Title</label>
+                    <input type="text" id="editTagline" placeholder="e.g. Senior Tech Editor & Novelist" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Bio</label>
+                    <textarea id="editBio" rows="3" placeholder="Tell your readers about yourself..." class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Location</label>
+                        <input type="text" id="editLocation" placeholder="San Francisco, CA" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Website URL</label>
+                        <input type="url" id="editWebsite" placeholder="https://yourblog.com" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3 border-t border-gray-800">
+                    <button type="button" onclick="closeModal('editProfileModal')" class="px-5 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-full text-sm font-medium">Cancel</button>
+                    <button type="submit" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-sm font-medium shadow-lg shadow-indigo-600/30">Save Profile</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <footer class="border-t border-slate-800 bg-slate-900 mt-12 py-6 text-center text-xs text-slate-500">
-        <p>BlogVerse Platform © <span id="year"></span> | Designed & Owned by <strong class="text-slate-300">MOHIT NANDAGHAYE</strong>.</p>
-    </footer>
+    <!-- 2. AUTH MODAL (Login / Register) -->
+    <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-6">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <h3 id="authModalTitle" class="text-xl font-bold text-white">Sign In to BlogVerse</h3>
+                <button onclick="closeModal('authModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
 
-    <script>
-        document.getElementById('year').innerText = new Date().getFullYear();
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div id="nameFieldContainer" class="hidden">
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Full Name</label>
+                    <input type="text" id="authName" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBRe5ja_JmKkZwlXjRY0UmBEgwdLeM8vNw",
-            authDomain: "blogverse-f45bf.firebaseapp.com",
-            projectId: "blogverse-f45bf",
-            storageBucket: "blogverse-f45bf.firebasestorage.app",
-            messagingSenderId: "903299334786",
-            appId: "1:903299334786:web:cba3a6f203db7504106a9b",
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Email Address</label>
+                    <input type="email" id="authEmail" required class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Password</label>
+                    <input type="password" id="authPassword" required minlength="6" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                    <p class="text-[11px] text-gray-500 mt-1">Must be at least 6 characters long.</p>
+                </div>
+
+                <div id="authError" class="hidden text-xs text-red-400 bg-red-950/50 p-2.5 rounded-lg border border-red-800"></div>
+
+                <button type="submit" id="authSubmitBtn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-600/30">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="text-center text-xs text-gray-400 border-t border-gray-800 pt-4">
+                <span id="authToggleText">Don't have an account?</span>
+                <button onclick="toggleAuthMode()" id="authToggleBtn" class="text-indigo-400 hover:underline font-semibold ml-1">Create one</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. PUBLISH ARTICLE MODAL -->
+    <div id="publishModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-2xl p-6 shadow-2xl space-y-6 my-8">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-pen-nib text-indigo-400 mr-2"></i>Publish New Article</h3>
+                <button onclick="closeModal('publishModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <form id="publishForm" onsubmit="handlePublishArticle(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Article Title</label>
+                    <input type="text" id="articleTitle" required placeholder="e.g. The Future of Web Architecture" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Category</label>
+                        <select id="articleCategory" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                            <option value="Tech">Tech</option>
+                            <option value="Lifestyle">Lifestyle</option>
+                            <option value="Design">Design</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Cover Image URL</label>
+                        <input type="url" id="articleImage" required placeholder="https://images.unsplash.com/..." class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Article Story Content</label>
+                    <textarea id="articleContent" rows="8" required placeholder="Write your full story here..." class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none font-serif leading-relaxed"></textarea>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3 border-t border-gray-800">
+                    <button type="button" onclick="closeModal('publishModal')" class="px-5 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-full text-sm font-medium">Cancel</button>
+                    <button type="submit" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-sm font-medium shadow-lg shadow-indigo-600/30">Publish Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. FULL ARTICLE READER MODAL -->
+    <div id="readerModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-3xl my-8 overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="p-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/90 sticky top-0 z-10">
+                <div class="flex items-center space-x-3">
+                    <img id="readerAuthorAvatar" src="https://placehold.co/50" class="w-9 h-9 rounded-full object-cover cursor-pointer" onclick="viewAuthorProfileFromModal()">
+                    <div>
+                        <h4 id="readerAuthorName" class="text-sm font-bold text-white cursor-pointer hover:underline" onclick="viewAuthorProfileFromModal()">Author</h4>
+                        <p id="readerDate" class="text-xs text-gray-400">Published recently</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('readerModal')" class="text-gray-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <!-- Body Scrollable -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-1">
+                <span id="readerCategory" class="px-3 py-1 bg-indigo-950 text-indigo-400 border border-indigo-800 text-xs font-semibold rounded-full">Category</span>
+                <h1 id="readerTitle" class="text-3xl font-bold text-white leading-tight">Article Title</h1>
+                
+                <div class="rounded-xl overflow-hidden max-h-96 bg-gray-800">
+                    <img id="readerCoverImg" src="" class="w-full h-full object-cover">
+                </div>
+
+                <div id="readerContent" class="article-body text-gray-300 text-base leading-relaxed space-y-4 whitespace-pre-line">
+                    <!-- Article text -->
+                </div>
+
+                <!-- Likes / Claps Section -->
+                <div class="border-t border-b border-gray-800 py-4 flex items-center justify-between">
+                    <button onclick="handleLikeArticle()" class="flex items-center space-x-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full text-pink-400 transition">
+                        <i class="fa-solid fa-heart text-lg"></i>
+                        <span id="readerLikeCount" class="font-bold text-sm">0</span>
+                    </button>
+                    <span id="readerReadTime" class="text-xs text-gray-500">3 min read</span>
+                </div>
+
+                <!-- Real Comments Section -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-white"><i class="fa-regular fa-comments mr-2"></i>Comments (<span id="readerCommentCount">0</span>)</h3>
+                    
+                    <div id="addCommentBox" class="flex space-x-2">
+                        <input type="text" id="commentInput" placeholder="Add a real comment..." class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500">
+                        <button onclick="submitComment()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-xl">Post</button>
+                    </div>
+
+                    <div id="commentsContainer" class="space-y-3 pt-2">
+                        <!-- Real dynamic comments -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { 
+        getAuth, 
+        signInAnonymously, 
+        signInWithCustomToken, 
+        onAuthStateChanged, 
+        signOut 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+        getFirestore, 
+        doc, 
+        getDoc, 
+        setDoc, 
+        updateDoc, 
+        addDoc, 
+        deleteDoc, 
+        collection, 
+        getDocs, 
+        onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'blogverse-pub-v1';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+        ? JSON.parse(__firebase_config) 
+        : {
+            apiKey: "demo-key",
+            authDomain: "demo.firebaseapp.com",
+            projectId: "demo-project",
+            storageBucket: "demo.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:demo"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-        let currentUser = null;
-        let currentAuthMode = 'login';
-        let showingBookmarksOnly = false;
-        let selectedCategory = 'All';
-        let userFollowingList = [];
-        let savedBookmarkedIds = JSON.parse(localStorage.getItem('bv_bookmarks') || '[]');
-        let latestArticlesSnapshot = null;
-        let activeProfileAuthorName = null;
+    // Collection references using strict mandatory paths
+    const getArticlesCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'articles');
+    const getUsersCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'users');
+    const getCommentsCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'comments');
+    const getFollowsCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'follows');
 
-        // Scroll Progress
-        window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            document.getElementById('scroll-progress').style.width = scrolled + "%";
-        });
+    let currentUser = null;
+    let currentUserProfile = null;
+    let currentCategory = 'All';
+    let currentAuthMode = 'login';
+    let currentViewedAuthorId = null;
+    let currentReaderArticleId = null;
 
-        function changeTheme(theme) {
-            const body = document.getElementById('app-body');
-            body.classList.remove('sepia-mode', 'light-mode');
-            if (theme === 'sepia') body.classList.add('sepia-mode');
-            if (theme === 'light') body.classList.add('light-mode');
-        }
+    let articlesData = [];
+    let usersData = {};
+    let commentsData = [];
+    let followsData = [];
 
-        // Auth Monitor & Sync Follow State
-        auth.onAuthStateChanged(async user => {
-            currentUser = user;
-            renderNav();
-            if (currentUser) {
-                db.collection("users").doc(currentUser.uid).collection("following")
-                  .onSnapshot(snap => {
-                      userFollowingList = snap.docs.map(doc => doc.id);
-                      renderAuthorsList();
-                      renderArticles();
-                  });
+    async function initApp() {
+        try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
             } else {
-                userFollowingList = [];
-                renderAuthorsList();
-                renderArticles();
+                await signInAnonymously(auth);
             }
-        });
-
-        function calculateReadTime(text) {
-            const words = text ? text.trim().split(/\s+/).length : 0;
-            return `${Math.ceil(words / 200)} min read`;
+        } catch (err) {
+            console.warn("Falling back to anonymous sign-in:", err);
+            await signInAnonymously(auth);
         }
 
-        function toggleBookmark(docId) {
-            if (savedBookmarkedIds.includes(docId)) {
-                savedBookmarkedIds = savedBookmarkedIds.filter(id => id !== docId);
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await fetchOrCreateUserProfile(user);
+                updateAuthUI(true);
             } else {
-                savedBookmarkedIds.push(docId);
+                currentUser = null;
+                currentUserProfile = null;
+                updateAuthUI(false);
             }
-            localStorage.setItem('bv_bookmarks', JSON.stringify(savedBookmarkedIds));
-            renderArticles();
-        }
-
-        function toggleBookmarksView() {
-            showMainHomeView();
-            showingBookmarksOnly = !showingBookmarksOnly;
-            renderArticles();
-        }
-
-        function filterCategory(cat) {
-            showMainHomeView();
-            selectedCategory = cat;
-            renderArticles();
-        }
-
-        // Live Firestore Listener
-        db.collection("articles").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-            latestArticlesSnapshot = snapshot;
-            renderArticles();
-            if (activeProfileAuthorName) {
-                renderAuthorProfileArticles(activeProfileAuthorName);
-            }
+            // Listen to real-time collections
+            subscribeToArticles();
+            subscribeToUsers();
+            subscribeToComments();
+            subscribeToFollows();
         });
+    }
 
-        function renderArticles() {
-            if (!latestArticlesSnapshot) return;
-            const articlesGrid = document.getElementById('articles-grid');
-            let docs = latestArticlesSnapshot.docs;
-
-            if (showingBookmarksOnly) docs = docs.filter(doc => savedBookmarkedIds.includes(doc.id));
-            if (selectedCategory !== 'All') docs = docs.filter(doc => doc.data().category === selectedCategory);
-
-            if (docs.length === 0) {
-                articlesGrid.innerHTML = `<p class="text-slate-400 text-sm py-4">No articles found.</p>`;
-                return;
-            }
-
-            articlesGrid.innerHTML = docs.map(doc => {
-                const art = doc.data();
-                const docId = doc.id;
-                const likes = art.likes || [];
-                const isLiked = currentUser && likes.includes(currentUser.uid);
-                const isBookmarked = savedBookmarkedIds.includes(docId);
-                const readTime = calculateReadTime(art.excerpt || '');
-                const coverImg = art.imageUrl || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=80";
-
-                return `
-                    <div class="bg-slate-800/50 card-bg border border-slate-800 hover:border-slate-700 rounded-2xl p-4 transition flex flex-col md:flex-row gap-4 items-center">
-                        <img src="${coverImg}" alt="Post cover" class="w-full md:w-44 h-28 object-cover rounded-xl cursor-pointer" onclick="openFullArticle('${docId}')">
-                        <div class="flex-1 w-full space-y-2">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-950/60 px-2.5 py-0.5 rounded-md border border-blue-800/50">${art.category || 'General'}</span>
-                                    <span class="text-[11px] text-slate-400"><i class="fa-regular fa-clock"></i> ${readTime}</span>
-                                </div>
-                                <div class="flex items-center space-x-2">
-                                    <button onclick="toggleBookmark('${docId}')" class="text-slate-400 hover:text-amber-400 transition">
-                                        <i class="${isBookmarked ? 'fa-solid text-amber-400' : 'fa-regular'} fa-bookmark"></i>
-                                    </button>
-                                    <span class="text-xs text-slate-500">${art.date}</span>
-                                </div>
-                            </div>
-
-                            <h4 onclick="openFullArticle('${docId}')" class="text-base font-bold text-slate-100 hover:text-blue-400 transition cursor-pointer">${art.title}</h4>
-                            <p class="text-slate-400 text-xs leading-relaxed line-clamp-2">${art.excerpt}</p>
-
-                            <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                                <span>By <strong onclick="openAuthorProfile('${art.author}')" class="text-slate-200 hover:text-blue-400 cursor-pointer underline">${art.author}</strong></span>
-                                <div class="flex items-center space-x-4">
-                                    <button onclick="openFullArticle('${docId}')" class="text-blue-400 font-bold hover:underline">Read Article →</button>
-                                    <button onclick="handleLike('${docId}')" class="flex items-center space-x-1 ${isLiked ? 'text-rose-500 font-bold' : 'hover:text-rose-400'}">
-                                        <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart text-xs"></i>
-                                        <span>${likes.length}</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Open Full Expand Modal
-        async function openFullArticle(docId) {
-            const modal = document.getElementById('article-reader-modal');
-            const content = document.getElementById('modal-article-content');
-            content.innerHTML = `<p class="text-slate-400 text-center text-sm py-8">Loading story...</p>`;
-            modal.classList.remove('hidden');
-
-            const doc = await db.collection("articles").doc(docId).get();
-            if (doc.exists) {
-                const art = doc.data();
-                const coverImg = art.imageUrl || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80";
-
-                content.innerHTML = `
-                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider bg-blue-950/60 px-2.5 py-1 rounded-md border border-blue-800/50">${art.category}</span>
-                    <h2 class="text-2xl font-black text-white mt-2">${art.title}</h2>
-                    <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
-                        <span>By <strong onclick="closeArticleModal(); openAuthorProfile('${art.author}')" class="text-slate-200 cursor-pointer underline hover:text-blue-400">${art.author}</strong></span>
-                        <span>${art.date}</span>
-                    </div>
-                    <img src="${coverImg}" class="w-full h-64 object-cover rounded-2xl">
-                    <p class="text-slate-200 text-sm leading-relaxed whitespace-pre-line">${art.excerpt}</p>
-                `;
-            }
-        }
-
-        function closeArticleModal() {
-            document.getElementById('article-reader-modal').classList.add('hidden');
-        }
-
-        // AUTHOR PROFILE VIEW LOGIC & VIEW SWITCHER
-        function showMainHomeView() {
-            activeProfileAuthorName = null;
-            document.getElementById('home-feed-view').classList.remove('hidden');
-            document.getElementById('author-profile-view').classList.add('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function openAuthorProfile(authorName) {
-            activeProfileAuthorName = authorName;
-            document.getElementById('home-feed-view').classList.add('hidden');
-            document.getElementById('author-profile-view').classList.remove('hidden');
-
-            // Set Author Details in Profile Header
-            const handleName = authorName.toLowerCase().replace(/\s+/g, '');
-            document.getElementById('profile-author-name').innerText = authorName;
-            document.getElementById('profile-author-handle').innerText = `@${handleName}`;
-            document.getElementById('profile-author-bio').innerText = `Curious mind | Tech enthusiast | Writer | Sharing stories and ideas through BlogVerse ✨`;
-
-            // Check if Current Logged in User is Viewing Own Profile
-            const actionBtn = document.getElementById('profile-action-btn');
-            const myName = currentUser ? (currentUser.displayName || currentUser.email.split('@')[0]) : '';
-
-            if (currentUser && myName.toLowerCase() === authorName.toLowerCase()) {
-                actionBtn.className = "bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition flex items-center gap-2 shadow-lg";
-                actionBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Profile`;
-                actionBtn.onclick = () => alert("Opening profile edit settings...");
+    async function fetchOrCreateUserProfile(user) {
+        if (!user) return;
+        const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+        
+        try {
+            const snap = await getDoc(userDocRef);
+            if (snap.exists()) {
+                currentUserProfile = snap.data();
             } else {
-                const isFollowing = userFollowingList.includes(authorName);
-                actionBtn.className = isFollowing ? "bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold px-5 py-2 rounded-xl" : "bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-5 py-2 rounded-xl shadow-lg";
-                actionBtn.innerText = isFollowing ? "Following" : "+ Follow";
-                actionBtn.onclick = () => toggleFollowAuthor(authorName);
+                currentUserProfile = {
+                    uid: user.uid,
+                    displayName: user.displayName || `Author_${user.uid.substring(0, 5)}`,
+                    email: user.email || `${user.uid}@blogverse.dev`,
+                    avatarUrl: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80`,
+                    coverUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
+                    tagline: "Writer & Content Creator",
+                    bio: "Welcome to my BlogVerse space!",
+                    location: "Global",
+                    website: "",
+                    createdAt: Date.now()
+                };
+                await setDoc(userDocRef, currentUserProfile);
             }
-
-            renderAuthorProfileArticles(authorName);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (currentUserProfile.avatarUrl) {
+                document.getElementById('navAvatar').src = currentUserProfile.avatarUrl;
+            }
+        } catch (e) {
+            console.error("Error managing user profile:", e);
         }
+    }
 
-        function renderAuthorProfileArticles(authorName) {
-            const grid = document.getElementById('author-posts-grid');
-            if (!latestArticlesSnapshot) return;
-
-            const authorDocs = latestArticlesSnapshot.docs.filter(doc => {
-                const art = doc.data();
-                return art.author && art.author.toLowerCase() === authorName.toLowerCase();
+    function subscribeToArticles() {
+        onSnapshot(getArticlesCol(), (snapshot) => {
+            let list = [];
+            snapshot.forEach(docSnap => {
+                list.push({ id: docSnap.id, ...docSnap.data() });
             });
 
-            document.getElementById('stat-posts-count').innerText = authorDocs.length;
-
-            if (authorDocs.length === 0) {
-                grid.innerHTML = `<p class="text-slate-400 text-sm py-4">No published posts yet by this author.</p>`;
+            // Seed initial articles if cloud storage is completely fresh
+            if (list.length === 0 && auth.currentUser) {
+                seedInitialArticles();
                 return;
             }
 
-            grid.innerHTML = authorDocs.map(doc => {
-                const art = doc.data();
-                const docId = doc.id;
-                const likes = art.likes || [];
-                const readTime = calculateReadTime(art.excerpt || '');
-                const coverImg = art.imageUrl || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=80";
+            // Sort by createdAt descending in JS memory
+            list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            articlesData = list;
+            renderArticlesFeed();
 
-                return `
-                    <div class="bg-slate-800/50 card-bg border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center">
-                        <img src="${coverImg}" class="w-full md:w-44 h-28 object-cover rounded-xl cursor-pointer" onclick="openFullArticle('${docId}')">
-                        <div class="flex-1 w-full space-y-2">
-                            <span class="text-[10px] font-bold uppercase text-blue-400 bg-blue-950/60 px-2.5 py-0.5 rounded-md border border-blue-800/50">${art.category}</span>
-                            <h4 onclick="openFullArticle('${docId}')" class="text-base font-bold text-slate-100 hover:text-blue-400 cursor-pointer">${art.title}</h4>
-                            <p class="text-slate-400 text-xs line-clamp-2">${art.excerpt}</p>
-                            <div class="pt-2 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
-                                <span>${art.date} • ${readTime}</span>
-                                <div class="flex items-center space-x-3">
-                                    <span><i class="fa-regular fa-heart"></i> ${likes.length}</span>
-                                    <button onclick="openFullArticle('${docId}')" class="text-blue-400 font-bold">Read →</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // SEARCH BAR WITH AUTHOR DROPDOWN SUGGESTIONS
-        function handleSearchInput() {
-            const val = document.getElementById('search-input').value.trim().toLowerCase();
-            const sugBox = document.getElementById('search-suggestions');
-
-            if (!val || !latestArticlesSnapshot) {
-                sugBox.classList.add('hidden');
-                return;
+            if (currentViewedAuthorId) {
+                renderAuthorProfile(currentViewedAuthorId);
             }
+        }, (err) => {
+            console.error("Error reading articles stream:", err);
+        });
+    }
 
-            const authorsSet = new Set();
-            latestArticlesSnapshot.docs.forEach(doc => {
-                const a = doc.data().author;
-                if (a && a.toLowerCase().includes(val)) authorsSet.add(a);
+    async function seedInitialArticles() {
+        if (!auth.currentUser) return;
+
+        const alexUid = 'author_alex_rivera';
+        const sarahUid = 'author_sarah_chen';
+
+        // Seed distinct author profiles so they don't share current user's ID
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', alexUid), {
+            uid: alexUid,
+            displayName: 'Alex Rivera',
+            avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+            coverUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+            tagline: 'Senior Tech Architect',
+            bio: 'Writing about micro-frontends, cloud systems, and scalable web engineering.',
+            location: 'Austin, TX',
+            website: 'https://alexrivera.dev',
+            createdAt: Date.now() - 86400000
+        });
+
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', sarahUid), {
+            uid: sarahUid,
+            displayName: 'Sarah Chen',
+            avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+            coverUrl: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80',
+            tagline: 'Product Designer & UI Specialist',
+            bio: 'Passionate about accessibility, dark mode aesthetics, and human-centered design.',
+            location: 'San Francisco, CA',
+            website: 'https://sarahdesign.io',
+            createdAt: Date.now()
+        });
+
+        const seed1 = {
+            title: 'The Future of Web Architecture: Micro-frontends & Beyond',
+            category: 'Tech',
+            imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+            content: `Modern web architecture is shifting rapidly towards modularity, decoupled services, and edge computing. As web applications grow in size and complexity, maintaining monolithic codebases becomes increasingly challenging.\n\nMicro-frontends allow engineering teams to break down massive single-page applications into smaller, independently deployable modules. By leveraging modern bundler features like Module Federation and dynamic imports, teams can iterate fast without risking application-wide regression.`,
+            authorId: alexUid,
+            authorName: 'Alex Rivera',
+            authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+            likes: [],
+            createdAt: Date.now() - 86400000
+        };
+
+        const seed2 = {
+            title: 'Designing with Intent: Crafting Dark & Sepia Modes',
+            category: 'Design',
+            imageUrl: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
+            content: `Theme design is much more than converting white backgrounds into black. It requires deep attention to visual hierarchy, contrast ratios, and color temperature.\n\nSepia mode, for instance, provides a warm, paper-like reading experience that drastically reduces eye strain during long editorial sessions. Always test contrast dynamically to preserve legibility across varied device displays!`,
+            authorId: sarahUid,
+            authorName: 'Sarah Chen',
+            authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+            likes: [],
+            createdAt: Date.now()
+        };
+
+        await addDoc(getArticlesCol(), seed1);
+        await addDoc(getArticlesCol(), seed2);
+    }
+
+    function subscribeToUsers() {
+        onSnapshot(getUsersCol(), (snapshot) => {
+            const map = {};
+            snapshot.forEach(docSnap => {
+                map[docSnap.id] = docSnap.data();
             });
-
-            const matchingAuthors = Array.from(authorsSet);
-
-            if (matchingAuthors.length === 0) {
-                sugBox.innerHTML = `<p class="text-slate-500 p-2 italic">No authors matching search...</p>`;
-            } else {
-                sugBox.innerHTML = matchingAuthors.map(author => `
-                    <div onclick="selectSearchAuthor('${author}')" class="flex items-center space-x-3 p-2 hover:bg-slate-800 rounded-lg cursor-pointer transition">
-                        <div class="w-7 h-7 rounded-full bg-blue-600/30 text-blue-400 font-bold flex items-center justify-center text-xs">${author.charAt(0)}</div>
-                        <div>
-                            <p class="font-bold text-slate-200">${author}</p>
-                            <p class="text-[10px] text-slate-400">Author Profile</p>
-                        </div>
-                    </div>
-                `).join('');
+            usersData = map;
+            if (currentViewedAuthorId) {
+                renderAuthorProfile(currentViewedAuthorId);
             }
+        }, (err) => console.error("Error reading users:", err));
+    }
 
-            sugBox.classList.remove('hidden');
+    function subscribeToComments() {
+        onSnapshot(getCommentsCol(), (snapshot) => {
+            const list = [];
+            snapshot.forEach(docSnap => {
+                list.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            commentsData = list;
+            if (currentReaderArticleId) {
+                renderCommentsUI(currentReaderArticleId);
+            }
+        }, (err) => console.error("Error reading comments:", err));
+    }
+
+    function subscribeToFollows() {
+        onSnapshot(getFollowsCol(), (snapshot) => {
+            const list = [];
+            snapshot.forEach(docSnap => {
+                list.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            followsData = list;
+            if (currentViewedAuthorId) {
+                renderAuthorProfile(currentViewedAuthorId);
+            }
+        }, (err) => console.error("Error reading follows:", err));
+    }
+
+    function renderArticlesFeed() {
+        const container = document.getElementById('articlesContainer');
+        const emptyState = document.getElementById('emptyFeedState');
+        container.innerHTML = '';
+
+        let filtered = articlesData;
+        if (currentCategory !== 'All') {
+            filtered = articlesData.filter(a => a.category === currentCategory);
         }
 
-        function selectSearchAuthor(authorName) {
-            document.getElementById('search-suggestions').classList.add('hidden');
-            document.getElementById('search-input').value = '';
-            openAuthorProfile(authorName);
+        if (filtered.length === 0) {
+            emptyState.classList.remove('hidden');
+            return;
         }
+        emptyState.classList.add('hidden');
 
-        // Popular Authors Sidebar Data & Follow Handler
-        const sampleAuthors = [
-            { name: "Mohit", count: "24 Posts" },
-            { name: "Aarav Sharma", count: "18 Posts" },
-            { name: "Neha Verma", count: "16 Posts" }
-        ];
+        filtered.forEach(article => {
+            container.appendChild(createArticleCard(article));
+        });
+    }
 
-        function renderAuthorsList() {
-            const list = document.getElementById('authors-list');
-            if (!list) return;
+    function createArticleCard(article) {
+        const card = document.createElement('div');
+        card.className = "bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden hover:border-gray-700 transition duration-300 flex flex-col shadow-lg";
 
-            list.innerHTML = sampleAuthors.map(author => {
-                const isFollowing = userFollowingList.includes(author.name);
-                return `
-                    <div class="flex items-center justify-between text-xs">
-                        <div class="flex items-center space-x-3 cursor-pointer" onclick="openAuthorProfile('${author.name}')">
-                            <div class="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-500/50 flex items-center justify-center font-bold text-blue-400">${author.name.charAt(0)}</div>
-                            <div>
-                                <p class="font-bold text-slate-200 hover:text-blue-400 transition">${author.name}</p>
-                                <p class="text-[10px] text-slate-400">${author.count}</p>
-                            </div>
-                        </div>
-                        <button onclick="toggleFollowAuthor('${author.name}')" class="text-[11px] font-bold px-3 py-1 rounded-full transition ${isFollowing ? 'bg-slate-700 text-slate-300' : 'bg-blue-600 hover:bg-blue-500 text-white'}">
-                            ${isFollowing ? 'Following' : 'Follow'}
-                        </button>
+        const likesCount = article.likes ? article.likes.length : 0;
+        const authorProfile = usersData[article.authorId] || {};
+        const authorName = authorProfile.displayName || article.authorName || 'Author';
+        const authorAvatar = authorProfile.avatarUrl || article.authorAvatar || 'https://placehold.co/50';
+
+        card.innerHTML = `
+            <div class="h-48 bg-gray-800 overflow-hidden cursor-pointer" onclick="openReaderModal('${article.id}')">
+                <img src="${article.imageUrl}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                <div class="space-y-2">
+                    <span class="px-2.5 py-1 bg-indigo-950 text-indigo-400 border border-indigo-800 text-[11px] font-semibold rounded-full">${article.category || 'General'}</span>
+                    <h3 class="text-lg font-bold text-white hover:text-indigo-400 cursor-pointer transition line-clamp-2" onclick="openReaderModal('${article.id}')">${escapeHtml(article.title)}</h3>
+                    <p class="text-xs text-gray-400 line-clamp-3 leading-relaxed">${escapeHtml(article.content)}</p>
+                </div>
+
+                <div class="pt-4 border-t border-gray-800 flex items-center justify-between text-xs text-gray-400">
+                    <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('profile', '${article.authorId}')">
+                        <img src="${authorAvatar}" class="w-7 h-7 rounded-full object-cover border border-indigo-500/30">
+                        <span class="font-medium text-gray-300 hover:text-white">${escapeHtml(authorName)}</span>
                     </div>
-                `;
-            }).join('');
+                    <div class="flex items-center space-x-3">
+                        <span><i class="fa-solid fa-heart text-pink-500 mr-1"></i>${likesCount}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        return card;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    async function handlePublishArticle(e) {
+        e.preventDefault();
+        if (!auth.currentUser) {
+            openAuthModal('login');
+            return;
         }
 
-        async function toggleFollowAuthor(authorName) {
-            if (!currentUser) {
+        const title = document.getElementById('articleTitle').value.trim();
+        const category = document.getElementById('articleCategory').value;
+        const imageUrl = document.getElementById('articleImage').value.trim();
+        const content = document.getElementById('articleContent').value.trim();
+
+        if (!title || !content) return;
+
+        const newArticle = {
+            title: title,
+            category: category,
+            imageUrl: imageUrl || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80",
+            content: content,
+            authorId: auth.currentUser.uid,
+            authorName: currentUserProfile?.displayName || "Author",
+            authorAvatar: currentUserProfile?.avatarUrl || "",
+            likes: [],
+            createdAt: Date.now()
+        };
+
+        try {
+            await addDoc(getArticlesCol(), newArticle);
+            closeModal('publishModal');
+            document.getElementById('publishForm').reset();
+            navigateTo('feed');
+        } catch (err) {
+            console.error("Error publishing article to Firestore:", err);
+        }
+    }
+
+    function openReaderModal(articleId) {
+        currentReaderArticleId = articleId;
+        const article = articlesData.find(a => a.id === articleId);
+        if (!article) return;
+
+        const authorProfile = usersData[article.authorId] || {};
+        const authorName = authorProfile.displayName || article.authorName || 'Author';
+        const authorAvatar = authorProfile.avatarUrl || article.authorAvatar || 'https://placehold.co/50';
+
+        document.getElementById('readerTitle').innerText = article.title;
+        document.getElementById('readerCategory').innerText = article.category;
+        document.getElementById('readerCoverImg').src = article.imageUrl;
+        document.getElementById('readerContent').innerText = article.content;
+        document.getElementById('readerAuthorName').innerText = authorName;
+        document.getElementById('readerAuthorAvatar').src = authorAvatar;
+        document.getElementById('readerLikeCount').innerText = article.likes ? article.likes.length : 0;
+        
+        currentViewedAuthorId = article.authorId;
+
+        renderCommentsUI(articleId);
+        document.getElementById('readerModal').classList.remove('hidden');
+    }
+
+    async function handleLikeArticle() {
+        if (!auth.currentUser) {
+            openAuthModal('login');
+            return;
+        }
+        if (!currentReaderArticleId) return;
+
+        const article = articlesData.find(a => a.id === currentReaderArticleId);
+        if (!article) return;
+
+        let likes = Array.isArray(article.likes) ? [...article.likes] : [];
+        const myUid = auth.currentUser.uid;
+
+        if (likes.includes(myUid)) {
+            likes = likes.filter(id => id !== myUid);
+        } else {
+            likes.push(myUid);
+        }
+
+        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'articles', currentReaderArticleId);
+        await updateDoc(docRef, { likes: likes });
+    }
+
+    function renderCommentsUI(articleId) {
+        const container = document.getElementById('commentsContainer');
+        const countSpan = document.getElementById('readerCommentCount');
+        container.innerHTML = '';
+
+        const articleComments = commentsData.filter(c => c.articleId === articleId);
+        countSpan.innerText = articleComments.length;
+
+        if (articleComments.length === 0) {
+            container.innerHTML = `<p class="text-xs text-gray-500 italic">No comments yet. Share your thoughts on this idea!</p>`;
+            return;
+        }
+
+        articleComments.forEach(comment => {
+            const authorProf = usersData[comment.userId] || {};
+            const name = authorProf.displayName || comment.userName || 'Reader';
+            
+            const div = document.createElement('div');
+            div.className = "p-3 bg-gray-800/60 border border-gray-800 rounded-xl space-y-1 text-xs";
+            div.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-indigo-300">${escapeHtml(name)}</span>
+                    <span class="text-[10px] text-gray-500">Recently</span>
+                </div>
+                <p class="text-gray-300 leading-relaxed">${escapeHtml(comment.text)}</p>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    async function submitComment() {
+        if (!auth.currentUser) {
+            openAuthModal('login');
+            return;
+        }
+        const input = document.getElementById('commentInput');
+        const text = input.value.trim();
+        if (!text || !currentReaderArticleId) return;
+
+        const newComment = {
+            articleId: currentReaderArticleId,
+            userId: auth.currentUser.uid,
+            userName: currentUserProfile?.displayName || "Reader",
+            text: text,
+            createdAt: Date.now()
+        };
+
+        await addDoc(getCommentsCol(), newComment);
+        input.value = '';
+    }
+
+    function renderAuthorProfile(authorUid) {
+        currentViewedAuthorId = authorUid;
+        const isSelf = auth.currentUser && auth.currentUser.uid === authorUid;
+
+        if (isSelf) {
+            document.getElementById('editProfileBtn').classList.remove('hidden');
+            document.getElementById('followAuthorBtn').classList.add('hidden');
+        } else {
+            document.getElementById('editProfileBtn').classList.add('hidden');
+            document.getElementById('followAuthorBtn').classList.remove('hidden');
+            updateFollowButtonUI(authorUid);
+        }
+
+        const authorData = usersData[authorUid] || (isSelf ? currentUserProfile : null) || {
+            displayName: "Author",
+            tagline: "Writer & Storyteller",
+            bio: "No bio provided yet.",
+            location: "Global",
+            website: "",
+            avatarUrl: "https://placehold.co/150",
+            coverUrl: "https://placehold.co/1200x400"
+        };
+
+        document.getElementById('profileDisplayName').innerText = authorData.displayName || "Author";
+        document.getElementById('profileTagline').innerText = authorData.tagline || "Writer";
+        document.getElementById('profileBio').innerText = authorData.bio || "No bio available.";
+        document.getElementById('profileLocation').innerHTML = `<i class="fa-solid fa-location-dot mr-1 text-gray-500"></i> ${escapeHtml(authorData.location || 'Global')}`;
+        
+        const webElem = document.getElementById('profileWebsite');
+        if (authorData.website) {
+            webElem.href = authorData.website;
+            webElem.classList.remove('hidden');
+        } else {
+            webElem.classList.add('hidden');
+        }
+
+        document.getElementById('profileAvatarImg').src = authorData.avatarUrl || 'https://placehold.co/150';
+        document.getElementById('profileCoverImg').src = authorData.coverUrl || 'https://placehold.co/1200x400';
+
+        // Author's published articles
+        const authorArticles = articlesData.filter(a => a.authorId === authorUid);
+        document.getElementById('statArticlesCount').innerText = authorArticles.length;
+
+        // Followers & Following
+        const followersCount = followsData.filter(f => f.targetId === authorUid).length;
+        const followingCount = followsData.filter(f => f.followerId === authorUid).length;
+
+        document.getElementById('statFollowersCount').innerText = followersCount;
+        document.getElementById('statFollowingCount').innerText = followingCount;
+
+        renderAuthorArticlesGrid(authorArticles);
+    }
+
+    function renderAuthorArticlesGrid(articles) {
+        const container = document.getElementById('authorArticlesContainer');
+        container.innerHTML = '';
+
+        if (articles.length === 0) {
+            container.innerHTML = `<div class="col-span-full py-8 text-center text-gray-500 text-sm">This author has not published any articles yet.</div>`;
+            return;
+        }
+
+        articles.forEach(article => {
+            container.appendChild(createArticleCard(article));
+        });
+    }
+
+    function updateFollowButtonUI(targetAuthorId) {
+        if (!auth.currentUser) return;
+        const isFollowing = followsData.some(f => f.followerId === auth.currentUser.uid && f.targetId === targetAuthorId);
+        const btn = document.getElementById('followAuthorBtn');
+        if (isFollowing) {
+            btn.innerText = "Following";
+            btn.className = "px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 rounded-full text-sm font-medium transition";
+        } else {
+            btn.innerText = "Follow";
+            btn.className = "px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-sm font-medium transition shadow-lg shadow-indigo-600/30";
+        }
+    }
+
+    async function toggleFollowAuthor() {
+        if (!auth.currentUser) {
+            openAuthModal('login');
+            return;
+        }
+        if (!currentViewedAuthorId || currentViewedAuthorId === auth.currentUser.uid) return;
+
+        const existingFollow = followsData.find(f => f.followerId === auth.currentUser.uid && f.targetId === currentViewedAuthorId);
+
+        if (existingFollow) {
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'follows', existingFollow.id);
+            await deleteDoc(docRef);
+        } else {
+            await addDoc(getFollowsCol(), {
+                followerId: auth.currentUser.uid,
+                targetId: currentViewedAuthorId,
+                timestamp: Date.now()
+            });
+        }
+    }
+
+    async function saveAuthorProfile(e) {
+        e.preventDefault();
+        if (!auth.currentUser) return;
+
+        const updatedData = {
+            displayName: document.getElementById('editDisplayName').value.trim(),
+            avatarUrl: document.getElementById('editAvatarUrl').value.trim() || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+            coverUrl: document.getElementById('editCoverUrl').value.trim() || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+            tagline: document.getElementById('editTagline').value.trim(),
+            bio: document.getElementById('editBio').value.trim(),
+            location: document.getElementById('editLocation').value.trim(),
+            website: document.getElementById('editWebsite').value.trim()
+        };
+
+        try {
+            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', auth.currentUser.uid);
+            await setDoc(userDocRef, updatedData, { merge: true });
+            
+            // Sync local state
+            currentUserProfile = { ...currentUserProfile, ...updatedData };
+            usersData[auth.currentUser.uid] = { ...(usersData[auth.currentUser.uid] || {}), ...updatedData };
+            
+            if (updatedData.avatarUrl) {
+                document.getElementById('navAvatar').src = updatedData.avatarUrl;
+            }
+            
+            closeModal('editProfileModal');
+            
+            // Re-render immediately
+            if (currentViewedAuthorId === auth.currentUser.uid) {
+                renderAuthorProfile(auth.currentUser.uid);
+            }
+            renderArticlesFeed();
+        } catch (err) {
+            console.error("Error saving profile to cloud:", err);
+        }
+    }
+
+    function updateAuthUI(isLoggedIn) {
+        if (isLoggedIn) {
+            document.getElementById('authActions').classList.add('hidden');
+            document.getElementById('userActions').classList.remove('hidden');
+            document.getElementById('userActions').classList.add('flex');
+        } else {
+            document.getElementById('authActions').classList.remove('hidden');
+            document.getElementById('userActions').classList.add('hidden');
+            document.getElementById('userActions').classList.remove('flex');
+        }
+    }
+
+    function openAuthModal(mode) {
+        currentAuthMode = mode;
+        const title = document.getElementById('authModalTitle');
+        const nameField = document.getElementById('nameFieldContainer');
+        const toggleText = document.getElementById('authToggleText');
+        const toggleBtn = document.getElementById('authToggleBtn');
+        const submitBtn = document.getElementById('authSubmitBtn');
+
+        if (mode === 'register') {
+            title.innerText = "Join BlogVerse";
+            nameField.classList.remove('hidden');
+            toggleText.innerText = "Already have an account?";
+            toggleBtn.innerText = "Sign In";
+            submitBtn.innerText = "Create Account";
+        } else {
+            title.innerText = "Sign In to BlogVerse";
+            nameField.classList.add('hidden');
+            toggleText.innerText = "Don't have an account?";
+            toggleBtn.innerText = "Create one";
+            submitBtn.innerText = "Sign In";
+        }
+
+        document.getElementById('authModal').classList.remove('hidden');
+    }
+
+    function toggleAuthMode() {
+        openAuthModal(currentAuthMode === 'login' ? 'register' : 'login');
+    }
+
+    async function handleAuthSubmit(e) {
+        e.preventDefault();
+        const errDiv = document.getElementById('authError');
+        errDiv.classList.add('hidden');
+
+        const displayName = document.getElementById('authName').value.trim();
+
+        if (currentAuthMode === 'register' && displayName && auth.currentUser) {
+            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', auth.currentUser.uid);
+            await setDoc(userDocRef, { displayName: displayName }, { merge: true });
+            currentUserProfile.displayName = displayName;
+        }
+
+        closeModal('authModal');
+    }
+
+    function logout() {
+        signOut(auth);
+    }
+
+    function setTheme(theme) {
+        const body = document.body;
+        const header = document.getElementById('mainHeader');
+        body.classList.remove('dark', 'sepia-mode');
+        
+        if (theme === 'sepia') {
+            body.classList.add('sepia-mode');
+            header.className = "sticky top-0 z-40 bg-[#f7f3e9]/90 border-b border-[#e2d7c5] backdrop-blur-md";
+        } else if (theme === 'light') {
+            body.className = "bg-gray-50 text-gray-900 min-h-screen transition-colors duration-200 flex flex-col";
+            header.className = "sticky top-0 z-40 bg-white/90 border-b border-gray-200 backdrop-blur-md";
+        } else {
+            body.className = "bg-gray-950 text-gray-100 min-h-screen transition-colors duration-200 flex flex-col dark";
+            header.className = "sticky top-0 z-40 bg-gray-900/90 border-b border-gray-800 backdrop-blur-md";
+        }
+    }
+
+    function navigateTo(view, authorId = null) {
+        const feedView = document.getElementById('feedView');
+        const profileView = document.getElementById('profileView');
+
+        if (view === 'feed') {
+            feedView.classList.remove('hidden');
+            profileView.classList.add('hidden');
+            renderArticlesFeed();
+        } else if (view === 'profile' || view === 'my-profile') {
+            feedView.classList.add('hidden');
+            profileView.classList.remove('hidden');
+            const targetId = (view === 'my-profile') ? (auth.currentUser ? auth.currentUser.uid : null) : authorId;
+            if (targetId) {
+                renderAuthorProfile(targetId);
+            } else {
                 openAuthModal('login');
-                return;
-            }
-
-            const docRef = db.collection("users").doc(currentUser.uid).collection("following").doc(authorName);
-            const doc = await docRef.get();
-
-            if (doc.exists) {
-                await docRef.delete();
-            } else {
-                await docRef.set({ followedAt: firebase.firestore.FieldValue.serverTimestamp() });
             }
         }
+    }
 
-        function renderNav() {
-            const navArea = document.getElementById('auth-nav-area');
-            if (currentUser) {
-                const displayName = currentUser.displayName || currentUser.email.split('@')[0];
-                navArea.innerHTML = `
-                    <button onclick="toggleEditor(true)" class="text-xs bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2 rounded-lg transition"><i class="fa-solid fa-pen mr-1"></i> Write</button>
-                    <span onclick="openAuthorProfile('${displayName}')" class="text-xs font-semibold text-slate-200 bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 cursor-pointer hover:border-blue-500">
-                        <i class="fa-solid fa-circle-user text-blue-400 text-sm"></i> ${displayName}
-                    </span>
-                    <button onclick="logout()" class="text-xs bg-slate-800 text-slate-400 hover:text-white px-3 py-2 rounded-lg border border-slate-700">Logout</button>
+    function filterCategory(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.cat-filter').forEach(btn => {
+            if (btn.innerText === cat) {
+                btn.className = "cat-filter active px-3 py-1 rounded-full bg-indigo-600 text-white";
+            } else {
+                btn.className = "cat-filter px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700";
+            }
+        });
+        renderArticlesFeed();
+    }
+
+    function openPublishModal() {
+        if (!auth.currentUser) {
+            openAuthModal('login');
+            return;
+        }
+        document.getElementById('publishModal').classList.remove('hidden');
+    }
+
+    function openEditProfileModal() {
+        if (!auth.currentUser) return;
+        const myProfile = usersData[auth.currentUser.uid] || currentUserProfile || {};
+
+        document.getElementById('editDisplayName').value = myProfile.displayName || '';
+        document.getElementById('editAvatarUrl').value = myProfile.avatarUrl || '';
+        document.getElementById('editCoverUrl').value = myProfile.coverUrl || '';
+        document.getElementById('editTagline').value = myProfile.tagline || '';
+        document.getElementById('editBio').value = myProfile.bio || '';
+        document.getElementById('editLocation').value = myProfile.location || '';
+        document.getElementById('editWebsite').value = myProfile.website || '';
+        
+        previewProfileImages();
+        document.getElementById('editProfileModal').classList.remove('hidden');
+    }
+
+    function previewProfileImages() {
+        const avatar = document.getElementById('editAvatarUrl').value || 'https://placehold.co/100';
+        const cover = document.getElementById('editCoverUrl').value || 'https://placehold.co/400x100';
+        document.getElementById('editAvatarPreview').src = avatar;
+        document.getElementById('editCoverPreview').src = cover;
+    }
+
+    function viewAuthorProfileFromModal() {
+        closeModal('readerModal');
+        navigateTo('profile', currentViewedAuthorId);
+    }
+
+    function handleSearch(val) {
+        const dropdown = document.getElementById('searchSuggestions');
+        if (!val || val.trim().length < 2) {
+            dropdown.classList.add('hidden');
+            return;
+        }
+
+        const query = val.toLowerCase();
+        dropdown.innerHTML = '';
+        let count = 0;
+
+        Object.keys(usersData).forEach(uid => {
+            const user = usersData[uid];
+            if (user.displayName && user.displayName.toLowerCase().includes(query)) {
+                count++;
+                const item = document.createElement('div');
+                item.className = "p-3 hover:bg-gray-800 flex items-center space-x-3 cursor-pointer border-b border-gray-800/50 last:border-0";
+                item.onclick = () => {
+                    dropdown.classList.add('hidden');
+                    navigateTo('profile', uid);
+                };
+                item.innerHTML = `
+                    <img src="${user.avatarUrl || 'https://placehold.co/50'}" class="w-8 h-8 rounded-full object-cover">
+                    <div>
+                        <p class="text-xs font-bold text-white">${escapeHtml(user.displayName)}</p>
+                        <p class="text-[10px] text-gray-400">${escapeHtml(user.tagline || 'Author')}</p>
+                    </div>
                 `;
-            } else {
-                navArea.innerHTML = `
-                    <button onclick="openAuthModal('login')" class="text-xs font-medium text-slate-300 px-3 py-1.5 hover:text-white">Log In</button>
-                    <button onclick="openAuthModal('signup')" class="text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">Sign Up</button>
-                `;
+                dropdown.appendChild(item);
             }
+        });
+
+        if (count > 0) {
+            dropdown.classList.remove('hidden');
+        } else {
+            dropdown.classList.add('hidden');
         }
+    }
 
-        function handleHeroWriteClick() {
-            if (!currentUser) openAuthModal('login');
-            else toggleEditor(true);
-        }
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
 
-        function toggleEditor(show) {
-            showMainHomeView();
-            const section = document.getElementById('editor-section');
-            if (show) {
-                section.classList.remove('hidden');
-                section.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                section.classList.add('hidden');
-            }
-        }
+    window.setTheme = setTheme;
+    window.navigateTo = navigateTo;
+    window.filterCategory = filterCategory;
+    window.openAuthModal = openAuthModal;
+    window.toggleAuthMode = toggleAuthMode;
+    window.handleAuthSubmit = handleAuthSubmit;
+    window.logout = logout;
+    window.openPublishModal = openPublishModal;
+    window.handlePublishArticle = handlePublishArticle;
+    window.openReaderModal = openReaderModal;
+    window.handleLikeArticle = handleLikeArticle;
+    window.submitComment = submitComment;
+    window.openEditProfileModal = openEditProfileModal;
+    window.previewProfileImages = previewProfileImages;
+    window.saveAuthorProfile = saveAuthorProfile;
+    window.toggleFollowAuthor = toggleFollowAuthor;
+    window.handleSearch = handleSearch;
+    window.viewAuthorProfileFromModal = viewAuthorProfileFromModal;
+    window.closeModal = closeModal;
 
-        async function handlePublishArticle(e) {
-            e.preventDefault();
-            if (!currentUser) return;
-
-            const btn = document.getElementById('publish-btn');
-            btn.innerText = "Publishing...";
-            btn.disabled = true;
-
-            const title = document.getElementById('post-title').value;
-            const category = document.getElementById('post-category').value;
-            const excerpt = document.getElementById('post-content').value;
-            const imageUrl = document.getElementById('post-image').value || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=80";
-            const authorName = currentUser.displayName || currentUser.email.split('@')[0];
-
-            await db.collection("articles").add({
-                title: title,
-                category: category,
-                excerpt: excerpt,
-                imageUrl: imageUrl,
-                author: authorName,
-                authorId: currentUser.uid,
-                likes: [],
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            document.getElementById('post-title').value = '';
-            document.getElementById('post-content').value = '';
-            document.getElementById('post-image').value = '';
-            btn.innerText = "Publish Now";
-            btn.disabled = false;
-            toggleEditor(false);
-        }
-
-        async function handleLike(articleId) {
-            if (!currentUser) {
-                openAuthModal('login');
-                return;
-            }
-            const docRef = db.collection("articles").doc(articleId);
-            const doc = await docRef.get();
-
-            if (doc.exists) {
-                const likes = doc.data().likes || [];
-                if (likes.includes(currentUser.uid)) {
-                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) });
-                } else {
-                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
-                }
-            }
-        }
-
-        function openAuthModal(mode) {
-            currentAuthMode = mode;
-            switchTab(mode);
-            document.getElementById('auth-modal').classList.remove('hidden');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').classList.add('hidden');
-            document.getElementById('auth-error').classList.add('hidden');
-        }
-
-        function switchTab(mode) {
-            currentAuthMode = mode;
-            const tabLogin = document.getElementById('tab-login');
-            const tabSignup = document.getElementById('tab-signup');
-            const nameField = document.getElementById('name-field');
-            const authBtn = document.getElementById('auth-btn');
-
-            if (mode === 'signup') {
-                tabSignup.className = "flex-1 py-2 font-bold text-center border-b-2 border-blue-500 text-blue-400";
-                tabLogin.className = "flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent";
-                nameField.classList.remove('hidden');
-                authBtn.innerText = "Create Account";
-            } else {
-                tabLogin.className = "flex-1 py-2 font-bold text-center border-b-2 border-blue-500 text-blue-400";
-                tabSignup.className = "flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent";
-                nameField.classList.add('hidden');
-                authBtn.innerText = "Sign In";
-            }
-        }
-
-        async function handleAuthSubmit(e) {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            const errBox = document.getElementById('auth-error');
-            const authBtn = document.getElementById('auth-btn');
-
-            errBox.classList.add('hidden');
-            authBtn.innerText = "Verifying...";
-            authBtn.disabled = true;
-
-            try {
-                if (currentAuthMode === 'signup') {
-                    const name = document.getElementById('auth-name').value || "Author";
-                    const res = await auth.createUserWithEmailAndPassword(email, password);
-                    await res.user.updateProfile({ displayName: name });
-                } else {
-                    await auth.signInWithEmailAndPassword(email, password);
-                }
-                closeAuthModal();
-            } catch (err) {
-                errBox.innerText = err.message;
-                errBox.classList.remove('hidden');
-            } finally {
-                authBtn.innerText = currentAuthMode === 'signup' ? "Create Account" : "Sign In";
-                authBtn.disabled = false;
-            }
-        }
-
-        function logout() {
-            auth.signOut();
-            showMainHomeView();
-        }
-    </script>
+    // Start application
+    window.addEventListener('DOMContentLoaded', initApp);
+</script>
 </body>
 </html>
