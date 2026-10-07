@@ -346,20 +346,22 @@
             </div>
 
             <p class="text-xs text-gray-300 leading-relaxed bg-indigo-950/40 p-3 rounded-xl border border-indigo-900/40">
-                To connect live multi-user cloud syncing, paste your Web App Config JSON from <b>Firebase Console &gt; Project Settings &gt; General</b> below:
+                To connect live multi-user cloud syncing, paste your Web App Config from <b>Firebase Console &gt; Project Settings &gt; General</b> below (both JS object code or JSON are supported):
             </p>
 
             <form onsubmit="saveCustomFirebaseConfig(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Firebase Config JSON</label>
-                    <textarea id="cfgJsonInput" rows="5" required placeholder='{
-  "apiKey": "AIzaSy...",
-  "authDomain": "your-app.firebaseapp.com",
-  "projectId": "your-app-id",
-  "storageBucket": "your-app.appspot.com",
-  "messagingSenderId": "...",
-  "appId": "..."
-}' class="w-full px-4 py-2.5 bg-gray-950 border border-gray-700 rounded-xl text-xs font-mono text-gray-200 focus:border-indigo-500 focus:outline-none leading-relaxed"></textarea>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Firebase Config Code / JSON</label>
+                    <textarea id="cfgJsonInput" rows="6" required placeholder='Paste your Firebase config object or JSON here...
+
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "your-app.firebaseapp.com",
+  projectId: "your-app-id",
+  storageBucket: "your-app.appspot.com",
+  messagingSenderId: "...",
+  appId: "..."
+};' class="w-full px-4 py-2.5 bg-gray-950 border border-gray-700 rounded-xl text-xs font-mono text-gray-200 focus:border-indigo-500 focus:outline-none leading-relaxed"></textarea>
                 </div>
 
                 <div class="pt-2 flex items-center justify-between border-t border-gray-800">
@@ -1440,24 +1442,34 @@
 
     function saveCustomFirebaseConfig(e) {
         e.preventDefault();
-        const raw = document.getElementById('cfgJsonInput').value.trim();
+        let raw = document.getElementById('cfgJsonInput').value.trim();
         try {
+            // 1. Remove JS variable prefix if present (e.g., const firebaseConfig = {...})
+            raw = raw.replace(/^(const|let|var)\s+\w+\s*=\s*/i, '');
+            // 2. Remove trailing semicolon if present
+            raw = raw.replace(/;\s*$/, '');
+
             let parsed = null;
-            if (raw.startsWith('{')) {
+            try {
                 parsed = JSON.parse(raw);
-            } else {
-                throw new Error("Invalid JSON format. Please paste a valid Firebase Config JSON.");
+            } catch (jsonErr) {
+                // Auto-fix JS object formatting (unquoted keys, single quotes, trailing commas)
+                let jsonLike = raw
+                    .replace(/([{,]\s*)([a-zA-Z0-9_$]+)\s*:/g, '$1"$2":') // Quote keys
+                    .replace(/'/g, '"') // Replace single quotes with double quotes
+                    .replace(/,\s*([}\]])/g, '$1'); // Remove trailing commas
+                parsed = JSON.parse(jsonLike);
             }
 
-            if (!parsed.apiKey || !parsed.projectId) {
-                throw new Error("Config JSON must contain 'apiKey' and 'projectId'.");
+            if (!parsed || !parsed.apiKey || !parsed.projectId) {
+                throw new Error("Config must contain 'apiKey' and 'projectId'.");
             }
 
             localStorage.setItem('bv_firebase_config', JSON.stringify(parsed));
             showToast("Firebase Config saved! Reloading...", "success");
             setTimeout(() => window.location.reload(), 800);
         } catch (err) {
-            alert("Error in Config: " + err.message);
+            alert("Error in Config: " + err.message + "\n\nPlease ensure you paste either valid JSON or the standard Firebase config object snippet.");
         }
     }
 
