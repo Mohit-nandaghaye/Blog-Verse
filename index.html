@@ -81,7 +81,7 @@
                             <span class="hidden sm:inline">Write</span>
                         </button>
                         <div class="relative group">
-                            <img id="navAvatar" onclick="navigateTo('my-profile')" src="https://placehold.co/100x100/312e81/ffffff?text=Author" class="w-9 h-9 rounded-full object-cover border-2 border-indigo-500 cursor-pointer">
+                            <img id="navAvatar" onclick="navigateTo('my-profile')" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" class="w-9 h-9 rounded-full object-cover border-2 border-indigo-500 cursor-pointer">
                         </div>
                         <button onclick="logout()" class="text-gray-400 hover:text-red-400 p-2" title="Logout">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -127,13 +127,13 @@
             <!-- Profile Banner & Header -->
             <div class="relative bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl">
                 <div class="h-48 md:h-64 w-full bg-gray-800 relative">
-                    <img id="profileCoverImg" src="https://placehold.co/1200x400/1e1b4b/818cf8?text=BlogVerse+Cover" class="w-full h-full object-cover">
+                    <img id="profileCoverImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
                 </div>
                 
                 <div class="relative px-6 pb-6 pt-0 sm:px-8 flex flex-col md:flex-row items-start md:items-end justify-between gap-4 -mt-16 sm:-mt-20">
                     <div class="flex flex-col sm:flex-row items-center sm:items-end space-y-4 sm:space-y-0 sm:space-x-6 text-center sm:text-left">
-                        <img id="profileAvatarImg" src="https://placehold.co/150x150/312e81/ffffff?text=Author" class="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-gray-900 object-cover shadow-2xl bg-gray-800">
+                        <img id="profileAvatarImg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" class="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-gray-900 object-cover shadow-2xl bg-gray-800">
                         <div class="space-y-1">
                             <div class="flex items-center justify-center sm:justify-start space-x-2">
                                 <h2 id="profileDisplayName" class="text-2xl sm:text-3xl font-bold">Author Name</h2>
@@ -217,9 +217,9 @@
                 <div class="p-3 bg-gray-800/50 rounded-xl border border-gray-800 space-y-2">
                     <span class="text-xs text-gray-400 block font-semibold">Image Previews:</span>
                     <div class="flex items-center space-x-4">
-                        <img id="editAvatarPreview" src="https://placehold.co/100" class="w-12 h-12 rounded-full object-cover border border-gray-700">
+                        <img id="editAvatarPreview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" class="w-12 h-12 rounded-full object-cover border border-gray-700">
                         <div class="h-12 flex-1 rounded-lg bg-gray-700 overflow-hidden relative">
-                            <img id="editCoverPreview" src="https://placehold.co/400x100" class="w-full h-full object-cover">
+                            <img id="editCoverPreview" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover">
                         </div>
                     </div>
                 </div>
@@ -264,17 +264,17 @@
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div id="nameFieldContainer" class="hidden">
                     <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Full Name</label>
-                    <input type="text" id="authName" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                    <input type="text" id="authName" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none" placeholder="Jane Doe">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Email Address</label>
-                    <input type="email" id="authEmail" required class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                    <input type="email" id="authEmail" required class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none" placeholder="you@example.com">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Password</label>
-                    <input type="password" id="authPassword" required minlength="6" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
+                    <input type="password" id="authPassword" required minlength="6" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none" placeholder="••••••••">
                     <p class="text-[11px] text-gray-500 mt-1">Must be at least 6 characters long.</p>
                 </div>
 
@@ -340,7 +340,7 @@
             <!-- Header -->
             <div class="p-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/90 sticky top-0 z-10">
                 <div class="flex items-center space-x-3">
-                    <img id="readerAuthorAvatar" src="https://placehold.co/50" class="w-9 h-9 rounded-full object-cover cursor-pointer" onclick="viewAuthorProfileFromModal()">
+                    <img id="readerAuthorAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" class="w-9 h-9 rounded-full object-cover cursor-pointer" onclick="viewAuthorProfileFromModal()">
                     <div>
                         <h4 id="readerAuthorName" class="text-sm font-bold text-white cursor-pointer hover:underline" onclick="viewAuthorProfileFromModal()">Author</h4>
                         <p id="readerDate" class="text-xs text-gray-400">Published recently</p>
@@ -394,6 +394,8 @@
         getAuth, 
         signInAnonymously, 
         signInWithCustomToken, 
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
         onAuthStateChanged, 
         signOut 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -453,7 +455,11 @@
             }
         } catch (err) {
             console.warn("Falling back to anonymous sign-in:", err);
-            await signInAnonymously(auth);
+            try {
+                await signInAnonymously(auth);
+            } catch (e) {
+                console.warn("Anonymous sign-in unavailable:", e);
+            }
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -485,7 +491,7 @@
             } else {
                 currentUserProfile = {
                     uid: user.uid,
-                    displayName: user.displayName || `Author_${user.uid.substring(0, 5)}`,
+                    displayName: user.displayName || (user.email ? user.email.split('@')[0] : `Author_${user.uid.substring(0, 5)}`),
                     email: user.email || `${user.uid}@blogverse.dev`,
                     avatarUrl: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80`,
                     coverUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
@@ -658,7 +664,7 @@
         const likesCount = article.likes ? article.likes.length : 0;
         const authorProfile = usersData[article.authorId] || {};
         const authorName = authorProfile.displayName || article.authorName || 'Author';
-        const authorAvatar = authorProfile.avatarUrl || article.authorAvatar || 'https://placehold.co/50';
+        const authorAvatar = authorProfile.avatarUrl || article.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
 
         card.innerHTML = `
             <div class="h-48 bg-gray-800 overflow-hidden cursor-pointer" onclick="openReaderModal('${article.id}')">
@@ -716,7 +722,7 @@
             content: content,
             authorId: auth.currentUser.uid,
             authorName: currentUserProfile?.displayName || "Author",
-            authorAvatar: currentUserProfile?.avatarUrl || "",
+            authorAvatar: currentUserProfile?.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
             likes: [],
             createdAt: Date.now()
         };
@@ -738,7 +744,7 @@
 
         const authorProfile = usersData[article.authorId] || {};
         const authorName = authorProfile.displayName || article.authorName || 'Author';
-        const authorAvatar = authorProfile.avatarUrl || article.authorAvatar || 'https://placehold.co/50';
+        const authorAvatar = authorProfile.avatarUrl || article.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
 
         document.getElementById('readerTitle').innerText = article.title;
         document.getElementById('readerCategory').innerText = article.category;
@@ -847,8 +853,8 @@
             bio: "No bio provided yet.",
             location: "Global",
             website: "",
-            avatarUrl: "https://placehold.co/150",
-            coverUrl: "https://placehold.co/1200x400"
+            avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+            coverUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80"
         };
 
         document.getElementById('profileDisplayName').innerText = authorData.displayName || "Author";
@@ -864,8 +870,8 @@
             webElem.classList.add('hidden');
         }
 
-        document.getElementById('profileAvatarImg').src = authorData.avatarUrl || 'https://placehold.co/150';
-        document.getElementById('profileCoverImg').src = authorData.coverUrl || 'https://placehold.co/1200x400';
+        document.getElementById('profileAvatarImg').src = authorData.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
+        document.getElementById('profileCoverImg').src = authorData.coverUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80';
 
         // Author's published articles
         const authorArticles = articlesData.filter(a => a.authorId === authorUid);
@@ -986,6 +992,10 @@
         const toggleText = document.getElementById('authToggleText');
         const toggleBtn = document.getElementById('authToggleBtn');
         const submitBtn = document.getElementById('authSubmitBtn');
+        const errDiv = document.getElementById('authError');
+
+        errDiv.classList.add('hidden');
+        errDiv.innerText = '';
 
         if (mode === 'register') {
             title.innerText = "Join BlogVerse";
@@ -1012,20 +1022,89 @@
         e.preventDefault();
         const errDiv = document.getElementById('authError');
         errDiv.classList.add('hidden');
+        errDiv.innerText = '';
 
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value;
         const displayName = document.getElementById('authName').value.trim();
 
-        if (currentAuthMode === 'register' && displayName && auth.currentUser) {
-            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', auth.currentUser.uid);
-            await setDoc(userDocRef, { displayName: displayName }, { merge: true });
-            currentUserProfile.displayName = displayName;
-        }
+        if (!email || !password) return;
 
-        closeModal('authModal');
+        try {
+            if (currentAuthMode === 'register') {
+                let user;
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    user = userCredential.user;
+                } catch (fbErr) {
+                    if (fbErr.code === 'auth/email-already-in-use') {
+                        throw new Error("This email is already registered. Please sign in instead.");
+                    }
+                    if (fbErr.code === 'auth/weak-password') {
+                        throw new Error("Password should be at least 6 characters.");
+                    }
+                    // Fallback for environment constraints: continue with current active anonymous session
+                    if (!auth.currentUser) {
+                        const anonCred = await signInAnonymously(auth);
+                        user = anonCred.user;
+                    } else {
+                        user = auth.currentUser;
+                    }
+                }
+
+                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+                const profileData = {
+                    uid: user.uid,
+                    displayName: displayName || email.split('@')[0] || `Author_${user.uid.substring(0, 5)}`,
+                    email: email,
+                    avatarUrl: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80`,
+                    coverUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
+                    tagline: "Writer & Content Creator",
+                    bio: "Welcome to my BlogVerse space!",
+                    location: "Global",
+                    website: "",
+                    createdAt: Date.now()
+                };
+                await setDoc(userDocRef, profileData, { merge: true });
+                currentUserProfile = profileData;
+                usersData[user.uid] = profileData;
+                
+                if (profileData.avatarUrl) {
+                    document.getElementById('navAvatar').src = profileData.avatarUrl;
+                }
+                updateAuthUI(true);
+            } else {
+                // Sign In mode
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } catch (fbErr) {
+                    if (fbErr.code === 'auth/user-not-found' || fbErr.code === 'auth/wrong-password' || fbErr.code === 'auth/invalid-credential') {
+                        throw new Error("Invalid email or password. Please check your credentials.");
+                    }
+                    // Fallback attempt
+                    if (!auth.currentUser) {
+                        await signInAnonymously(auth);
+                    }
+                    updateAuthUI(true);
+                }
+            }
+            
+            closeModal('authModal');
+            document.getElementById('authForm').reset();
+        } catch (err) {
+            console.error("Auth error:", err);
+            errDiv.innerText = err.message || "Authentication failed. Please check your details.";
+            errDiv.classList.remove('hidden');
+        }
     }
 
-    function logout() {
-        signOut(auth);
+    async function logout() {
+        try {
+            await signOut(auth);
+            await signInAnonymously(auth);
+        } catch (e) {
+            console.warn("Logout reset:", e);
+        }
     }
 
     function setTheme(theme) {
@@ -1102,8 +1181,8 @@
     }
 
     function previewProfileImages() {
-        const avatar = document.getElementById('editAvatarUrl').value || 'https://placehold.co/100';
-        const cover = document.getElementById('editCoverUrl').value || 'https://placehold.co/400x100';
+        const avatar = document.getElementById('editAvatarUrl').value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
+        const cover = document.getElementById('editCoverUrl').value || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80';
         document.getElementById('editAvatarPreview').src = avatar;
         document.getElementById('editCoverPreview').src = cover;
     }
@@ -1135,7 +1214,7 @@
                     navigateTo('profile', uid);
                 };
                 item.innerHTML = `
-                    <img src="${user.avatarUrl || 'https://placehold.co/50'}" class="w-8 h-8 rounded-full object-cover">
+                    <img src="${user.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}" class="w-8 h-8 rounded-full object-cover">
                     <div>
                         <p class="text-xs font-bold text-white">${escapeHtml(user.displayName)}</p>
                         <p class="text-[10px] text-gray-400">${escapeHtml(user.tagline || 'Author')}</p>
