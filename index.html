@@ -3,38 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlogVerse — Platform Owned by MOHIT NANDAGHAYE</title>
+    <title>BlogVerse — Instagram Feed & Followers Demo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-    <style>
-        .sepia-mode { background-color: #fbf0d9 !important; color: #433422 !important; }
-        .sepia-mode header, .sepia-mode footer { background-color: #f3e5ab !important; border-color: #d7c49e !important; }
-        .sepia-mode .card-bg { background-color: #f3e5ab !important; border-color: #d7c49e !important; }
-        .sepia-mode .text-slate-100, .sepia-mode .text-slate-200 { color: #2d2113 !important; }
-        .sepia-mode .text-slate-400 { color: #6e5c47 !important; }
-
-        .light-mode { background-color: #f8fafc !important; color: #0f172a !important; }
-        .light-mode header, .light-mode footer { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
-        .light-mode .card-bg { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
-        .light-mode .text-slate-100, .light-mode .text-slate-200 { color: #0f172a !important; }
-        .light-mode .text-slate-400 { color: #64748b !important; }
-    </style>
 </head>
-<body id="app-body" class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
-
-    <!-- Reading Progress Bar -->
-    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-emerald-400 z-50 w-0 transition-all duration-75"></div>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
 
     <!-- Header Navigation -->
     <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-40 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="filterArticles('all')">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="setFeedMode('explore')">
                 <div class="bg-emerald-500 text-slate-900 font-black px-2.5 py-1 rounded-lg text-lg">BV</div>
                 <div>
                     <h1 class="font-bold text-lg leading-none">BlogVerse</h1>
@@ -42,120 +24,54 @@
                 </div>
             </div>
 
-            <!-- Header Controls & Auth -->
-            <div class="flex items-center space-x-3">
-                <!-- Theme Switcher -->
-                <select onchange="changeTheme(this.value)" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2 py-1.5 focus:outline-none cursor-pointer">
-                    <option value="dark">🌙 Dark</option>
-                    <option value="sepia">📜 Sepia</option>
-                    <option value="light">☀️ Light</option>
-                </select>
-
-                <!-- Bookmarks Tab Button -->
-                <button onclick="toggleBookmarksView()" id="bookmark-filter-btn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-bookmark text-amber-400"></i> Saved
-                </button>
-
-                <div class="flex items-center space-x-2" id="auth-nav-area"></div>
+            <!-- Feed Mode Toggle -->
+            <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700 text-xs">
+                <button onclick="setFeedMode('explore')" id="btn-explore" class="px-3 py-1.5 rounded-lg font-bold bg-emerald-500 text-slate-900">Explore</button>
+                <button onclick="setFeedMode('following')" id="btn-following" class="px-3 py-1.5 rounded-lg font-bold text-slate-400">Following Feed</button>
             </div>
+
+            <div class="flex items-center space-x-3" id="nav-auth"></div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8">
         
-        <!-- Welcome Banner -->
-        <section class="mb-8 bg-gradient-to-r from-emerald-950 via-slate-800 to-slate-900 border border-emerald-500/30 rounded-2xl p-6 shadow-lg">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-500/30 font-semibold">Live Interactive Studio</span>
-                    <h2 class="text-2xl font-bold mt-2" id="feed-title">Welcome to BlogVerse Studio</h2>
-                    <p class="text-slate-400 text-sm mt-1">Platform Architecture & Sole Ownership managed by <span class="text-emerald-400 font-bold">MOHIT NANDAGHAYE</span>.</p>
-                </div>
-                <div id="hero-action-btn"></div>
-            </div>
-        </section>
+        <!-- Feed Header -->
+        <div class="mb-6 flex justify-between items-center">
+            <h2 id="feed-heading" class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-compass text-emerald-400"></i> Explore All Posts
+            </h2>
+            <button onclick="toggleEditor(true)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-4 py-2 rounded-xl text-xs transition">+ Create Post</button>
+        </div>
 
-        <!-- Write Article Form -->
-        <section id="editor-section" class="hidden mb-10 bg-slate-800/80 card-bg border border-emerald-500/50 rounded-2xl p-6 shadow-xl">
-            <h3 class="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-pen-nib"></i> Publish New Article
-            </h3>
-            <form onsubmit="handlePublishArticle(event)" class="space-y-4">
+        <!-- Editor Modal / Box -->
+        <section id="editor-section" class="hidden mb-8 bg-slate-800 border border-emerald-500/50 rounded-2xl p-6 shadow-xl">
+            <h3 id="editor-title" class="text-lg font-bold text-emerald-400 mb-4">Publish New Post</h3>
+            <form onsubmit="handlePostSubmit(event)" class="space-y-4">
+                <input type="hidden" id="edit-article-id" value="">
                 <div>
-                    <label class="block text-xs text-slate-400 mb-1">Article Title</label>
-                    <input type="text" id="post-title" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Enter article title...">
+                    <label class="block text-xs text-slate-400 mb-1">Title</label>
+                    <input type="text" id="post-title" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500 text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs text-slate-400 mb-1">Category</label>
-                    <select id="post-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500">
-                        <option value="Technology">Technology</option>
-                        <option value="Business">Business</option>
-                        <option value="Stories">Stories</option>
-                        <option value="Creativity">Creativity</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Content / Story</label>
-                    <textarea id="post-content" rows="4" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Write your full article here..."></textarea>
+                    <label class="block text-xs text-slate-400 mb-1">Content</label>
+                    <textarea id="post-content" rows="3" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500 text-sm"></textarea>
                 </div>
                 <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="toggleEditor(false)" class="px-4 py-2 text-slate-400 hover:text-slate-200 text-sm font-semibold">Cancel</button>
-                    <button type="submit" id="publish-btn" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-6 py-2 rounded-xl transition">Publish Now</button>
+                    <button type="button" onclick="toggleEditor(false)" class="px-4 py-2 text-slate-400 text-xs font-semibold">Cancel</button>
+                    <button type="submit" id="save-post-btn" class="bg-emerald-500 text-slate-900 font-bold px-5 py-2 rounded-xl text-xs">Publish</button>
                 </div>
             </form>
         </section>
 
-        <!-- Feed Section -->
-        <section class="space-y-6">
-            <h3 class="text-xl font-bold flex items-center gap-2">
-                <i class="fa-solid fa-newspaper text-emerald-400"></i> Articles
-            </h3>
-            <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <p class="text-slate-400 text-sm col-span-2">Loading articles from live database...</p>
-            </div>
-        </section>
+        <!-- Feed List -->
+        <div id="articles-feed" class="space-y-6">
+            <p class="text-slate-400 text-sm">Loading feed...</p>
+        </div>
     </main>
 
-    <!-- Login / Sign Up Modal -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 card-bg border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-
-            <div class="flex border-b border-slate-800 mb-6">
-                <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-2 font-bold text-center border-b-2 border-emerald-500 text-emerald-400">Login</button>
-                <button id="tab-signup" onclick="switchTab('signup')" class="flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent">Sign Up</button>
-            </div>
-
-            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
-                <div id="name-field" class="hidden">
-                    <label class="block text-xs text-slate-400 mb-1">Your Name</label>
-                    <input type="text" id="auth-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Enter full name">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Email Address</label>
-                    <input type="email" id="auth-email" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="user@domain.com">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Password</label>
-                    <input type="password" id="auth-password" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="••••••••">
-                </div>
-                <p id="auth-error" class="text-xs text-red-400 hidden"></p>
-                <button type="submit" id="auth-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-2.5 rounded-xl transition mt-4">Sign In</button>
-            </form>
-        </div>
-    </div>
-
-    <footer class="border-t border-slate-800 bg-slate-900 mt-12 py-6 text-center text-xs text-slate-500">
-        <p>BlogVerse Platform © <span id="year"></span> | Designed & Owned by <strong class="text-slate-300">MOHIT NANDAGHAYE</strong>.</p>
-    </footer>
-
     <script>
-        document.getElementById('year').innerText = new Date().getFullYear();
-        const OWNER_NAME = "MOHIT NANDAGHAYE";
-
         const firebaseConfig = {
             apiKey: "AIzaSyBRe5ja_JmKkZwlXjRY0UmBEgwdLeM8vNw",
             authDomain: "blogverse-f45bf.firebaseapp.com",
@@ -170,374 +86,159 @@
         const db = firebase.firestore();
 
         let currentUser = null;
-        let currentAuthMode = 'login';
-        let showingBookmarksOnly = false;
-        let savedBookmarkedIds = JSON.parse(localStorage.getItem('bv_bookmarks') || '[]');
+        let currentFeedMode = 'explore';
+        let followedUserIds = [];
 
-        // Reading Scroll Progress Indicator
-        window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            document.getElementById('scroll-progress').style.width = scrolled + "%";
-        });
-
-        // Theme Switcher Logic
-        function changeTheme(theme) {
-            const body = document.getElementById('app-body');
-            body.classList.remove('sepia-mode', 'light-mode');
-            if (theme === 'sepia') body.classList.add('sepia-mode');
-            if (theme === 'light') body.classList.add('light-mode');
-        }
-
-        // Monitor Real-time Authentication
-        auth.onAuthStateChanged(user => {
+        auth.onAuthStateChanged(async user => {
             currentUser = user;
             renderNav();
+            if (currentUser) {
+                await fetchFollowingList();
+            }
+            loadFeed();
         });
 
-        // Calculate Estimated Reading Time
-        function calculateReadTime(text) {
-            const words = text ? text.trim().split(/\s+/).length : 0;
-            const minutes = Math.ceil(words / 200);
-            return `${minutes} min read`;
-        }
-
-        // Bookmark Toggle Logic
-        function toggleBookmark(docId) {
-            if (savedBookmarkedIds.includes(docId)) {
-                savedBookmarkedIds = savedBookmarkedIds.filter(id => id !== docId);
-            } else {
-                savedBookmarkedIds.push(docId);
-            }
-            localStorage.setItem('bv_bookmarks', JSON.stringify(savedBookmarkedIds));
-            renderArticles();
-        }
-
-        function toggleBookmarksView() {
-            showingBookmarksOnly = !showingBookmarksOnly;
-            const btn = document.getElementById('bookmark-filter-btn');
-            const title = document.getElementById('feed-title');
-            
-            if (showingBookmarksOnly) {
-                btn.classList.add('bg-amber-500/20', 'border-amber-500/50');
-                title.innerText = "Your Saved Articles";
-            } else {
-                btn.classList.remove('bg-amber-500/20', 'border-amber-500/50');
-                title.innerText = "Welcome to BlogVerse Studio";
-            }
-            renderArticles();
-        }
-
-        let latestArticlesSnapshot = null;
-
-        // Firestore Real-time Listener
-        db.collection("articles").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-            latestArticlesSnapshot = snapshot;
-            renderArticles();
-        });
-
-        function renderArticles() {
-            if (!latestArticlesSnapshot) return;
-            const articlesGrid = document.getElementById('articles-grid');
-
-            let docs = latestArticlesSnapshot.docs;
-            if (showingBookmarksOnly) {
-                docs = docs.filter(doc => savedBookmarkedIds.includes(doc.id));
-            }
-
-            if (docs.length === 0) {
-                articlesGrid.innerHTML = `<p class="text-slate-400 text-sm col-span-2">${showingBookmarksOnly ? 'No saved articles yet.' : 'No articles published yet. Be the first to write one!'}</p>`;
-                return;
-            }
-
-            articlesGrid.innerHTML = docs.map(doc => {
-                const art = doc.data();
-                const docId = doc.id;
-                const likes = art.likes || [];
-                const reactions = art.reactions || { fire: 0, idea: 0, clap: 0 };
-                const isLiked = currentUser && likes.includes(currentUser.uid);
-                const isBookmarked = savedBookmarkedIds.includes(docId);
-                const readTime = calculateReadTime(art.excerpt || '');
-
-                return `
-                    <div class="bg-slate-800/50 card-bg border border-slate-800 hover:border-slate-700 rounded-2xl p-5 transition flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50">${art.category}</span>
-                                    <span class="text-[11px] text-slate-400"><i class="fa-regular fa-clock"></i> ${readTime}</span>
-                                </div>
-                                <div class="flex items-center space-x-2">
-                                    <button onclick="toggleBookmark('${docId}')" class="text-slate-400 hover:text-amber-400 transition" title="Save Article">
-                                        <i class="${isBookmarked ? 'fa-solid text-amber-400' : 'fa-regular'} fa-bookmark"></i>
-                                    </button>
-                                    <span class="text-xs text-slate-500">${art.date}</span>
-                                </div>
-                            </div>
-                            <h4 class="text-lg font-bold text-slate-100 mb-2">${art.title}</h4>
-                            <p class="text-slate-400 text-sm leading-relaxed mb-4">${art.excerpt}</p>
-                        </div>
-                        <div>
-                            <!-- Emoji Reactions Toolbar -->
-                            <div class="flex items-center space-x-2 mb-3 pt-2 border-t border-slate-800/60">
-                                <button onclick="handleReaction('${docId}', 'fire')" class="bg-slate-900/60 hover:bg-slate-700/50 px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 border border-slate-800 transition">
-                                    🔥 <span>${reactions.fire || 0}</span>
-                                </button>
-                                <button onclick="handleReaction('${docId}', 'idea')" class="bg-slate-900/60 hover:bg-slate-700/50 px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 border border-slate-800 transition">
-                                    💡 <span>${reactions.idea || 0}</span>
-                                </button>
-                                <button onclick="handleReaction('${docId}', 'clap')" class="bg-slate-900/60 hover:bg-slate-700/50 px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 border border-slate-800 transition">
-                                    👏 <span>${reactions.clap || 0}</span>
-                                </button>
-                            </div>
-
-                            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                                <span>By <strong class="text-slate-200">${art.author}</strong></span>
-                                <div class="flex items-center space-x-4">
-                                    <!-- Like Button -->
-                                    <button onclick="handleLike('${docId}')" class="flex items-center space-x-1 ${isLiked ? 'text-rose-500 font-bold' : 'hover:text-rose-400'} transition">
-                                        <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart text-sm"></i>
-                                        <span>${likes.length}</span>
-                                    </button>
-                                    <!-- Comment Toggle Button -->
-                                    <button onclick="toggleComments('${docId}')" class="flex items-center space-x-1 hover:text-emerald-400 transition">
-                                        <i class="fa-regular fa-comment text-sm"></i>
-                                        <span id="comment-count-${docId}">Comments</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Comment Section -->
-                            <div id="comments-section-${docId}" class="hidden mt-4 pt-4 border-t border-slate-700/50 space-y-3">
-                                <div id="comments-list-${docId}" class="space-y-2 max-h-40 overflow-y-auto text-xs pr-1">
-                                    <p class="text-slate-500">Loading comments...</p>
-                                </div>
-                                
-                                <form onsubmit="handleAddComment(event, '${docId}')" class="flex gap-2 mt-2">
-                                    <input type="text" id="comment-input-${docId}" placeholder="Write a comment..." required class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                                    <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs transition">Post</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Reaction Counter Handler
-        async function handleReaction(articleId, reactionType) {
-            if (!currentUser) {
-                openAuthModal('login');
-                return;
-            }
-
-            const docRef = db.collection("articles").doc(articleId);
-            await docRef.update({
-                [`reactions.${reactionType}`]: firebase.firestore.FieldValue.increment(1)
-            });
+        async function fetchFollowingList() {
+            if (!currentUser) return;
+            const snap = await db.collection("users").doc(currentUser.uid).collection("following").get();
+            followedUserIds = snap.docs.map(doc => doc.id);
         }
 
         function renderNav() {
-            const navArea = document.getElementById('auth-nav-area');
-            const heroBtn = document.getElementById('hero-action-btn');
-
+            const nav = document.getElementById('nav-auth');
             if (currentUser) {
-                const displayName = currentUser.displayName || currentUser.email.split('@')[0];
-                navArea.innerHTML = `
-                    <button onclick="toggleEditor(true)" class="text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-3 py-2 rounded-lg transition"><i class="fa-solid fa-pen mr-1"></i> Write</button>
-                    <span class="text-sm font-medium text-slate-200"><i class="fa-solid fa-user-circle text-emerald-400"></i> ${displayName}</span>
-                    <button onclick="logout()" class="text-xs bg-slate-800 text-slate-400 hover:text-slate-200 px-3 py-2 rounded-lg border border-slate-700">Logout</button>
-                `;
-                heroBtn.innerHTML = `
-                    <button onclick="toggleEditor(true)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-5 py-2.5 rounded-xl shadow-lg transition">Create New Post</button>
+                nav.innerHTML = `
+                    <span class="text-xs text-slate-300 font-medium"><i class="fa-solid fa-user-circle text-emerald-400"></i> ${currentUser.displayName || currentUser.email.split('@')[0]}</span>
+                    <button onclick="auth.signOut()" class="text-xs bg-slate-800 text-slate-400 px-3 py-1.5 rounded-lg border border-slate-700">Logout</button>
                 `;
             } else {
-                navArea.innerHTML = `
-                    <button onclick="openAuthModal('login')" class="text-sm font-medium text-slate-300 px-3 py-1.5">Log In</button>
-                    <button onclick="openAuthModal('signup')" class="text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-4 py-1.5 rounded-lg transition">Sign Up</button>
-                `;
-                heroBtn.innerHTML = `
-                    <button onclick="openAuthModal('signup')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-5 py-2.5 rounded-xl shadow-lg transition">Start Writing</button>
-                `;
+                nav.innerHTML = `<button onclick="auth.signInAnonymously()" class="text-xs bg-emerald-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg">Quick Guest Login</button>`;
             }
+        }
+
+        function setFeedMode(mode) {
+            currentFeedMode = mode;
+            document.getElementById('btn-explore').className = mode === 'explore' ? 'px-3 py-1.5 rounded-lg font-bold bg-emerald-500 text-slate-900' : 'px-3 py-1.5 rounded-lg font-bold text-slate-400';
+            document.getElementById('btn-following').className = mode === 'following' ? 'px-3 py-1.5 rounded-lg font-bold bg-emerald-500 text-slate-900' : 'px-3 py-1.5 rounded-lg font-bold text-slate-400';
+            document.getElementById('feed-heading').innerHTML = mode === 'explore' ? '<i class="fa-solid fa-compass text-emerald-400"></i> Explore All Posts' : '<i class="fa-solid fa-user-group text-emerald-400"></i> Following Feed';
+            loadFeed();
+        }
+
+        function loadFeed() {
+            let query = db.collection("articles").orderBy("timestamp", "desc");
+
+            if (currentFeedMode === 'following') {
+                if (!currentUser) {
+                    document.getElementById('articles-feed').innerHTML = `<p class="text-slate-400 text-sm">Please log in to view your personalized following feed.</p>`;
+                    return;
+                }
+                const filterIds = [...followedUserIds, currentUser.uid];
+                if (filterIds.length === 0) {
+                    document.getElementById('articles-feed').innerHTML = `<p class="text-slate-400 text-sm">You are not following anyone yet.</p>`;
+                    return;
+                }
+                query = query.where("authorId", "in", filterIds.slice(0, 10));
+            }
+
+            query.onSnapshot(snapshot => {
+                const feed = document.getElementById('articles-feed');
+                if (snapshot.empty) {
+                    feed.innerHTML = `<p class="text-slate-400 text-sm">No posts found.</p>`;
+                    return;
+                }
+
+                feed.innerHTML = snapshot.docs.map(doc => {
+                    const art = doc.data();
+                    const docId = doc.id;
+                    const isOwner = currentUser && art.authorId === currentUser.uid;
+                    const isFollowing = followedUserIds.includes(art.authorId);
+
+                    return `
+                        <div class="bg-slate-800/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-bold text-sm text-slate-200">${art.author}</span>
+                                    ${currentUser && !isOwner ? `
+                                        <button onclick="toggleFollow('${art.authorId}')" class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isFollowing ? 'bg-slate-700 text-slate-300' : 'bg-emerald-500 text-slate-900'}">
+                                            ${isFollowing ? 'Following' : '+ Follow'}
+                                        </button>
+                                    ` : ''}
+                                </div>
+                                ${isOwner ? `
+                                    <button onclick="openEditModal('${docId}', \`${art.title}\`, \`${art.excerpt}\`)" class="text-xs text-amber-400 hover:underline">
+                                        <i class="fa-solid fa-pen"></i> Edit
+                                    </button>
+                                ` : ''}
+                            </div>
+
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-100">${art.title}</h3>
+                                <p class="text-slate-300 text-sm mt-1">${art.excerpt}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
         }
 
         function toggleEditor(show) {
-            const section = document.getElementById('editor-section');
-            if (show) {
-                section.classList.remove('hidden');
-                section.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                section.classList.add('hidden');
+            document.getElementById('editor-section').classList.toggle('hidden', !show);
+            if (!show) {
+                document.getElementById('edit-article-id').value = '';
+                document.getElementById('post-title').value = '';
+                document.getElementById('post-content').value = '';
             }
         }
 
-        async function handlePublishArticle(e) {
+        function openEditModal(id, title, content) {
+            document.getElementById('edit-article-id').value = id;
+            document.getElementById('post-title').value = title;
+            document.getElementById('post-content').value = content;
+            document.getElementById('editor-title').innerText = "Edit Your Post";
+            document.getElementById('save-post-btn').innerText = "Update Post";
+            toggleEditor(true);
+        }
+
+        async function handlePostSubmit(e) {
             e.preventDefault();
             if (!currentUser) return;
 
-            const btn = document.getElementById('publish-btn');
-            btn.innerText = "Publishing...";
-            btn.disabled = true;
-
+            const editId = document.getElementById('edit-article-id').value;
             const title = document.getElementById('post-title').value;
-            const category = document.getElementById('post-category').value;
-            const excerpt = document.getElementById('post-content').value;
-            const authorName = currentUser.displayName || currentUser.email.split('@')[0];
+            const content = document.getElementById('post-content').value;
 
-            await db.collection("articles").add({
-                title: title,
-                category: category,
-                excerpt: excerpt,
-                author: authorName,
-                likes: [],
-                reactions: { fire: 0, idea: 0, clap: 0 },
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            if (editId) {
+                await db.collection("articles").doc(editId).update({
+                    title: title,
+                    excerpt: content,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } else {
+                await db.collection("articles").add({
+                    title: title,
+                    excerpt: content,
+                    author: currentUser.displayName || currentUser.email.split('@')[0],
+                    authorId: currentUser.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
 
-            document.getElementById('post-title').value = '';
-            document.getElementById('post-content').value = '';
-            btn.innerText = "Publish Now";
-            btn.disabled = false;
             toggleEditor(false);
         }
 
-        async function handleLike(articleId) {
-            if (!currentUser) {
-                openAuthModal('login');
-                return;
-            }
-
-            const docRef = db.collection("articles").doc(articleId);
-            const doc = await docRef.get();
+        async function toggleFollow(targetUserId) {
+            if (!currentUser) return;
+            const followingRef = db.collection("users").doc(currentUser.uid).collection("following").doc(targetUserId);
+            const doc = await followingRef.get();
 
             if (doc.exists) {
-                const likes = doc.data().likes || [];
-                const userId = currentUser.uid;
-
-                if (likes.includes(userId)) {
-                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayRemove(userId) });
-                } else {
-                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayUnion(userId) });
-                }
-            }
-        }
-
-        function toggleComments(articleId) {
-            const commentSec = document.getElementById(`comments-section-${articleId}`);
-            commentSec.classList.toggle('hidden');
-
-            if (!commentSec.classList.contains('hidden')) {
-                db.collection("articles").doc(articleId).collection("comments")
-                  .orderBy("timestamp", "asc")
-                  .onSnapshot(snapshot => {
-                      const list = document.getElementById(`comments-list-${articleId}`);
-                      const countSpan = document.getElementById(`comment-count-${articleId}`);
-
-                      countSpan.innerText = `${snapshot.size} Comments`;
-
-                      if (snapshot.empty) {
-                          list.innerHTML = `<p class="text-slate-500 italic">No comments yet. Write the first one!</p>`;
-                          return;
-                      }
-
-                      list.innerHTML = snapshot.docs.map(cDoc => {
-                          const c = cDoc.data();
-                          return `
-                              <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800">
-                                  <div class="flex justify-between items-center text-[10px] text-slate-400 font-medium mb-1">
-                                      <span class="text-emerald-400">${c.author}</span>
-                                      <span>${c.date}</span>
-                                  </div>
-                                  <p class="text-slate-200 text-xs">${c.text}</p>
-                              </div>
-                          `;
-                      }).join('');
-                  });
-            }
-        }
-
-        async function handleAddComment(e, articleId) {
-            e.preventDefault();
-            if (!currentUser) {
-                openAuthModal('login');
-                return;
-            }
-
-            const input = document.getElementById(`comment-input-${articleId}`);
-            const commentText = input.value.trim();
-            if (!commentText) return;
-
-            const authorName = currentUser.displayName || currentUser.email.split('@')[0];
-
-            await db.collection("articles").doc(articleId).collection("comments").add({
-                text: commentText,
-                author: authorName,
-                date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            input.value = '';
-        }
-
-        function openAuthModal(mode) {
-            currentAuthMode = mode;
-            switchTab(mode);
-            document.getElementById('auth-modal').classList.remove('hidden');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').classList.add('hidden');
-            document.getElementById('auth-error').classList.add('hidden');
-        }
-
-        function switchTab(mode) {
-            currentAuthMode = mode;
-            const tabLogin = document.getElementById('tab-login');
-            const tabSignup = document.getElementById('tab-signup');
-            const nameField = document.getElementById('name-field');
-            const authBtn = document.getElementById('auth-btn');
-
-            if (mode === 'signup') {
-                tabSignup.className = "flex-1 py-2 font-bold text-center border-b-2 border-emerald-500 text-emerald-400";
-                tabLogin.className = "flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent";
-                nameField.classList.remove('hidden');
-                authBtn.innerText = "Create Account";
+                await followingRef.delete();
+                followedUserIds = followedUserIds.filter(id => id !== targetUserId);
             } else {
-                tabLogin.className = "flex-1 py-2 font-bold text-center border-b-2 border-emerald-500 text-emerald-400";
-                tabSignup.className = "flex-1 py-2 font-bold text-center text-slate-400 border-b-2 border-transparent";
-                nameField.classList.add('hidden');
-                authBtn.innerText = "Sign In";
+                await followingRef.set({ followedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                followedUserIds.push(targetUserId);
             }
-        }
-
-        async function handleAuthSubmit(e) {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            const errBox = document.getElementById('auth-error');
-            errBox.classList.add('hidden');
-
-            try {
-                if (currentAuthMode === 'signup') {
-                    const name = document.getElementById('auth-name').value || "Author";
-                    const res = await auth.createUserWithEmailAndPassword(email, password);
-                    await res.user.updateProfile({ displayName: name });
-                } else {
-                    await auth.signInWithEmailAndPassword(email, password);
-                }
-                closeAuthModal();
-            } catch (err) {
-                errBox.innerText = err.message;
-                errBox.classList.remove('hidden');
-            }
-        }
-
-        function logout() {
-            auth.signOut();
-            toggleEditor(false);
+            loadFeed();
         }
     </script>
 </body>
