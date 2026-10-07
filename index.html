@@ -1,9 +1,2266 @@
-/* ============================================================
-   BLOGVERSE — FIREBASE AUTH + LOGIN TRACKING
-   Replace your current Firebase Auth + auth functions with this
-   ============================================================ */
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    <title>Blogverse - Social & Blogging Platform</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+
+            theme: {
+                extend: {
+
+                    colors: {
+
+                        x: {
+                            black: '#000000',
+                            dark: '#0f1419',
+                            card: '#16181c',
+                            border: '#2f3336',
+                            muted: '#71767b',
+
+                            blue: '#6366f1',
+                            blueHover: '#4f46e5',
+
+                            pink: '#f91880',
+                            green: '#00ba7c'
+                        }
+
+                    }
+
+                }
+            }
+        }
+    </script>
+
+
+    <!-- FontAwesome Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chirp:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        body {
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
+            background-color: #000000;
+
+            color: #e7e9ea;
+
+        }
+
+
+        /* ================================
+           CUSTOM SCROLLBAR
+        ================================= */
+
+        ::-webkit-scrollbar {
+
+            width: 6px;
+            height: 6px;
+
+        }
+
+
+        ::-webkit-scrollbar-track {
+
+            background: #000000;
+
+        }
+
+
+        ::-webkit-scrollbar-thumb {
+
+            background: #2f3336;
+
+            border-radius: 9999px;
+
+        }
+
+
+        ::-webkit-scrollbar-thumb:hover {
+
+            background: #53585c;
+
+        }
+
+
+        /* ================================
+           DIM MODE
+        ================================= */
+
+        body.dim-mode {
+
+            background-color: #15202b !important;
+
+            color: #f7f9f9 !important;
+
+        }
+
+
+        .dim-mode .bg-black,
+        .dim-mode .bg-x-black {
+
+            background-color: #15202b !important;
+
+        }
+
+
+        .dim-mode .border-x-border {
+
+            border-color: #38444d !important;
+
+        }
+
+
+        .dim-mode .bg-x-card {
+
+            background-color: #1e2732 !important;
+
+        }
+
+
+        /* ================================
+           LIGHT MODE
+        ================================= */
+
+        body.light-mode {
+
+            background-color: #ffffff !important;
+
+            color: #0f1419 !important;
+
+        }
+
+
+        .light-mode .bg-black,
+        .light-mode .bg-x-black {
+
+            background-color: #ffffff !important;
+
+        }
+
+
+        .light-mode .border-x-border {
+
+            border-color: #eff3f4 !important;
+
+        }
+
+
+        .light-mode .bg-x-card {
+
+            background-color: #f7f9f9 !important;
+
+        }
+
+
+        .light-mode .text-x-muted {
+
+            color: #536471 !important;
+
+        }
+
+
+        .light-mode .text-white {
+
+            color: #0f1419 !important;
+
+        }
+
+
+        .light-mode .hover\:bg-white\/10:hover {
+
+            background-color:
+                rgba(15, 20, 25, 0.1) !important;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body
+    class="bg-black text-gray-100 min-h-screen flex justify-center selection:bg-x-blue selection:text-white"
+>
+
+
+    <!-- ============================================
+         MAIN APPLICATION WRAPPER
+    ============================================= -->
+
+    <div
+        class="w-full max-w-7xl min-h-screen flex justify-between relative"
+    >
+
+
+        <!-- ============================================
+             LEFT NAVIGATION SIDEBAR
+        ============================================= -->
+
+        <header
+            class="w-16 xl:w-64 h-screen sticky top-0 flex flex-col justify-between p-2 xl:px-4 py-3 border-r border-x-border z-30 select-none"
+        >
+
+            <div class="space-y-2">
+
+
+                <!-- BLOGVERSE LOGO -->
+
+                <div
+                    class="p-3 w-fit rounded-full hover:bg-white/10 cursor-pointer transition flex items-center space-x-3"
+                    onclick="navigateToNav('home')"
+                >
+
+                    <div
+                        class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-black text-xl shadow-lg relative"
+                    >
+
+                        <i class="fa-solid fa-blog text-lg"></i>
+
+
+                        <span
+                            id="cloudStatusDot"
+                            class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-black rounded-full shadow-sm animate-pulse"
+                            title="Firebase Cloud Sync Active"
+                        ></span>
+
+                    </div>
+
+
+                    <div class="hidden xl:flex flex-col">
+
+                        <span
+                            class="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400"
+                        >
+                            Blogverse
+                        </span>
+
+
+                        <span
+                            class="text-[10px] text-emerald-400 font-bold tracking-widest uppercase -mt-1"
+                        >
+
+                            <i
+                                class="fa-solid fa-cloud text-[9px] mr-1"
+                            ></i>
+
+                            Cloud Live
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ========================================
+                     NAVIGATION ITEMS
+                ========================================= -->
+
+                <nav class="space-y-1">
+
+
+                    <!-- HOME -->
+
+                    <button
+                        onclick="navigateToNav('home')"
+                        id="navHome"
+                        class="nav-btn active-nav w-full flex items-center space-x-4 p-3 rounded-full hover:bg-white/10 transition text-xl font-medium"
+                    >
+
+                        <i
+                            class="fa-solid fa-house text-2xl w-7 text-center"
+                        ></i>
+
+                        <span class="hidden xl:inline">
+                            Home
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- EXPLORE -->
+
+                    <button
+                        onclick="navigateToNav('explore')"
+                        id="navExplore"
+                        class="nav-btn w-full flex items-center space-x-4 p-3 rounded-full hover:bg-white/10 transition text-xl font-medium"
+                    >
+
+                        <i
+                            class="fa-solid fa-magnifying-glass text-2xl w-7 text-center"
+                        ></i>
+
+                        <span class="hidden xl:inline">
+                            Explore
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- NOTIFICATIONS -->
+
+                    <button
+                        onclick="navigateToNav('notifications')"
+                        id="navNotifications"
+                        class="nav-btn w-full flex items-center space-x-4 p-3 rounded-full hover:bg-white/10 transition text-xl font-medium relative"
+                    >
+
+                        <div
+                            class="relative w-7 text-center"
+                        >
+
+                            <i
+                                class="fa-regular fa-bell text-2xl"
+                            ></i>
+
+
+                            <span
+                                class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-x-blue rounded-full"
+                            ></span>
+
+                        </div>
+
+
+                        <span class="hidden xl:inline">
+                            Notifications
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- MESSAGES -->
+
+                    <button
+                        onclick="navigateToNav('messages')"
+                        id="navMessages"
+                        class="nav-btn w-full flex items-center space-x-4 p-3 rounded-full hover:bg-white/10 transition text-xl font-medium"
+                    >
+
+                        <i
+                            class="fa-regular fa-envelope text-2xl w-7 text-center"
+                        ></i>
+
+
+                        <span class="hidden xl:inline">
+                            Messages
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- BOOKMARKS -->
+
+                    <button
+                        onclick="navigateToNav('bookmarks')"
+                        id="navBookmarks"
+                        class="nav-btn w-full flex items-center space-x-4 p-3 rounded-full hover:bg-white/10 transition text-xl font-medium"
+                    >
+
+                        <i
+                            class="fa-regular fa-bookmark text-2xl w-7 text-center"
+                        ></i>
+
+
+                        <span class="hidden xl:inline">
+                            Bookmarks
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- PROFILE -->
+
+                    <button
+                        onclick="navigateToNav('profile')"
+                        id="navProfile"
+                        class="nav-btn w-full flex items-center space-x-4 p-3 rounded-full hover:bg-white/10 transition text-xl font-medium"
+                    >
+
+                        <i
+                            class="fa-regular fa-user text-2xl w-7 text-center"
+                        ></i>
+
+
+                        <span class="hidden xl:inline">
+                            Profile
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- DISPLAY -->
+
+                    <button
+                        onclick="toggleThemeModal()"
+                        class="w-full flex items-center space-x-4 p-3 rounded-full hover:bg-white/10 transition text-xl font-medium"
+                    >
+
+                        <i
+                            class="fa-solid fa-palette text-2xl w-7 text-center text-x-blue"
+                        ></i>
+
+
+                        <span class="hidden xl:inline">
+                            Display
+                        </span>
+
+                    </button>
+
+                </nav>
+
+
+
+                <!-- ========================================
+                     COMPOSE POST BUTTON
+                ========================================= -->
+
+                <button
+                    onclick="openComposeModal()"
+                    class="w-full bg-x-blue hover:bg-x-blueHover text-white font-bold p-3 xl:py-3.5 rounded-full transition shadow-lg mt-4 flex items-center justify-center"
+                >
+
+                    <i
+                        class="fa-solid fa-feather-pointed xl:hidden text-xl"
+                    ></i>
+
+
+                    <span class="hidden xl:inline text-lg">
+                        Post
+                    </span>
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 USER ACCOUNT BOTTOM CARD
+            ========================================= -->
+
+            <div
+                id="sidebarUserBadge"
+                onclick="openAuthModal('login')"
+                class="p-2.5 rounded-full hover:bg-white/10 transition cursor-pointer flex items-center justify-between"
+            >
+
+                <div
+                    class="flex items-center space-x-3"
+                >
+
+                    <img
+                        id="sidebarAvatar"
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80"
+                        class="w-10 h-10 rounded-full object-cover"
+                    >
+
+
+                    <div
+                        class="hidden xl:block leading-tight overflow-hidden"
+                    >
+
+                        <p
+                            id="sidebarName"
+                            class="font-bold text-sm truncate text-white"
+                        >
+                            Guest User
+                        </p>
+
+
+                        <p
+                            id="sidebarHandle"
+                            class="text-xs text-x-muted truncate"
+                        >
+                            @guest
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <i
+                    class="fa-solid fa-ellipsis hidden xl:block text-x-muted text-sm"
+                ></i>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ============================================
+             MAIN FEED / CONTENT CENTER COLUMN
+        ============================================= -->
+
+        <main
+            class="flex-1 max-w-[600px] min-h-screen border-r border-x-border pb-16 sm:pb-0"
+        >
+
+
+            <!-- ========================================
+                 HOME VIEW
+            ========================================= -->
+
+            <div
+                id="viewHome"
+                class="feed-view"
+            >
+
+
+                <!-- STICKY TOP TAB HEADER -->
+
+                <div
+                    class="sticky top-0 bg-black/80 backdrop-blur-md border-b border-x-border z-20 flex"
+                >
+
+                    <button
+                        onclick="switchFeedTab('foryou')"
+                        id="tabForYou"
+                        class="flex-1 py-3.5 hover:bg-white/5 transition text-center font-bold text-sm relative"
+                    >
+
+                        <span
+                            class="py-3 border-b-4 border-x-blue text-white"
+                        >
+                            For you
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        onclick="switchFeedTab('following')"
+                        id="tabFollowing"
+                        class="flex-1 py-3.5 hover:bg-white/5 transition text-center font-bold text-sm relative"
+                    >
+
+                        <span
+                            class="py-3 text-x-muted"
+                        >
+                            Following
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- ========================================
+                     POST COMPOSER
+                ========================================= -->
+
+                <div
+                    class="border-b border-x-border p-4"
+                >
+
+                    <div
+                        class="flex space-x-3"
+                    >
+
+                        <img
+                            id="composerUserAvatar"
+                            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80"
+                            class="w-10 h-10 rounded-full object-cover"
+                        >
+
+
+                        <div class="flex-1">
+
+                            <textarea
+                                id="composerInput"
+                                rows="2"
+                                placeholder="What is happening?!"
+                                class="w-full bg-transparent text-xl text-white placeholder-gray-500 resize-none outline-none"
+                            ></textarea>
+
+
+                            <div
+                                class="flex items-center justify-between mt-2"
+                            >
+
+                                <div
+                                    class="flex items-center space-x-1 text-x-blue"
+                                >
+
+                                    <button
+                                        onclick="showToast('Media upload coming soon!', 'info')"
+                                        class="p-2 rounded-full hover:bg-x-blue/10"
+                                    >
+                                        <i class="fa-regular fa-image"></i>
+                                    </button>
+
+
+                                    <button
+                                        onclick="showToast('GIF feature coming soon!', 'info')"
+                                        class="p-2 rounded-full hover:bg-x-blue/10"
+                                    >
+                                        <i class="fa-solid fa-g"></i>
+                                    </button>
+
+
+                                    <button
+                                        onclick="showToast('Emoji picker coming soon!', 'info')"
+                                        class="p-2 rounded-full hover:bg-x-blue/10"
+                                    >
+                                        <i class="fa-regular fa-face-smile"></i>
+                                    </button>
+
+                                </div>
+
+
+                                <button
+                                    onclick="createPost()"
+                                    class="bg-x-blue hover:bg-x-blueHover text-white font-bold px-5 py-2 rounded-full transition"
+                                >
+                                    Post
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ========================================
+                     FEED POSTS
+                ========================================= -->
+
+                <div
+                    id="mainFeedContainer"
+                    class="divide-y divide-x-border"
+                >
+
+                    <!-- Posts loaded dynamically -->
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 EXPLORE VIEW
+            ========================================= -->
+
+            <div
+                id="viewExplore"
+                class="feed-view hidden"
+            >
+
+                <div
+                    class="sticky top-0 bg-black/80 backdrop-blur-md p-3 border-b border-x-border z-20"
+                >
+
+                    <div class="relative">
+
+                        <i
+                            class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-x-muted"
+                        ></i>
+
+
+                        <input
+                            type="text"
+                            id="exploreSearchInput"
+                            oninput="handleGlobalSearch(this.value)"
+                            placeholder="Search Blogverse..."
+                            class="w-full bg-x-card border border-transparent focus:border-x-blue focus:bg-black rounded-full pl-11 pr-4 py-2.5 text-sm text-white focus:outline-none transition"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-4 space-y-4">
+
+                    <h2 class="font-extrabold text-xl">
+                        Trends for you
+                    </h2>
+
+
+                    <div
+                        id="exploreTrendsList"
+                        class="space-y-4"
+                    >
+                        <!-- Dynamic Explore Trends -->
+                    </div>
+
+                </div>
+
+            </div><!-- ================= PROFILE VIEW ================= -->
+
+<div id="viewProfile" class="feed-view hidden">
+
+    <!-- Profile Header -->
+
+    <div
+        class="sticky top-0 bg-black/80 backdrop-blur-md p-3 border-b border-x-border z-20 flex items-center space-x-6"
+    >
+
+        <button
+            onclick="navigateToNav('home')"
+            class="hover:bg-white/10 p-2 rounded-full text-white transition"
+        >
+            <i class="fa-solid fa-arrow-left text-lg"></i>
+        </button>
+
+        <div>
+
+            <h2
+                id="profileHeaderName"
+                class="font-bold text-lg leading-tight"
+            >
+                Profile Name
+            </h2>
+
+            <p
+                id="profilePostCount"
+                class="text-xs text-x-muted"
+            >
+                0 Posts
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Cover Banner & Avatar -->
+
+    <div class="relative">
+
+        <div class="h-44 bg-x-card overflow-hidden">
+
+            <img
+                id="profileCoverImg"
+                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80"
+                class="w-full h-full object-cover"
+            >
+
+        </div>
+
+
+        <div
+            class="px-4 pb-4 flex justify-between items-end relative -mt-16 mb-3"
+        >
+
+            <img
+                id="profileAvatarImg"
+                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80"
+                class="w-32 h-32 rounded-full border-4 border-black object-cover bg-x-card"
+            >
+
+
+            <div id="profileActionArea">
+
+                <button
+                    id="btnEditProfile"
+                    onclick="openEditProfileModal()"
+                    class="px-4 py-1.5 rounded-full border border-x-border hover:bg-white/10 font-bold text-sm transition text-white"
+                >
+                    Edit profile
+                </button>
+
+
+                <button
+                    id="btnFollowUser"
+                    onclick="toggleFollowCurrentProfile()"
+                    class="hidden px-5 py-1.5 rounded-full bg-white text-black hover:bg-gray-200 font-bold text-sm transition"
+                >
+                    Follow
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Profile Details -->
+
+        <div class="px-4 space-y-3">
+
+            <div>
+
+                <div class="flex items-center space-x-1">
+
+                    <h3
+                        id="profileDisplayName"
+                        class="font-extrabold text-xl text-white"
+                    >
+                        Display Name
+                    </h3>
+
+                    <i
+                        class="fa-solid fa-circle-check text-x-blue text-base"
+                    ></i>
+
+                </div>
+
+
+                <p
+                    id="profileHandle"
+                    class="text-sm text-x-muted"
+                >
+                    @handle
+                </p>
+
+            </div>
+
+
+            <p
+                id="profileBioText"
+                class="text-sm leading-relaxed text-gray-200"
+            >
+                No bio provided yet.
+            </p>
+
+
+            <div
+                class="flex flex-wrap items-center gap-3 text-sm text-x-muted"
+            >
+
+                <span id="profileLocation">
+
+                    <i class="fa-solid fa-location-dot mr-1"></i>
+
+                    Earth
+
+                </span>
+
+
+                <span id="profileJoinDate">
+
+                    <i class="fa-regular fa-calendar mr-1"></i>
+
+                    Joined Blogverse
+
+                </span>
+
+            </div>
+
+
+            <!-- Followers / Following -->
+
+            <div
+                class="flex items-center space-x-5 text-sm"
+            >
+
+                <button
+                    onclick="showToast('Following list coming soon!', 'info')"
+                    class="hover:underline"
+                >
+
+                    <strong
+                        id="profileFollowingCount"
+                        class="text-white"
+                    >
+                        0
+                    </strong>
+
+                    <span class="text-x-muted">
+                        Following
+                    </span>
+
+                </button>
+
+
+                <button
+                    onclick="showToast('Followers list coming soon!', 'info')"
+                    class="hover:underline"
+                >
+
+                    <strong
+                        id="profileFollowersCount"
+                        class="text-white"
+                    >
+                        0
+                    </strong>
+
+                    <span class="text-x-muted">
+                        Followers
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Profile Tabs -->
+
+        <div
+            class="flex border-b border-x-border mt-4"
+        >
+
+            <button
+                class="flex-1 py-3 font-bold text-sm text-center border-b-4 border-x-blue text-white"
+            >
+                Posts
+            </button>
+
+
+            <button
+                class="flex-1 py-3 font-bold text-sm text-center text-x-muted hover:bg-white/5"
+            >
+                Replies
+            </button>
+
+
+            <button
+                class="flex-1 py-3 font-bold text-sm text-center text-x-muted hover:bg-white/5"
+            >
+                Media
+            </button>
+
+
+            <button
+                class="flex-1 py-3 font-bold text-sm text-center text-x-muted hover:bg-white/5"
+            >
+                Likes
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Profile Posts -->
+
+    <div
+        id="profilePostsContainer"
+        class="divide-y divide-x-border"
+    >
+
+        <!-- Profile posts loaded dynamically -->
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= BOOKMARKS VIEW ================= -->
+
+<div
+    id="viewBookmarks"
+    class="feed-view hidden"
+>
+
+    <div
+        class="sticky top-0 bg-black/80 backdrop-blur-md p-3 border-b border-x-border z-20"
+    >
+
+        <h2 class="font-extrabold text-xl">
+            Bookmarks
+        </h2>
+
+        <p
+            class="text-xs text-x-muted"
+            id="bookmarkHandle"
+        >
+            @yourhandle
+        </p>
+
+    </div>
+
+
+    <div
+        id="bookmarksPostsContainer"
+        class="divide-y divide-x-border"
+    >
+
+        <div
+            class="p-8 text-center text-x-muted space-y-2"
+        >
+
+            <p
+                class="font-bold text-lg text-white"
+            >
+                Save Posts for later
+            </p>
+
+            <p class="text-sm">
+
+                Don’t let the good ones fly away!
+                Bookmark Posts to easily find them
+                again in the future.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= NOTIFICATIONS VIEW ================= -->
+
+<div
+    id="viewNotifications"
+    class="feed-view hidden"
+>
+
+    <div
+        class="sticky top-0 bg-black/80 backdrop-blur-md p-3 border-b border-x-border z-20 flex flex-col space-y-2"
+    >
+
+        <h2
+            class="font-extrabold text-xl text-white px-2"
+        >
+            Notifications
+        </h2>
+
+
+        <div class="flex border-b border-x-border">
+
+            <button
+                onclick="switchNotificationTab('all')"
+                id="notifTabAll"
+                class="flex-1 py-2 font-bold text-sm text-center border-b-2 border-x-blue text-white"
+            >
+                All
+            </button>
+
+
+            <button
+                onclick="switchNotificationTab('verified')"
+                id="notifTabVerified"
+                class="flex-1 py-2 font-bold text-sm text-center text-x-muted hover:bg-white/5"
+            >
+                Verified
+            </button>
+
+
+            <button
+                onclick="switchNotificationTab('mentions')"
+                id="notifTabMentions"
+                class="flex-1 py-2 font-bold text-sm text-center text-x-muted hover:bg-white/5"
+            >
+                Mentions
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="notificationsContainer"
+        class="divide-y divide-x-border"
+    >
+
+        <!-- Notifications render here dynamically -->
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= MESSAGES VIEW ================= -->
+
+<div
+    id="viewMessages"
+    class="feed-view hidden"
+>
+
+    <div
+        class="sticky top-0 bg-black/80 backdrop-blur-md p-3 border-b border-x-border z-20 flex justify-between items-center"
+    >
+
+        <div>
+
+            <h2
+                class="font-extrabold text-xl text-white"
+            >
+                Messages
+            </h2>
+
+            <p class="text-xs text-x-muted">
+                Direct chats & discussions
+            </p>
+
+        </div>
+
+
+        <button
+            onclick="showToast('New message thread created!', 'info')"
+            class="p-2 rounded-full hover:bg-white/10 text-white transition"
+            title="New Message"
+        >
+
+            <i
+                class="fa-regular fa-paper-plane text-lg"
+            ></i>
+
+        </button>
+
+    </div>
+
+
+    <div
+        class="flex flex-col min-h-[calc(100vh-120px)]"
+    >
+
+        <!-- Conversations -->
+
+        <div
+            id="messagesList"
+            class="divide-y divide-x-border"
+        >
+
+            <!-- Message threads render here -->
+
+        </div>
+
+
+        <!-- Active Chat -->
+
+        <div
+            id="activeChatPane"
+            class="hidden flex-col h-[calc(100vh-130px)] bg-black"
+        >
+
+            <div
+                class="p-3 border-b border-x-border flex items-center justify-between bg-black/80 backdrop-blur-md"
+            >
+
+                <div
+                    class="flex items-center space-x-3"
+                >
+
+                    <button
+                        onclick="closeActiveChat()"
+                        class="hover:bg-white/10 p-2 rounded-full text-white"
+                    >
+
+                        <i
+                            class="fa-solid fa-arrow-left"
+                        ></i>
+
+                    </button>
+
+
+                    <img
+                        id="chatPartnerAvatar"
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80"
+                        class="w-9 h-9 rounded-full object-cover"
+                    >
+
+
+                    <div>
+
+                        <h3
+                            id="chatPartnerName"
+                            class="font-bold text-sm text-white"
+                        >
+                            User Name
+                        </h3>
+
+
+                        <p
+                            id="chatPartnerHandle"
+                            class="text-xs text-x-muted"
+                        >
+                            @handle
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <i
+                    class="fa-solid fa-circle-info text-x-muted cursor-pointer hover:text-white"
+                ></i>
+
+            </div>
+
+
+            <!-- Chat History -->
+
+            <div
+                id="chatHistoryBox"
+                class="flex-1 p-4 overflow-y-auto space-y-3 flex flex-col justify-end"
+            >
+
+                <!-- Direct messages render here -->
+
+            </div>
+
+
+            <!-- Chat Input -->
+
+            <div
+                class="p-3 border-t border-x-border flex items-center space-x-2 bg-black"
+            >
+
+                <input
+                    type="text"
+                    id="chatInputMessage"
+                    placeholder="Start a new message..."
+                    onkeydown="if(event.key === 'Enter') sendDirectMessage()"
+                    class="flex-1 bg-x-card border border-x-border rounded-full px-4 py-2.5 text-sm text-white focus:outline-none focus:border-x-blue"
+                >
+
+
+                <button
+                    onclick="sendDirectMessage()"
+                    class="bg-x-blue hover:bg-x-blueHover text-white p-2.5 rounded-full text-sm transition"
+                >
+
+                    <i
+                        class="fa-solid fa-paper-plane px-1"
+                    ></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= RIGHT SIDEBAR ================= -->
+
+</main>
+
+
+<aside
+    class="hidden lg:block w-80 xl:w-88 p-3 space-y-4 sticky top-0 h-screen overflow-y-auto select-none"
+>
+
+
+    <!-- Search -->
+
+    <div
+        class="sticky top-0 bg-black py-1 z-10"
+    >
+
+        <div class="relative">
+
+            <i
+                class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-x-muted"
+            ></i>
+
+
+            <input
+                type="text"
+                id="sidebarSearchInput"
+                oninput="handleGlobalSearch(this.value)"
+                placeholder="Search Blogverse"
+                class="w-full bg-x-card border border-transparent focus:border-x-blue focus:bg-black rounded-full pl-11 pr-4 py-2.5 text-sm text-white focus:outline-none transition"
+            >
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Premium -->
+
+    <div
+        class="bg-x-card rounded-2xl p-4 space-y-2 border border-x-border/50"
+    >
+
+        <h3
+            class="font-extrabold text-lg"
+        >
+            Subscribe to Blogverse Premium
+        </h3>
+
+
+        <p
+            class="text-xs text-x-muted leading-relaxed"
+        >
+            Subscribe to unlock new blogging tools,
+            ad revenue sharing, and custom domain
+            integrations.
+        </p>
+
+
+        <button
+            onclick="showToast('Blogverse Premium subscription activated!', 'success')"
+            class="bg-x-blue hover:bg-x-blueHover text-white font-bold px-4 py-2 rounded-full text-sm transition"
+        >
+            Subscribe
+        </button>
+
+    </div>
+
+
+
+    <!-- What's Happening -->
+
+    <div
+        class="bg-x-card rounded-2xl border border-x-border/50 overflow-hidden"
+    >
+
+        <h3
+            class="font-extrabold text-lg p-4 pb-2"
+        >
+            What's happening
+        </h3>
+
+
+        <div
+            id="sidebarTrendsWidget"
+            class="divide-y divide-x-border/40"
+        >
+
+            <div
+                class="p-3.5 hover:bg-white/5 transition cursor-pointer"
+            >
+
+                <div
+                    class="flex justify-between text-xs text-x-muted"
+                >
+
+                    <span>
+                        Technology · Trending
+                    </span>
+
+                    <i
+                        class="fa-solid fa-ellipsis"
+                    ></i>
+
+                </div>
+
+
+                <p
+                    class="font-bold text-sm text-white mt-0.5"
+                >
+                    #WebDevelopment
+                </p>
+
+
+                <p
+                    class="text-xs text-x-muted mt-0.5"
+                >
+                    42.5K Posts
+                </p>
+
+            </div>
+
+
+            <div
+                class="p-3.5 hover:bg-white/5 transition cursor-pointer"
+            >
+
+                <div
+                    class="flex justify-between text-xs text-x-muted"
+                >
+
+                    <span>
+                        Artificial Intelligence · Trending
+                    </span>
+
+                    <i
+                        class="fa-solid fa-ellipsis"
+                    ></i>
+
+                </div>
+
+
+                <p
+                    class="font-bold text-sm text-white mt-0.5"
+                >
+                    #Gemini3
+                </p>
+
+
+                <p
+                    class="text-xs text-x-muted mt-0.5"
+                >
+                    128.9K Posts
+                </p>
+
+            </div>
+
+
+            <div
+                class="p-3.5 hover:bg-white/5 transition cursor-pointer"
+            >
+
+                <div
+                    class="flex justify-between text-xs text-x-muted"
+                >
+
+                    <span>
+                        Design · Trending
+                    </span>
+
+                    <i
+                        class="fa-solid fa-ellipsis"
+                    ></i>
+
+                </div>
+
+
+                <p
+                    class="font-bold text-sm text-white mt-0.5"
+                >
+                    #UIUX
+                </p>
+
+
+                <p
+                    class="text-xs text-x-muted mt-0.5"
+                >
+                    18.2K Posts
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Who To Follow -->
+
+    <div
+        class="bg-x-card rounded-2xl border border-x-border/50 p-4 space-y-4"
+    >
+
+        <h3
+            class="font-extrabold text-lg"
+        >
+            Who to follow
+        </h3>
+
+
+        <div
+            id="whoToFollowWidget"
+            class="space-y-3"
+        >
+
+            <!-- Dynamic recommendations -->
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+
+<!-- MOBILE BOTTOM NAVIGATION -->
+
+<div
+    class="sm:hidden fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-x-border flex justify-around py-3 z-40"
+>
+
+    <button
+        onclick="navigateToNav('home')"
+        class="text-xl text-white"
+    >
+        <i class="fa-solid fa-house"></i>
+    </button>
+
+
+    <button
+        onclick="navigateToNav('explore')"
+        class="text-xl text-x-muted"
+    >
+        <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
+
+
+    <button
+        onclick="navigateToNav('notifications')"
+        class="text-xl text-x-muted"
+    >
+        <i class="fa-regular fa-bell"></i>
+    </button>
+
+
+    <button
+        onclick="navigateToNav('messages')"
+        class="text-xl text-x-muted"
+    >
+        <i class="fa-regular fa-envelope"></i>
+    </button>
+
+</div><!-- ================= MODALS ================= -->
+
+<!-- 1. COMPOSE POST MODAL -->
+<div id="composeModal" class="hidden fixed inset-0 z-50 flex items-start justify-center pt-12 bg-gray-600/40 backdrop-blur-sm p-4">
+
+    <div class="bg-black border border-x-border rounded-2xl w-full max-w-lg p-4 shadow-2xl space-y-4">
+
+        <div class="flex items-center justify-between border-b border-x-border pb-3">
+
+            <button
+                onclick="closeModal('composeModal')"
+                class="text-white hover:bg-white/10 p-2 rounded-full"
+            >
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <span class="text-xs font-bold text-x-blue">
+                Drafts
+            </span>
+
+        </div>
+
+
+        <div class="flex space-x-3">
+
+            <img
+                id="modalComposerAvatar"
+                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80"
+                class="w-10 h-10 rounded-full object-cover"
+            >
+
+            <div class="flex-1 space-y-3">
+
+                <textarea
+                    id="modalPostContent"
+                    rows="4"
+                    placeholder="What is happening?!"
+                    class="w-full bg-transparent text-lg text-white placeholder-x-muted focus:outline-none resize-none leading-relaxed"
+                ></textarea>
+
+
+                <div
+                    id="modalMediaPreview"
+                    class="hidden relative rounded-2xl overflow-hidden border border-x-border max-h-60"
+                >
+
+                    <img
+                        id="modalPreviewImageSrc"
+                        src=""
+                        class="w-full object-cover"
+                    >
+
+                </div>
+
+
+                <div
+                    class="flex items-center justify-between border-t border-x-border/60 pt-3"
+                >
+
+                    <div
+                        class="flex items-center space-x-3 text-x-blue text-lg"
+                    >
+
+                        <button
+                            onclick="triggerImageUpload('modal')"
+                            class="hover:bg-x-blue/10 p-2 rounded-full transition"
+                        >
+                            <i class="fa-regular fa-image"></i>
+                        </button>
+
+
+                        <button
+                            onclick="insertEmojiModal('🔥')"
+                            class="hover:bg-x-blue/10 p-2 rounded-full transition"
+                        >
+                            <i class="fa-solid fa-bars-staggered"></i>
+                        </button>
+
+
+                        <button
+                            onclick="insertEmojiModal('🚀')"
+                            class="hover:bg-x-blue/10 p-2 rounded-full transition"
+                        >
+                            <i class="fa-regular fa-face-smile"></i>
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        onclick="submitModalPost()"
+                        class="bg-x-blue hover:bg-x-blueHover text-white font-bold px-5 py-1.5 rounded-full text-sm transition"
+                    >
+                        Post
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- 2. EDIT PROFILE MODAL -->
+
+<div
+    id="editProfileModal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-600/40 backdrop-blur-sm"
+>
+
+    <div
+        class="bg-black border border-x-border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl"
+    >
+
+        <div
+            class="flex items-center justify-between p-4 border-b border-x-border sticky top-0 bg-black/90 z-10"
+        >
+
+            <div class="flex items-center space-x-4">
+
+                <button
+                    onclick="closeModal('editProfileModal')"
+                    class="p-2 rounded-full hover:bg-white/10 text-white"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <h3 class="font-bold text-lg text-white">
+                    Edit profile
+                </h3>
+
+            </div>
+
+
+            <button
+                onclick="saveProfileChanges()"
+                class="bg-white text-black font-bold px-4 py-1.5 rounded-full text-sm hover:bg-gray-200 transition"
+            >
+                Save
+            </button>
+
+        </div>
+
+
+        <div class="p-4 space-y-4 max-h-[80vh] overflow-y-auto">
+
+            <div>
+
+                <label class="block text-xs text-x-muted font-bold mb-1">
+                    Name
+                </label>
+
+                <input
+                    type="text"
+                    id="editNameInput"
+                    class="w-full bg-black border border-x-border rounded-lg p-2.5 text-sm text-white focus:border-x-blue focus:outline-none"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-xs text-x-muted font-bold mb-1">
+                    Bio
+                </label>
+
+                <textarea
+                    id="editBioInput"
+                    rows="3"
+                    class="w-full bg-black border border-x-border rounded-lg p-2.5 text-sm text-white focus:border-x-blue focus:outline-none resize-none"
+                ></textarea>
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-xs text-x-muted font-bold mb-1">
+                    Avatar Image URL
+                </label>
+
+                <input
+                    type="url"
+                    id="editAvatarUrlInput"
+                    class="w-full bg-black border border-x-border rounded-lg p-2.5 text-sm text-white focus:border-x-blue focus:outline-none"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-xs text-x-muted font-bold mb-1">
+                    Cover Banner URL
+                </label>
+
+                <input
+                    type="url"
+                    id="editCoverUrlInput"
+                    class="w-full bg-black border border-x-border rounded-lg p-2.5 text-sm text-white focus:border-x-blue focus:outline-none"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-xs text-x-muted font-bold mb-1">
+                    Location
+                </label>
+
+                <input
+                    type="text"
+                    id="editLocationInput"
+                    class="w-full bg-black border border-x-border rounded-lg p-2.5 text-sm text-white focus:border-x-blue focus:outline-none"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- 3. DISPLAY THEME MODAL -->
+
+<div
+    id="themeModal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-600/40 backdrop-blur-sm"
+>
+
+    <div
+        class="bg-black border border-x-border rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-5"
+    >
+
+        <div class="text-center space-y-1">
+
+            <h3 class="font-extrabold text-xl text-white">
+                Customize your view
+            </h3>
+
+            <p class="text-xs text-x-muted">
+                Manage your font size, color, and background preferences.
+            </p>
+
+        </div>
+
+
+        <div class="space-y-2">
+
+            <label
+                class="text-xs font-bold text-x-muted uppercase tracking-wider block"
+            >
+                Background
+            </label>
+
+
+            <div class="grid grid-cols-3 gap-3">
+
+                <button
+                    onclick="setAppTheme('dark')"
+                    class="p-3 border border-x-border rounded-xl bg-black text-white text-xs font-bold flex items-center justify-center space-x-2"
+                >
+
+                    <i class="fa-solid fa-moon"></i>
+
+                    <span>Lights out</span>
+
+                </button>
+
+
+                <button
+                    onclick="setAppTheme('dim')"
+                    class="p-3 border border-x-border rounded-xl bg-[#15202b] text-white text-xs font-bold flex items-center justify-center space-x-2"
+                >
+
+                    <i class="fa-regular fa-moon"></i>
+
+                    <span>Dim</span>
+
+                </button>
+
+
+                <button
+                    onclick="setAppTheme('light')"
+                    class="p-3 border border-x-border rounded-xl bg-white text-black text-xs font-bold flex items-center justify-center space-x-2"
+                >
+
+                    <i class="fa-solid fa-sun"></i>
+
+                    <span>Default</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="pt-2 text-center">
+
+            <button
+                onclick="closeModal('themeModal')"
+                class="bg-x-blue hover:bg-x-blueHover text-white font-bold px-6 py-2 rounded-full text-sm"
+            >
+                Done
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- 4. AUTH / LOGIN MODAL -->
+
+<div
+    id="authModal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+>
+
+    <div
+        class="bg-x-card border border-x-border rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden"
+    >
+
+        <!-- Close -->
+
+        <button
+            onclick="closeModal('authModal')"
+            class="absolute top-4 right-4 text-x-muted hover:text-white p-2 rounded-full hover:bg-white/10 transition"
+        >
+
+            <i class="fa-solid fa-xmark text-lg"></i>
+
+        </button>
+
+
+        <!-- Logo -->
+
+        <div class="text-center space-y-2">
+
+            <div
+                class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-black text-2xl mx-auto shadow-lg shadow-indigo-500/20"
+            >
+
+                <i class="fa-solid fa-blog"></i>
+
+            </div>
+
+
+            <h3
+                id="authModalTitle"
+                class="font-extrabold text-2xl text-white"
+            >
+                Welcome back
+            </h3>
+
+
+            <p
+                id="authModalSubtitle"
+                class="text-xs text-x-muted"
+            >
+                Sign in to manage your posts in the cloud.
+            </p>
+
+        </div>
+
+
+        <!-- LOGIN / SIGNUP TABS -->
+
+        <div
+            class="flex bg-black rounded-xl p-1 border border-x-border"
+        >
+
+            <button
+                onclick="switchAuthTab('login')"
+                id="tabAuthLogin"
+                class="flex-1 py-2.5 rounded-xl text-xs font-bold transition text-white bg-x-blue shadow-md"
+            >
+                Login
+            </button>
+
+
+            <button
+                onclick="switchAuthTab('signup')"
+                id="tabAuthSignup"
+                class="flex-1 py-2.5 rounded-xl text-xs font-bold transition text-x-muted hover:text-white"
+            >
+                Create account
+            </button>
+
+        </div>
+
+
+        <!-- LOGIN FORM -->
+
+        <form
+            id="loginForm"
+            onsubmit="handleLoginSubmit(event)"
+            class="space-y-3"
+        >
+
+            <div>
+
+                <label
+                    class="block text-xs font-bold text-x-muted mb-1"
+                >
+                    Email Address
+                </label>
+
+
+                <input
+                    type="email"
+                    id="loginIdentifier"
+                    placeholder="you@example.com"
+                    required
+                    autocomplete="email"
+                    class="w-full bg-black border border-x-border rounded-xl px-3 py-2.5 text-xs text-white placeholder-x-muted focus:border-x-blue focus:outline-none transition"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label
+                    class="block text-xs font-bold text-x-muted mb-1"
+                >
+                    Password
+                </label>
+
+
+                <div class="relative">
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        placeholder="Your password"
+                        required
+                        autocomplete="current-password"
+                        class="w-full bg-black border border-x-border rounded-xl px-3 py-2.5 pr-10 text-xs text-white placeholder-x-muted focus:border-x-blue focus:outline-none transition"
+                    >
+
+
+                    <button
+                        type="button"
+                        onclick="togglePasswordVisibility('loginPassword', this)"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-x-muted hover:text-white"
+                    >
+
+                        <i class="fa-regular fa-eye text-xs"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="flex items-center justify-between text-xs"
+            >
+
+                <label
+                    class="flex items-center space-x-2 text-x-muted cursor-pointer"
+                >
+
+                    <input
+                        type="checkbox"
+                        id="rememberMe"
+                        class="accent-blue-500"
+                    >
+
+                    <span>
+                        Remember me
+                    </span>
+
+                </label>
+
+
+                <button
+                    type="button"
+                    onclick="resetPassword()"
+                    class="text-x-blue hover:underline"
+                >
+                    Forgot password?
+                </button>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="w-full bg-x-blue hover:bg-x-blueHover text-white font-bold py-3 rounded-xl text-xs transition shadow-lg shadow-x-blue/20"
+            >
+                Sign In
+            </button>
+
+        </form>
+
+
+        <!-- SIGN UP FORM -->
+
+        <form
+            id="signupForm"
+            onsubmit="handleSignupSubmit(event)"
+            class="space-y-3 hidden"
+        >
+
+            <div class="grid grid-cols-2 gap-2.5">
+
+                <div>
+
+                    <label
+                        class="block text-xs font-bold text-x-muted mb-1"
+                    >
+                        Full Name
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="signupFullName"
+                        placeholder="John Doe"
+                        required
+                        autocomplete="name"
+                        class="w-full bg-black border border-x-border rounded-xl px-3 py-2 text-xs text-white placeholder-x-muted focus:border-x-blue focus:outline-none transition"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        class="block text-xs font-bold text-x-muted mb-1"
+                    >
+                        Username
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="signupUsername"
+                        placeholder="johndoe"
+                        required
+                        autocomplete="username"
+                        class="w-full bg-black border border-x-border rounded-xl px-3 py-2 text-xs text-white placeholder-x-muted focus:border-x-blue focus:outline-none transition"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <label
+                    class="block text-xs font-bold text-x-muted mb-1"
+                >
+                    Email Address
+                </label>
+
+
+                <input
+                    type="email"
+                    id="signupEmail"
+                    placeholder="john@example.com"
+                    required
+                    autocomplete="email"
+                    class="w-full bg-black border border-x-border rounded-xl px-3 py-2 text-xs text-white placeholder-x-muted focus:border-x-blue focus:outline-none transition"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label
+                    class="block text-xs font-bold text-x-muted mb-1"
+                >
+                    Password
+                </label>
+
+
+                <div class="relative">
+
+                    <input
+                        type="password"
+                        id="signupPassword"
+                        placeholder="Minimum 6 characters"
+                        minlength="6"
+                        required
+                        autocomplete="new-password"
+                        class="w-full bg-black border border-x-border rounded-xl px-3 py-2.5 pr-10 text-xs text-white placeholder-x-muted focus:border-x-blue focus:outline-none transition"
+                    >
+
+
+                    <button
+                        type="button"
+                        onclick="togglePasswordVisibility('signupPassword', this)"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-x-muted hover:text-white"
+                    >
+
+                        <i class="fa-regular fa-eye text-xs"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <label
+                    class="block text-xs font-bold text-x-muted mb-1"
+                >
+                    Confirm Password
+                </label>
+
+
+                <input
+                    type="password"
+                    id="signupConfirmPassword"
+                    placeholder="Repeat your password"
+                    minlength="6"
+                    required
+                    autocomplete="new-password"
+                    class="w-full bg-black border border-x-border rounded-xl px-3 py-2.5 text-xs text-white placeholder-x-muted focus:border-x-blue focus:outline-none transition"
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="w-full bg-x-blue hover:bg-x-blueHover text-white font-bold py-3 rounded-xl text-xs transition shadow-lg shadow-x-blue/20"
+            >
+                Create Account
+            </button>
+
+        </form>
+
+
+        <!-- SOCIAL LOGIN -->
+
+        <div class="relative">
+
+            <div class="absolute inset-0 flex items-center">
+
+                <div
+                    class="w-full border-t border-x-border"
+                ></div>
+
+            </div>
+
+
+            <div
+                class="relative flex justify-center text-xs"
+            >
+
+                <span
+                    class="bg-x-card px-3 text-x-muted"
+                >
+                    OR CONTINUE WITH
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="grid grid-cols-3 gap-2">
+
+            <button
+                onclick="loginWithSocial('google')"
+                class="border border-x-border hover:bg-white/5 rounded-xl py-2.5 text-white transition"
+                title="Continue with Google"
+            >
+                <i class="fa-brands fa-google"></i>
+            </button>
+
+
+            <button
+                onclick="loginWithSocial('github')"
+                class="border border-x-border hover:bg-white/5 rounded-xl py-2.5 text-white transition"
+                title="Continue with GitHub"
+            >
+                <i class="fa-brands fa-github"></i>
+            </button>
+
+
+            <button
+                onclick="loginWithSocial('apple')"
+                class="border border-x-border hover:bg-white/5 rounded-xl py-2.5 text-white transition"
+                title="Continue with Apple"
+            >
+                <i class="fa-brands fa-apple"></i>
+            </button>
+
+        </div>
+
+
+        <p class="text-[10px] text-center text-x-muted leading-relaxed">
+            By continuing, you agree to Blogverse's
+            Terms of Service and Privacy Policy.
+        </p>
+
+    </div>
+
+</div>/* =========================================================
+   BLOGVERSE FIREBASE AUTHENTICATION
+   ========================================================= */
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+
 
 import {
     getAuth,
@@ -14,207 +2271,179 @@ import {
     GoogleAuthProvider,
     GithubAuthProvider,
     OAuthProvider,
-    signOut
+    signOut,
+    sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
 
 import {
     getFirestore,
     doc,
     getDoc,
     setDoc,
-    updateDoc,
-    deleteDoc,
-    onSnapshot,
-    collection,
     addDoc,
-    serverTimestamp,
-    query,
-    orderBy,
-    limit,
-    getDocs
+    collection,
+    updateDoc,
+    onSnapshot,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 
-/* ============================================================
+/* =========================================================
    FIREBASE CONFIG
-   ============================================================ */
+   ========================================================= */
 
-const appId =
-    typeof __app_id !== "undefined"
-        ? __app_id
-        : "blogverse-app";
+const firebaseConfig = {
 
-const defaultConfig = {
-    apiKey: "AIzaSyBRe5ja_JxM4kZwlXjRY0UmBEgwdLeM8vNw",
-    authDomain: "blogverse-f45bf.firebaseapp.com",
-    projectId: "blogverse-f45bf",
-    storageBucket: "blogverse-f45bf.firebasestorage.app",
-    messagingSenderId: "903299334786",
-    appId: "1:903299334786:web:f40f8e90aa4f2dd1106a9b",
-    measurementId: "G-SFDHQT4WTS"
+    apiKey: "AIzaSyBRe5ja_JmKkZwlXjRY0UmBEgwdLeM8vNw",
+
+    authDomain:
+        "blogverse-f45bf.firebaseapp.com",
+
+    projectId:
+        "blogverse-f45bf",
+
+    storageBucket:
+        "blogverse-f45bf.firebasestorage.app",
+
+    messagingSenderId:
+        "903299334786",
+
+    appId:
+        "1:903299334786:web:f40f8e90aa4f2dd1106a9b",
+
+    measurementId:
+        "G-SFDHQT4WTS"
 };
 
-let firebaseConfig = defaultConfig;
 
-if (typeof __firebase_config !== "undefined") {
-    try {
-        firebaseConfig =
-            typeof __firebase_config === "string"
-                ? JSON.parse(__firebase_config)
-                : __firebase_config;
-    } catch (e) {
-        console.warn("Using default Firebase configuration:", e);
-    }
-}
+/* =========================================================
+   INITIALIZE FIREBASE
+   ========================================================= */
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const firebaseApp =
+    initializeApp(firebaseConfig);
 
 
-/* ============================================================
+const auth =
+    getAuth(firebaseApp);
+
+
+const db =
+    getFirestore(firebaseApp);
+
+
+/* =========================================================
+   BLOGVERSE APP ID
+   ========================================================= */
+
+const appId = "blogverse-app";
+
+
+/* =========================================================
    GLOBAL VARIABLES
-   ============================================================ */
+   ========================================================= */
 
 let currentUser = null;
-let usersData = {};
+
 let postsData = [];
+
+let usersData = {};
+
 let bookmarksData = [];
 
-let currentFeedTab = "foryou";
 let currentView = "home";
+
+let currentFeedTab = "foryou";
+
 let viewedUserId = null;
-let selectedMediaUrl = "";
+
 let activeChatUser = null;
 
+let selectedMediaUrl = "";
 
-/* ============================================================
-   INITIAL AUTH
-   ============================================================ */
 
-async function initAuth() {
-    console.log("BlogVerse Firebase Authentication initialized.");
+/* =========================================================
+   DEFAULT PROFILE IMAGES
+   ========================================================= */
+
+const DEFAULT_AVATAR =
+    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80";
+
+
+const DEFAULT_COVER =
+    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80";
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHtml(value) {
+
+    if (value === undefined || value === null) {
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
-/* ============================================================
-   AUTH STATE
-   ============================================================ */
-
-onAuthStateChanged(auth, async (user) => {
-
-    if (user) {
-
-        console.log("Authenticated user:", user.uid);
-
-        await ensureUserProfile(user);
-
-        subscribeToCloudData();
-
-    } else {
-
-        console.log("No authenticated user.");
-
-        currentUser = null;
-    }
-});
+window.escapeHtml = escapeHtml;
 
 
-/* ============================================================
-   ENSURE USER PROFILE
-   ============================================================ */
+/* =========================================================
+   AUTH ERROR HANDLER
+   ========================================================= */
 
-async function ensureUserProfile(user) {
+function getAuthErrorMessage(error) {
 
-    if (!user) return;
+    switch (error.code) {
 
-    const profileRef = doc(
-        db,
-        "artifacts",
-        appId,
-        "public",
-        "data",
-        "profiles",
-        user.uid
-    );
+        case "auth/invalid-credential":
+            return "Invalid email or password.";
 
-    try {
+        case "auth/invalid-email":
+            return "Please enter a valid email address.";
 
-        const snap = await getDoc(profileRef);
+        case "auth/email-already-in-use":
+            return "This email is already registered.";
 
-        if (!snap.exists()) {
+        case "auth/weak-password":
+            return "Password must be at least 6 characters.";
 
-            const initialProfile = {
+        case "auth/user-not-found":
+            return "No account exists with this email.";
 
-                uid: user.uid,
+        case "auth/wrong-password":
+            return "Incorrect password.";
 
-                email: user.email || "",
+        case "auth/popup-closed-by-user":
+            return "Login popup was closed.";
 
-                name:
-                    user.displayName ||
-                    user.email?.split("@")[0] ||
-                    "Cloud Creator",
+        case "auth/popup-blocked":
+            return "Please allow popups for Blogverse.";
 
-                handle:
-                    "creator_" +
-                    user.uid.slice(0, 5),
+        case "auth/network-request-failed":
+            return "Network error. Check your internet.";
 
-                avatar:
-                    user.photoURL ||
-                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+        default:
+            return error.message || "Authentication failed.";
 
-                cover:
-                    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
-
-                bio:
-                    "Creating and sharing on Blogverse.",
-
-                location: "Earth",
-
-                followers: [],
-
-                following: [],
-
-                createdAt: serverTimestamp()
-
-            };
-
-            await setDoc(
-                profileRef,
-                initialProfile
-            );
-
-            currentUser = {
-                ...initialProfile,
-                createdAt: Date.now()
-            };
-
-        } else {
-
-            currentUser = snap.data();
-
-        }
-
-        updateUserBadgeUI();
-
-    } catch (error) {
-
-        console.error(
-            "Error loading user profile:",
-            error
-        );
     }
 }
 
 
-/* ============================================================
+/* =========================================================
    RECORD LOGIN EVENT
-   ============================================================ */
+   ========================================================= */
 
-async function recordLoginEvent(
-    user,
-    provider = "password"
-) {
+async function recordLoginEvent(user, provider = "password") {
 
     if (!user) return;
 
@@ -223,583 +2452,600 @@ async function recordLoginEvent(
         const loginEventsRef =
             collection(db, "loginEvents");
 
-        await addDoc(
-            loginEventsRef,
-            {
 
-                uid: user.uid,
+        await addDoc(loginEventsRef, {
 
-                email:
-                    user.email || null,
+            uid: user.uid,
 
-                displayName:
-                    user.displayName || null,
+            email: user.email || "",
 
-                provider: provider,
+            name:
+                user.displayName ||
+                currentUser?.name ||
+                "Unknown User",
 
-                loginAt:
-                    serverTimestamp(),
+            provider: provider,
 
-                userAgent:
-                    navigator.userAgent,
+            loginAt: serverTimestamp(),
 
-                platform:
-                    navigator.platform || null
+            userAgent:
+                navigator.userAgent,
 
-            }
-        );
+            platform:
+                navigator.platform || "",
+
+            language:
+                navigator.language || "",
+
+            screen:
+                `${window.innerWidth}x${window.innerHeight}`
+
+        });
 
         console.log(
-            "Login event recorded:",
+            "BlogVerse login event recorded:",
             user.uid
         );
 
     } catch (error) {
 
         console.error(
-            "Login event error:",
+            "Could not record login event:",
             error
         );
+
     }
 }
 
 
-/* ============================================================
-   EMAIL / PASSWORD LOGIN
-   ============================================================ */
+/* =========================================================
+   CREATE / LOAD USER PROFILE
+   ========================================================= */
 
-window.handleLoginSubmit = async function(e) {
+async function ensureUserProfile(user, extraData = {}) {
 
-    e.preventDefault();
+    if (!user) return null;
 
-    const identifier =
-        document
-            .getElementById("loginIdentifier")
-            .value
-            .trim();
 
-    const password =
-        document
-            .getElementById("loginPassword")
-            .value;
-
-    if (!identifier || !password) {
-
-        showToast(
-            "Please enter email and password.",
-            "error"
+    const profileRef =
+        doc(
+            db,
+            "artifacts",
+            appId,
+            "public",
+            "data",
+            "profiles",
+            user.uid
         );
 
-        return;
+
+    const profileSnap =
+        await getDoc(profileRef);
+
+
+    if (profileSnap.exists()) {
+
+        return profileSnap.data();
+
     }
 
 
-    if (!identifier.includes("@")) {
-
-        showToast(
-            "Please login using your email address.",
-            "error"
-        );
-
-        return;
-    }
+    const emailName =
+        user.email
+            ? user.email.split("@")[0]
+            : "user";
 
 
-    try {
-
-        const credential =
-            await signInWithEmailAndPassword(
-                auth,
-                identifier,
-                password
-            );
-
-        const user = credential.user;
-
-
-        await recordLoginEvent(
-            user,
-            "password"
-        );
-
-
-        await ensureUserProfile(user);
-
-
-        closeModal("authModal");
-
-
-        showToast(
-            `Welcome back ${user.email}`,
-            "success"
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Login error:",
-            error
-        );
-
-
-        if (
-            error.code ===
-                "auth/invalid-credential" ||
-            error.code ===
-                "auth/wrong-password" ||
-            error.code ===
-                "auth/user-not-found"
-        ) {
-
-            showToast(
-                "Incorrect email or password.",
-                "error"
-            );
-
-        } else {
-
-            showToast(
-                error.message,
-                "error"
-            );
-        }
-    }
-};
-
-
-/* ============================================================
-   CREATE ACCOUNT
-   ============================================================ */
-
-window.handleSignupSubmit = async function(e) {
-
-    e.preventDefault();
-
-
-    const fullName =
-        document
-            .getElementById("signupFullName")
-            .value
-            .trim();
-
-
-    const username =
-        document
-            .getElementById("signupUsername")
-            .value
-            .trim()
+    const safeHandle =
+        emailName
             .toLowerCase()
-            .replace(/[^a-z0-9_]/g, "");
+            .replace(/[^a-z0-9_]/g, "")
+            .slice(0, 20)
+        ||
+        "user";
 
 
-    const email =
-        document
-            .getElementById("signupEmail")
-            .value
-            .trim();
+    const profile = {
+
+        uid: user.uid,
+
+        email: user.email || "",
+
+        name:
+            extraData.name ||
+            user.displayName ||
+            emailName,
+
+        handle:
+            extraData.handle ||
+            safeHandle,
+
+        avatar:
+            extraData.avatar ||
+            user.photoURL ||
+            DEFAULT_AVATAR,
+
+        cover:
+            extraData.cover ||
+            DEFAULT_COVER,
+
+        bio:
+            extraData.bio ||
+            "Blogger on Blogverse.",
+
+        location:
+            extraData.location ||
+            "Global",
+
+        followers: [],
+
+        following: [],
+
+        createdAt:
+            serverTimestamp(),
+
+        updatedAt:
+            serverTimestamp()
+
+    };
 
 
-    const password =
-        document
-            .getElementById("signupPassword")
-            .value;
+    await setDoc(
+        profileRef,
+        profile,
+        { merge: true }
+    );
 
 
-    const confirmPassword =
-        document
-            .getElementById("signupConfirmPassword")
-            .value;
+    return profile;
+}
 
 
-    if (password !== confirmPassword) {
+/* =========================================================
+   LOGIN WITH EMAIL + PASSWORD
+   ========================================================= */
 
-        showToast(
-            "Passwords do not match.",
-            "error"
-        );
+window.handleLoginSubmit =
+    async function(event) {
 
-        return;
-    }
-
-
-    try {
-
-        const credential =
-            await createUserWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
+        event.preventDefault();
 
 
-        const user =
-            credential.user;
+        const email =
+            document
+                .getElementById("loginIdentifier")
+                .value
+                .trim()
+                .toLowerCase();
 
 
-        const profileRef =
-            doc(
-                db,
-                "artifacts",
-                appId,
-                "public",
-                "data",
-                "profiles",
-                user.uid
-            );
+        const password =
+            document
+                .getElementById("loginPassword")
+                .value;
 
 
-        const profile = {
-
-            uid: user.uid,
-
-            email: user.email,
-
-            name:
-                fullName || "BlogVerse Creator",
-
-            handle:
-                username ||
-                "user" +
-                Math.floor(
-                    Math.random() * 10000
-                ),
-
-            avatar:
-                "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
-
-            cover:
-                "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
-
-            bio:
-                "New BlogVerse creator.",
-
-            location:
-                "Earth",
-
-            followers: [],
-
-            following: [],
-
-            createdAt:
-                serverTimestamp()
-
-        };
-
-
-        await setDoc(
-            profileRef,
-            profile
-        );
-
-
-        await recordLoginEvent(
-            user,
-            "password"
-        );
-
-
-        currentUser = {
-
-            ...profile,
-
-            createdAt:
-                Date.now()
-
-        };
-
-
-        updateUserBadgeUI();
-
-
-        closeModal(
-            "authModal"
-        );
-
-
-        showToast(
-            `Account created! Welcome @${currentUser.handle}`,
-            "success"
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Signup error:",
-            error
-        );
-
-
-        if (
-            error.code ===
-            "auth/email-already-in-use"
-        ) {
+        if (!email || !password) {
 
             showToast(
-                "This email is already registered.",
-                "error"
+                "Enter your email and password.",
+                "info"
             );
 
-        } else if (
-            error.code ===
-            "auth/weak-password"
-        ) {
+            return;
+        }
+
+
+        try {
+
+            showToast(
+                "Signing you in...",
+                "info"
+            );
+
+
+            const result =
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+            await recordLoginEvent(
+                result.user,
+                "password"
+            );
+
+
+            closeModal("authModal");
+
+
+            showToast(
+                "Login successful!",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+
+            showToast(
+                getAuthErrorMessage(error),
+                "info"
+            );
+
+        }
+
+    };
+
+
+/* =========================================================
+   CREATE ACCOUNT
+   ========================================================= */
+
+window.handleSignupSubmit =
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const fullName =
+            document
+                .getElementById("signupFullName")
+                .value
+                .trim();
+
+
+        const username =
+            document
+                .getElementById("signupUsername")
+                .value
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9_]/g, "");
+
+
+        const email =
+            document
+                .getElementById("signupEmail")
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const password =
+            document
+                .getElementById("signupPassword")
+                .value;
+
+
+        const confirmPassword =
+            document
+                .getElementById("signupConfirmPassword")
+                .value;
+
+
+        if (password !== confirmPassword) {
+
+            showToast(
+                "Passwords do not match.",
+                "info"
+            );
+
+            return;
+        }
+
+
+        if (password.length < 6) {
 
             showToast(
                 "Password must be at least 6 characters.",
-                "error"
+                "info"
             );
 
-        } else {
+            return;
+        }
+
+
+        try {
 
             showToast(
-                error.message,
-                "error"
+                "Creating your Blogverse account...",
+                "info"
             );
+
+
+            const result =
+                await createUserWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+            const profile =
+                await ensureUserProfile(
+                    result.user,
+                    {
+                        name:
+                            fullName || "Blogverse User",
+
+                        handle:
+                            username ||
+                            `user${Date.now()}`,
+
+                        email:
+                            email
+                    }
+                );
+
+
+            currentUser =
+                profile;
+
+
+            await recordLoginEvent(
+                result.user,
+                "password-signup"
+            );
+
+
+            closeModal("authModal");
+
+
+            showToast(
+                "Account created successfully!",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Signup error:",
+                error
+            );
+
+
+            showToast(
+                getAuthErrorMessage(error),
+                "info"
+            );
+
         }
-    }
-};
+
+    };
 
 
-/* ============================================================
+/* =========================================================
    GOOGLE / GITHUB / APPLE LOGIN
-   ============================================================ */
+   ========================================================= */
 
 window.loginWithSocial =
-    async function(provider) {
+    async function(providerName) {
 
-    try {
-
-        let authProvider;
+        let provider;
 
 
-        if (provider === "Google") {
+        if (providerName === "google") {
 
-            authProvider =
+            provider =
                 new GoogleAuthProvider();
 
         }
 
-        else if (provider === "GitHub") {
+        else if (providerName === "github") {
 
-            authProvider =
+            provider =
                 new GithubAuthProvider();
 
         }
 
-        else if (provider === "Apple") {
+        else if (providerName === "apple") {
 
-            authProvider =
-                new OAuthProvider(
-                    "apple.com"
-                );
+            provider =
+                new OAuthProvider("apple.com");
 
         }
 
         else {
 
-            throw new Error(
-                "Unsupported login provider."
+            showToast(
+                "Unsupported login provider.",
+                "info"
             );
+
+            return;
         }
 
 
-        const result =
-            await signInWithPopup(
-                auth,
-                authProvider
+        try {
+
+            const result =
+                await signInWithPopup(
+                    auth,
+                    provider
+                );
+
+
+            const profile =
+                await ensureUserProfile(
+                    result.user
+                );
+
+
+            currentUser =
+                profile;
+
+
+            await recordLoginEvent(
+                result.user,
+                providerName
             );
 
 
-        const user =
-            result.user;
+            closeModal("authModal");
 
 
-        await ensureUserProfile(
-            user
-        );
+            showToast(
+                `Signed in with ${providerName}.`,
+                "success"
+            );
 
 
-        await recordLoginEvent(
-            user,
-            provider.toLowerCase()
-        );
+        } catch (error) {
+
+            console.error(
+                `${providerName} login error:`,
+                error
+            );
 
 
-        closeModal(
-            "authModal"
-        );
+            showToast(
+                getAuthErrorMessage(error),
+                "info"
+            );
+
+        }
+
+    };
 
 
-        showToast(
-            `Signed in with ${provider}`,
-            "success"
-        );
+/* =========================================================
+   PASSWORD RESET
+   ========================================================= */
+
+window.resetPassword =
+    async function() {
+
+        const email =
+            document
+                .getElementById("loginIdentifier")
+                .value
+                .trim()
+                .toLowerCase();
 
 
-    } catch (error) {
+        if (!email) {
 
-        console.error(
-            `${provider} login error:`,
-            error
-        );
+            showToast(
+                "Enter your email first.",
+                "info"
+            );
 
-
-        showToast(
-            error.message,
-            "error"
-        );
-    }
-};
+            return;
+        }
 
 
-/* ============================================================
+        try {
+
+            await sendPasswordResetEmail(
+                auth,
+                email
+            );
+
+
+            showToast(
+                "Password reset email sent.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            showToast(
+                getAuthErrorMessage(error),
+                "info"
+            );
+
+        }
+
+    };
+
+
+/* =========================================================
    LOGOUT
-   ============================================================ */
+   ========================================================= */
 
 window.logoutBlogVerse =
     async function() {
 
-    try {
+        try {
 
-        await signOut(auth);
+            await signOut(auth);
 
+            currentUser = null;
+
+            showToast(
+                "You have been logged out.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Logout error:",
+                error
+            );
+
+        }
+
+    };/* =========================================================
+   AUTH STATE LISTENER
+   ========================================================= */
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
         currentUser = null;
-
-        showToast(
-            "Logged out successfully.",
-            "success"
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Logout error:",
-            error
-        );
+        return;
     }
-};
-
-
-/* ============================================================
-   GUEST LOGIN
-   ============================================================ */
-
-window.loginAsGuest =
-    function() {
-
-    showToast(
-        "Please create an account to use BlogVerse.",
-        "info"
-    );
-};
-
-
-/* ============================================================
-   OWNER LOGIN HISTORY
-   ============================================================ */
-
-window.loadLoginHistory =
-    async function() {
 
     try {
 
-        const loginEventsRef =
-            collection(
-                db,
-                "loginEvents"
-            );
+        currentUser =
+            await ensureUserProfile(user);
 
+        updateUserBadgeUI();
 
-        const loginQuery =
-            query(
-                loginEventsRef,
-                orderBy(
-                    "loginAt",
-                    "desc"
-                ),
-                limit(100)
-            );
-
-
-        const snapshot =
-            await getDocs(
-                loginQuery
-            );
-
-
-        const loginHistory = [];
-
-
-        snapshot.forEach(
-            (docSnap) => {
-
-                const data =
-                    docSnap.data();
-
-
-                loginHistory.push({
-
-                    id:
-                        docSnap.id,
-
-                    uid:
-                        data.uid || "",
-
-                    email:
-                        data.email || "",
-
-                    displayName:
-                        data.displayName || "",
-
-                    provider:
-                        data.provider || "",
-
-                    loginAt:
-                        data.loginAt || null,
-
-                    userAgent:
-                        data.userAgent || ""
-
-                });
-
-            }
-        );
-
-
-        console.table(
-            loginHistory
-        );
-
-
-        return loginHistory;
-
+        subscribeToCloudData();
 
     } catch (error) {
 
         console.error(
-            "Could not load login history:",
+            "Auth state error:",
             error
         );
 
-        return [];
-
     }
-};
+
+});
 
 
-/* ============================================================
-   FIRESTORE CLOUD DATA
-   ============================================================ */
+/* =========================================================
+   CLOUD DATA SUBSCRIPTIONS
+   ========================================================= */
 
 function subscribeToCloudData() {
 
-    if (!auth.currentUser)
-        return;
+    if (!auth.currentUser) return;
 
 
-    /* POSTS */
+    /* -------------------------
+       PUBLIC POSTS
+       ------------------------- */
 
     const postsRef =
         collection(
@@ -818,16 +3064,15 @@ function subscribeToCloudData() {
 
             postsData = [];
 
-            snapshot.forEach(
-                (docSnap) => {
 
-                    postsData.push({
-                        id: docSnap.id,
-                        ...docSnap.data()
-                    });
+            snapshot.forEach((docSnap) => {
 
-                }
-            );
+                postsData.push({
+                    id: docSnap.id,
+                    ...docSnap.data()
+                });
+
+            });
 
 
             postsData.sort(
@@ -837,20 +3082,34 @@ function subscribeToCloudData() {
             );
 
 
+            renderMainFeed();
+
+
             if (
-                typeof renderMainFeed ===
-                "function"
+                currentView === "profile" &&
+                viewedUserId
             ) {
 
-                renderMainFeed();
+                renderProfilePosts(
+                    viewedUserId
+                );
+
+            }
+
+
+            if (
+                currentView === "bookmarks"
+            ) {
+
+                renderBookmarksFeed();
+
             }
 
         },
-
         (error) => {
 
             console.error(
-                "Posts snapshot error:",
+                "Firestore Posts snapshot error:",
                 error
             );
 
@@ -858,7 +3117,9 @@ function subscribeToCloudData() {
     );
 
 
-    /* PROFILES */
+    /* -------------------------
+       PUBLIC PROFILES
+       ------------------------- */
 
     const profilesRef =
         collection(
@@ -881,277 +3142,1313 @@ function subscribeToCloudData() {
             snapshot.forEach(
                 (docSnap) => {
 
-                    usersData[
-                        docSnap.id
-                    ] =
+                    usersData[docSnap.id] =
                         docSnap.data();
 
                 }
             );
 
 
+            if (
+                typeof renderWhoToFollow ===
+                "function"
+            ) {
+
+                renderWhoToFollow();
+
+            }
+
+
             updateUserBadgeUI();
 
-        },
 
+            if (
+                currentView === "profile" &&
+                viewedUserId
+            ) {
+
+                navigateToProfile(
+                    viewedUserId
+                );
+
+            }
+
+        },
         (error) => {
 
             console.error(
-                "Profiles snapshot error:",
+                "Firestore Profiles snapshot error:",
                 error
             );
 
         }
     );
+
+
+    /* -------------------------
+       PRIVATE BOOKMARKS
+       ------------------------- */
+
+    const bookmarksRef =
+        collection(
+            db,
+            "artifacts",
+            appId,
+            "users",
+            auth.currentUser.uid,
+            "bookmarks"
+        );
+
+
+    onSnapshot(
+        bookmarksRef,
+        (snapshot) => {
+
+            bookmarksData = [];
+
+
+            snapshot.forEach(
+                (docSnap) => {
+
+                    bookmarksData.push(
+                        docSnap.id
+                    );
+
+                }
+            );
+
+
+            if (
+                currentView === "bookmarks"
+            ) {
+
+                renderBookmarksFeed();
+
+            }
+
+
+            renderMainFeed();
+
+        },
+        (error) => {
+
+            console.error(
+                "Firestore Bookmarks snapshot error:",
+                error
+            );
+
+        }
+    );
+
 }
 
 
-/* ============================================================
-   AUTH TAB SWITCH
-   ============================================================ */
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
-window.switchAuthTab =
-    function(mode) {
+window.navigateToNav =
+    function(view) {
 
-    const loginForm =
-        document.getElementById(
-            "loginForm"
-        );
-
-    const signupForm =
-        document.getElementById(
-            "signupForm"
-        );
-
-    const tabLogin =
-        document.getElementById(
-            "tabAuthLogin"
-        );
-
-    const tabSignup =
-        document.getElementById(
-            "tabAuthSignup"
-        );
-
-    const title =
-        document.getElementById(
-            "authModalTitle"
-        );
-
-    const subtitle =
-        document.getElementById(
-            "authModalSubtitle"
-        );
+        currentView = view;
 
 
-    if (mode === "login") {
+        document
+            .querySelectorAll(".feed-view")
+            .forEach((el) => {
 
-        loginForm.classList.remove(
-            "hidden"
-        );
+                el.classList.add("hidden");
 
-        signupForm.classList.add(
-            "hidden"
-        );
+            });
 
 
-        tabLogin.className =
-            "flex-1 py-2.5 rounded-xl text-xs font-bold transition text-white bg-x-blue shadow-md";
+        document
+            .querySelectorAll(".nav-btn")
+            .forEach((btn) => {
 
-        tabSignup.className =
-            "flex-1 py-2.5 rounded-xl text-xs font-bold transition text-x-muted hover:text-white";
+                btn.classList.remove(
+                    "font-bold",
+                    "text-x-blue"
+                );
 
+                btn.classList.add(
+                    "font-medium"
+                );
 
-        title.innerText =
-            "Welcome back";
-
-        subtitle.innerText =
-            "Sign in to your BlogVerse account.";
-
-    }
-
-    else {
-
-        loginForm.classList.add(
-            "hidden"
-        );
-
-        signupForm.classList.remove(
-            "hidden"
-        );
+            });
 
 
-        tabSignup.className =
-            "flex-1 py-2.5 rounded-xl text-xs font-bold transition text-white bg-x-blue shadow-md";
+        if (view === "home") {
 
-        tabLogin.className =
-            "flex-1 py-2.5 rounded-xl text-xs font-bold transition text-x-muted hover:text-white";
-
-
-        title.innerText =
-            "Create your account";
-
-        subtitle.innerText =
-            "Join BlogVerse today.";
-
-    }
-};
+            document
+                .getElementById("viewHome")
+                ?.classList.remove("hidden");
 
 
-/* ============================================================
-   PASSWORD VISIBILITY
-   ============================================================ */
-
-window.togglePasswordVisibility =
-    function(inputId, iconBtn) {
-
-    const input =
-        document.getElementById(
-            inputId
-        );
-
-    const icon =
-        iconBtn.querySelector("i");
+            const navBtn =
+                document.getElementById(
+                    "navHome"
+                );
 
 
-    if (
-        input.type ===
-        "password"
-    ) {
+            if (navBtn) {
 
-        input.type =
-            "text";
+                navBtn.classList.add(
+                    "font-bold"
+                );
 
-        icon.className =
-            "fa-regular fa-eye-slash text-xs";
-
-    } else {
-
-        input.type =
-            "password";
-
-        icon.className =
-            "fa-regular fa-eye text-xs";
-    }
-};
+            }
 
 
-/* ============================================================
+            renderMainFeed();
+
+        }
+
+
+        else if (view === "explore") {
+
+            document
+                .getElementById("viewExplore")
+                ?.classList.remove("hidden");
+
+
+            const navBtn =
+                document.getElementById(
+                    "navExplore"
+                );
+
+
+            if (navBtn) {
+
+                navBtn.classList.add(
+                    "font-bold"
+                );
+
+            }
+
+
+            if (
+                typeof renderExploreTrends ===
+                "function"
+            ) {
+
+                renderExploreTrends();
+
+            }
+
+        }
+
+
+        else if (view === "notifications") {
+
+            document
+                .getElementById(
+                    "viewNotifications"
+                )
+                ?.classList.remove("hidden");
+
+
+            const navBtn =
+                document.getElementById(
+                    "navNotifications"
+                );
+
+
+            if (navBtn) {
+
+                navBtn.classList.add(
+                    "font-bold"
+                );
+
+            }
+
+
+            if (
+                typeof renderNotifications ===
+                "function"
+            ) {
+
+                renderNotifications();
+
+            }
+
+        }
+
+
+        else if (view === "messages") {
+
+            document
+                .getElementById(
+                    "viewMessages"
+                )
+                ?.classList.remove("hidden");
+
+
+            const navBtn =
+                document.getElementById(
+                    "navMessages"
+                );
+
+
+            if (navBtn) {
+
+                navBtn.classList.add(
+                    "font-bold"
+                );
+
+            }
+
+
+            if (
+                typeof renderMessagesList ===
+                "function"
+            ) {
+
+                renderMessagesList();
+
+            }
+
+        }
+
+
+        else if (view === "bookmarks") {
+
+            document
+                .getElementById(
+                    "viewBookmarks"
+                )
+                ?.classList.remove("hidden");
+
+
+            const navBtn =
+                document.getElementById(
+                    "navBookmarks"
+                );
+
+
+            if (navBtn) {
+
+                navBtn.classList.add(
+                    "font-bold"
+                );
+
+            }
+
+
+            if (
+                typeof renderBookmarksFeed ===
+                "function"
+            ) {
+
+                renderBookmarksFeed();
+
+            }
+
+        }
+
+
+        else if (view === "profile") {
+
+            const navBtn =
+                document.getElementById(
+                    "navProfile"
+                );
+
+
+            if (navBtn) {
+
+                navBtn.classList.add(
+                    "font-bold"
+                );
+
+            }
+
+
+            if (
+                currentUser &&
+                currentUser.uid
+            ) {
+
+                navigateToProfile(
+                    currentUser.uid
+                );
+
+            }
+
+            else {
+
+                openAuthModal("login");
+
+            }
+
+        }
+
+    };
+
+
+/* =========================================================
    AUTH MODAL
-   ============================================================ */
+   ========================================================= */
 
 window.openAuthModal =
     function(initialTab = "login") {
 
-    switchAuthTab(
-        initialTab
-    );
+        switchAuthTab(initialTab);
 
-    openModal(
-        "authModal"
-    );
-};
+        openModal("authModal");
+
+    };
 
 
-/* ============================================================
-   USER UI
-   ============================================================ */
+/* =========================================================
+   FEED TABS
+   ========================================================= */
 
-function updateUserBadgeUI() {
+window.switchFeedTab =
+    function(tab) {
 
-    if (!currentUser)
+        currentFeedTab = tab;
+
+
+        const btnForYou =
+            document.getElementById(
+                "tabForYou"
+            );
+
+
+        const btnFollowing =
+            document.getElementById(
+                "tabFollowing"
+            );
+
+
+        if (!btnForYou || !btnFollowing) {
+            return;
+        }
+
+
+        if (tab === "foryou") {
+
+            btnForYou
+                .firstElementChild
+                .className =
+                "py-3 border-b-4 border-x-blue text-white font-bold";
+
+
+            btnFollowing
+                .firstElementChild
+                .className =
+                "py-3 border-b-4 border-transparent text-x-muted font-bold";
+
+        }
+
+        else {
+
+            btnFollowing
+                .firstElementChild
+                .className =
+                "py-3 border-b-4 border-x-blue text-white font-bold";
+
+
+            btnForYou
+                .firstElementChild
+                .className =
+                "py-3 border-b-4 border-transparent text-x-muted font-bold";
+
+        }
+
+
+        renderMainFeed();
+
+    };
+
+
+/* =========================================================
+   MAIN FEED
+   ========================================================= */
+
+function renderMainFeed() {
+
+    const container =
+        document.getElementById(
+            "postsFeedContainer"
+        );
+
+
+    if (!container) return;
+
+
+    container.innerHTML = "";
+
+
+    let feedPosts =
+        [...postsData];
+
+
+    if (
+        currentFeedTab === "following" &&
+        currentUser
+    ) {
+
+        feedPosts =
+            feedPosts.filter(
+                (post) =>
+
+                    (
+                        currentUser.following &&
+                        currentUser.following.includes(
+                            post.authorId
+                        )
+                    )
+
+                    ||
+
+                    post.authorId ===
+                    currentUser.uid
+
+            );
+
+    }
+
+
+    if (feedPosts.length === 0) {
+
+        container.innerHTML = `
+            <div class="p-8 text-center text-x-muted text-sm">
+                No cloud posts found.
+                Be the first to share something!
+            </div>
+        `;
+
         return;
 
-
-    const sidebarName =
-        document.getElementById(
-            "sidebarName"
-        );
-
-    const sidebarHandle =
-        document.getElementById(
-            "sidebarHandle"
-        );
-
-    const sidebarAvatar =
-        document.getElementById(
-            "sidebarAvatar"
-        );
-
-    const composerAvatar =
-        document.getElementById(
-            "composerUserAvatar"
-        );
-
-    const modalAvatar =
-        document.getElementById(
-            "modalComposerAvatar"
-        );
+    }
 
 
-    if (sidebarName)
-        sidebarName.innerText =
-            currentUser.name ||
-            "Creator";
+    feedPosts.forEach(
+        (post) => {
 
+            container.appendChild(
+                createPostCard(post)
+            );
 
-    if (sidebarHandle)
-        sidebarHandle.innerText =
-            `@${currentUser.handle || "user"}`;
+        }
+    );
 
-
-    if (sidebarAvatar)
-        sidebarAvatar.src =
-            currentUser.avatar ||
-            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80";
-
-
-    if (composerAvatar)
-        composerAvatar.src =
-            currentUser.avatar ||
-            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80";
-
-
-    if (modalAvatar)
-        modalAvatar.src =
-            currentUser.avatar ||
-            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80";
 }
 
 
-/* ============================================================
-   MODAL HELPERS
-   ============================================================ */
+/* =========================================================
+   POST CARD
+   ========================================================= */
+
+function createPostCard(post) {
+
+    const author =
+        usersData[post.authorId] ||
+        {
+
+            name:
+                "Blogverse Creator",
+
+            handle:
+                "creator",
+
+            avatar:
+                DEFAULT_AVATAR
+
+        };
+
+
+    const isLiked =
+        currentUser &&
+        post.likes &&
+        post.likes.includes(
+            currentUser.uid
+        );
+
+
+    const isReposted =
+        currentUser &&
+        post.reposts &&
+        post.reposts.includes(
+            currentUser.uid
+        );
+
+
+    const isBookmarked =
+        bookmarksData.includes(
+            post.id
+        );
+
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        "p-4 hover:bg-white/[0.02] transition border-b border-x-border cursor-pointer flex space-x-3";
+
+
+    card.innerHTML = `
+
+        <img
+            src="${author.avatar || DEFAULT_AVATAR}"
+            onclick="event.stopPropagation(); navigateToProfile('${post.authorId}')"
+            class="w-10 h-10 rounded-full object-cover cursor-pointer bg-x-card"
+        >
+
+
+        <div class="flex-1 min-w-0 space-y-2">
+
+            <div class="flex items-center justify-between">
+
+                <div class="flex items-center space-x-1.5 truncate">
+
+                    <span
+                        onclick="event.stopPropagation(); navigateToProfile('${post.authorId}')"
+                        class="font-bold text-sm text-white hover:underline cursor-pointer truncate"
+                    >
+                        ${escapeHtml(author.name)}
+                    </span>
+
+                    <i class="fa-solid fa-circle-check text-x-blue text-xs"></i>
+
+                    <span class="text-xs text-x-muted truncate">
+                        @${escapeHtml(author.handle)}
+                    </span>
+
+                    <span class="text-xs text-x-muted">
+                        ·
+                    </span>
+
+                    <span class="text-xs text-x-muted">
+                        ${escapeHtml(post.timestamp || "Recently")}
+                    </span>
+
+                </div>
+
+                <i class="fa-solid fa-ellipsis text-x-muted text-xs"></i>
+
+            </div>
+
+
+            <p class="text-sm text-gray-100 leading-relaxed break-words">
+                ${escapeHtml(post.content || "")}
+            </p>
+
+
+            ${
+                post.mediaUrl
+                ?
+                `
+                <div class="rounded-2xl overflow-hidden border border-x-border/60 max-h-96 mt-2">
+
+                    <img
+                        src="${post.mediaUrl}"
+                        class="w-full object-cover"
+                    >
+
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            <div class="flex items-center justify-between text-x-muted text-xs pt-2 max-w-md">
+
+                <button
+                    class="hover:text-x-blue flex items-center space-x-2 transition"
+                >
+
+                    <i class="fa-regular fa-comment text-sm"></i>
+
+                    <span>
+                        ${post.replies?.length || 0}
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="${
+                        isReposted
+                        ? "text-x-green"
+                        : "hover:text-x-green"
+                    } flex items-center space-x-2 transition"
+                >
+
+                    <i class="fa-solid fa-repeat text-sm"></i>
+
+                    <span>
+                        ${post.reposts?.length || 0}
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="${
+                        isLiked
+                        ? "text-x-pink"
+                        : "hover:text-x-pink"
+                    } flex items-center space-x-2 transition"
+                >
+
+                    <i class="${
+                        isLiked
+                        ? "fa-solid"
+                        : "fa-regular"
+                    } fa-heart text-sm"></i>
+
+                    <span>
+                        ${post.likes?.length || 0}
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="${
+                        isBookmarked
+                        ? "text-x-blue"
+                        : "hover:text-x-blue"
+                    } transition"
+                >
+
+                    <i class="${
+                        isBookmarked
+                        ? "fa-solid"
+                        : "fa-regular"
+                    } fa-bookmark"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    return card;
+
+}
+
+
+/* =========================================================
+   COMPOSE MODAL
+   ========================================================= */
+
+window.openComposeModal =
+    function() {
+
+        if (!currentUser) {
+
+            openAuthModal("login");
+
+            return;
+
+        }
+
+
+        openModal(
+            "composeModal"
+        );
+
+    };
+
+
+/* =========================================================
+   EDIT PROFILE MODAL
+   ========================================================= */
+
+window.openEditProfileModal =
+    function() {
+
+        if (!currentUser) return;
+
+
+        document.getElementById(
+            "editNameInput"
+        ).value =
+            currentUser.name || "";
+
+
+        document.getElementById(
+            "editBioInput"
+        ).value =
+            currentUser.bio || "";
+
+
+        document.getElementById(
+            "editAvatarUrlInput"
+        ).value =
+            currentUser.avatar || "";
+
+
+        document.getElementById(
+            "editCoverUrlInput"
+        ).value =
+            currentUser.cover || "";
+
+
+        document.getElementById(
+            "editLocationInput"
+        ).value =
+            currentUser.location || "";
+
+
+        openModal(
+            "editProfileModal"
+        );
+
+    };
+
+
+/* =========================================================
+   SAVE PROFILE
+   ========================================================= */
+
+window.saveProfileChanges =
+    async function() {
+
+        if (
+            !auth.currentUser ||
+            !currentUser
+        ) {
+
+            return;
+
+        }
+
+
+        const name =
+            document
+                .getElementById(
+                    "editNameInput"
+                )
+                .value
+                .trim()
+            ||
+            currentUser.name;
+
+
+        const bio =
+            document
+                .getElementById(
+                    "editBioInput"
+                )
+                .value
+                .trim();
+
+
+        const avatar =
+            document
+                .getElementById(
+                    "editAvatarUrlInput"
+                )
+                .value
+                .trim()
+            ||
+            currentUser.avatar;
+
+
+        const cover =
+            document
+                .getElementById(
+                    "editCoverUrlInput"
+                )
+                .value
+                .trim()
+            ||
+            currentUser.cover;
+
+
+        const location =
+            document
+                .getElementById(
+                    "editLocationInput"
+                )
+                .value
+                .trim();
+
+
+        const updatedProfile = {
+
+            ...currentUser,
+
+            name,
+
+            bio,
+
+            avatar,
+
+            cover,
+
+            location,
+
+            updatedAt:
+                Date.now()
+
+        };
+
+
+        try {
+
+            const profileRef =
+                doc(
+                    db,
+                    "artifacts",
+                    appId,
+                    "public",
+                    "data",
+                    "profiles",
+                    auth.currentUser.uid
+                );
+
+
+            await setDoc(
+                profileRef,
+                updatedProfile,
+                {
+                    merge: true
+                }
+            );
+
+
+            currentUser =
+                updatedProfile;
+
+
+            updateUserBadgeUI();
+
+
+            closeModal(
+                "editProfileModal"
+            );
+
+
+            navigateToProfile(
+                auth.currentUser.uid
+            );
+
+
+            showToast(
+                "Profile synced to cloud!",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Profile update error:",
+                error
+            );
+
+
+            showToast(
+                "Failed to update profile.",
+                "info"
+            );
+
+        }
+
+    };
+
+
+/* =========================================================
+   MEDIA
+   ========================================================= */
+
+window.triggerImageUpload =
+    function(target = "inline") {
+
+        const sampleImages = [
+
+            "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+
+            "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+
+            "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80"
+
+        ];
+
+
+        selectedMediaUrl =
+            sampleImages[
+                Math.floor(
+                    Math.random() *
+                    sampleImages.length
+                )
+            ];
+
+
+        if (target === "modal") {
+
+            document.getElementById(
+                "modalPreviewImageSrc"
+            ).src =
+                selectedMediaUrl;
+
+
+            document.getElementById(
+                "modalMediaPreview"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+        else {
+
+            document.getElementById(
+                "previewImageSrc"
+            ).src =
+                selectedMediaUrl;
+
+
+            document.getElementById(
+                "composerMediaPreview"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+    };
+
+
+window.clearMediaPreview =
+    function() {
+
+        selectedMediaUrl = "";
+
+
+        document.getElementById(
+            "composerMediaPreview"
+        )?.classList.add(
+            "hidden"
+        );
+
+
+        document.getElementById(
+            "modalMediaPreview"
+        )?.classList.add(
+            "hidden"
+        );
+
+    };
+
+
+/* =========================================================
+   EMOJIS
+   ========================================================= */
+
+window.insertEmoji =
+    function(emoji) {
+
+        const textarea =
+            document.getElementById(
+                "inlinePostContent"
+            );
+
+
+        if (!textarea) return;
+
+
+        textarea.value += emoji;
+
+        textarea.focus();
+
+    };
+
+
+window.insertEmojiModal =
+    function(emoji) {
+
+        const textarea =
+            document.getElementById(
+                "modalPostContent"
+            );
+
+
+        if (!textarea) return;
+
+
+        textarea.value += emoji;
+
+        textarea.focus();
+
+    };
+
+
+/* =========================================================
+   CREATE INLINE POST
+   ========================================================= */
+
+window.submitInlinePost =
+    async function() {
+
+        if (
+            !auth.currentUser ||
+            !currentUser
+        ) {
+
+            openAuthModal("login");
+
+            return;
+
+        }
+
+
+        const content =
+            document
+                .getElementById(
+                    "inlinePostContent"
+                )
+                .value
+                .trim();
+
+
+        if (
+            !content &&
+            !selectedMediaUrl
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const postsRef =
+                collection(
+                    db,
+                    "artifacts",
+                    appId,
+                    "public",
+                    "data",
+                    "posts"
+                );
+
+
+            await addDoc(
+                postsRef,
+                {
+
+                    authorId:
+                        auth.currentUser.uid,
+
+                    content,
+
+                    mediaUrl:
+                        selectedMediaUrl,
+
+                    timestamp:
+                        "Just now",
+
+                    createdAt:
+                        Date.now(),
+
+                    likes: [],
+
+                    reposts: [],
+
+                    replies: [],
+
+                    category:
+                        "General"
+
+                }
+            );
+
+
+            document.getElementById(
+                "inlinePostContent"
+            ).value = "";
+
+
+            clearMediaPreview();
+
+
+            showToast(
+                "Published to cloud feed!",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Error creating post:",
+                error
+            );
+
+
+            showToast(
+                "Failed to publish post.",
+                "info"
+            );
+
+        }
+
+    };
+
+
+/* =========================================================
+   CREATE MODAL POST
+   ========================================================= */
+
+window.submitModalPost =
+    async function() {
+
+        const content =
+            document
+                .getElementById(
+                    "modalPostContent"
+                )
+                .value
+                .trim();
+
+
+        if (
+            !content &&
+            !selectedMediaUrl
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            !auth.currentUser ||
+            !currentUser
+        ) {
+
+            openAuthModal("login");
+
+            return;
+
+        }
+
+
+        try {
+
+            const postsRef =
+                collection(
+                    db,
+                    "artifacts",
+                    appId,
+                    "public",
+                    "data",
+                    "posts"
+                );
+
+
+            await addDoc(
+                postsRef,
+                {
+
+                    authorId:
+                        auth.currentUser.uid,
+
+                    content,
+
+                    mediaUrl:
+                        selectedMediaUrl,
+
+                    timestamp:
+                        "Just now",
+
+                    createdAt:
+                        Date.now(),
+
+                    likes: [],
+
+                    reposts: [],
+
+                    replies: [],
+
+                    category:
+                        "General"
+
+                }
+            );
+
+
+            document.getElementById(
+                "modalPostContent"
+            ).value = "";
+
+
+            clearMediaPreview();
+
+
+            closeModal(
+                "composeModal"
+            );
+
+
+            showToast(
+                "Published to cloud feed!",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Error creating modal post:",
+                error
+            );
+
+
+            showToast(
+                "Failed to publish post.",
+                "info"
+            );
+
+        }
+
+    };
+
+
+/* =========================================================
+   MODALS
+   ========================================================= */
 
 window.openModal =
     function(id) {
 
-    const element =
-        document.getElementById(id);
+        document
+            .getElementById(id)
+            ?.classList
+            .remove("hidden");
 
-    if (element)
-        element.classList.remove(
-            "hidden"
-        );
-};
+    };
 
 
 window.closeModal =
     function(id) {
 
-    const element =
-        document.getElementById(id);
+        document
+            .getElementById(id)
+            ?.classList
+            .add("hidden");
 
-    if (element)
-        element.classList.add(
-            "hidden"
-        );
-};
+    };
 
 
-/* ============================================================
+/* =========================================================
    TOAST
-   ============================================================ */
+   ========================================================= */
 
 function showToast(
     msg,
@@ -1163,14 +4460,14 @@ function showToast(
             "toastNotification"
         );
 
+
     const text =
         document.getElementById(
             "toastText"
         );
 
 
-    if (!toast || !text)
-        return;
+    if (!toast || !text) return;
 
 
     text.innerText =
@@ -1192,6 +4489,7 @@ function showToast(
         },
         3000
     );
+
 }
 
 
@@ -1199,15 +4497,611 @@ window.showToast =
     showToast;
 
 
-/* ============================================================
-   START BLOGVERSE
-   ============================================================ */
+/* =========================================================
+   UPDATE USER UI
+   ========================================================= */
+
+function updateUserBadgeUI() {
+
+    if (!currentUser) return;
+
+
+    const avatar =
+        currentUser.avatar ||
+        DEFAULT_AVATAR;
+
+
+    const sidebarName =
+        document.getElementById(
+            "sidebarName"
+        );
+
+
+    const sidebarHandle =
+        document.getElementById(
+            "sidebarHandle"
+        );
+
+
+    const sidebarAvatar =
+        document.getElementById(
+            "sidebarAvatar"
+        );
+
+
+    const composerAvatar =
+        document.getElementById(
+            "composerUserAvatar"
+        );
+
+
+    const modalAvatar =
+        document.getElementById(
+            "modalComposerAvatar"
+        );
+
+
+    if (sidebarName) {
+
+        sidebarName.innerText =
+            currentUser.name ||
+            "Creator";
+
+    }
+
+
+    if (sidebarHandle) {
+
+        sidebarHandle.innerText =
+            `@${currentUser.handle || "user"}`;
+
+    }
+
+
+    if (sidebarAvatar) {
+
+        sidebarAvatar.src =
+            avatar;
+
+    }
+
+
+    if (composerAvatar) {
+
+        composerAvatar.src =
+            avatar;
+
+    }
+
+
+    if (modalAvatar) {
+
+        modalAvatar.src =
+            avatar;
+
+    }
+
+}
+
+
+/* =========================================================
+   PASSWORD VISIBILITY
+   ========================================================= */
+
+window.togglePasswordVisibility =
+    function(
+        inputId,
+        iconBtn
+    ) {
+
+        const input =
+            document.getElementById(
+                inputId
+            );
+
+
+        if (!input) return;
+
+
+        const icon =
+            iconBtn.querySelector(
+                "i"
+            );
+
+
+        if (
+            input.type ===
+            "password"
+        ) {
+
+            input.type =
+                "text";
+
+
+            if (icon) {
+
+                icon.className =
+                    "fa-regular fa-eye-slash text-xs";
+
+            }
+
+        }
+
+        else {
+
+            input.type =
+                "password";
+
+
+            if (icon) {
+
+                icon.className =
+                    "fa-regular fa-eye text-xs";
+
+            }
+
+        }
+
+    };
+
+
+/* =========================================================
+   THEME
+   ========================================================= */
+
+window.toggleThemeModal =
+    function() {
+
+        openModal(
+            "themeModal"
+        );
+
+    };
+
+
+window.setAppTheme =
+    function(theme) {
+
+        document.body.classList.remove(
+            "dim-mode",
+            "light-mode"
+        );
+
+
+        if (theme === "dim") {
+
+            document.body.classList.add(
+                "dim-mode"
+            );
+
+        }
+
+
+        else if (
+            theme === "light"
+        ) {
+
+            document.body.classList.add(
+                "light-mode"
+            );
+
+        }
+
+
+        showToast(
+            `Theme changed to ${theme}`,
+            "info"
+        );
+
+    };
+
+
+/* =========================================================
+   TEXTAREA AUTO RESIZE
+   ========================================================= */
+
+window.autoResizeTextarea =
+    function(el) {
+
+        if (!el) return;
+
+
+        el.style.height =
+            "auto";
+
+
+        el.style.height =
+            `${el.scrollHeight}px`;
+
+    };
+
+
+/* =========================================================
+   GLOBAL SEARCH
+   ========================================================= */
+
+window.handleGlobalSearch =
+    function(query) {
+
+        if (!query) return;
+
+        console.log(
+            "Search:",
+            query
+        );
+
+    };
+
+
+/* =========================================================
+   OPEN CHAT / MESSAGES
+   ========================================================= */
+
+window.openChatThread =
+    function(
+        chatId,
+        name,
+        handle,
+        avatar
+    ) {
+
+        activeChatUser =
+            chatId;
+
+
+        document
+            .getElementById(
+                "messagesList"
+            )
+            ?.classList
+            .add("hidden");
+
+
+        const activePane =
+            document.getElementById(
+                "activeChatPane"
+            );
+
+
+        if (activePane) {
+
+            activePane.classList.remove(
+                "hidden"
+            );
+
+            activePane.classList.add(
+                "flex"
+            );
+
+        }
+
+
+        const nameElement =
+            document.getElementById(
+                "chatPartnerName"
+            );
+
+
+        const handleElement =
+            document.getElementById(
+                "chatPartnerHandle"
+            );
+
+
+        const avatarElement =
+            document.getElementById(
+                "chatPartnerAvatar"
+            );
+
+
+        if (nameElement)
+            nameElement.innerText =
+                name;
+
+
+        if (handleElement)
+            handleElement.innerText =
+                `@${handle}`;
+
+
+        if (avatarElement)
+            avatarElement.src =
+                avatar;
+
+
+        if (
+            typeof renderChatHistory ===
+            "function"
+        ) {
+
+            renderChatHistory();
+
+        }
+
+    };
+
+
+window.closeActiveChat =
+    function() {
+
+        activeChatUser =
+            null;
+
+
+        if (
+            typeof renderMessagesList ===
+            "function"
+        ) {
+
+            renderMessagesList();
+
+        }
+
+    };
+
+
+/* =========================================================
+   PROFILE NAVIGATION
+   ========================================================= */
+
+window.navigateToProfile =
+    function(userId) {
+
+        viewedUserId =
+            userId;
+
+
+        currentView =
+            "profile";
+
+
+        document
+            .querySelectorAll(
+                ".feed-view"
+            )
+            .forEach(
+                (el) =>
+                    el.classList.add(
+                        "hidden"
+                    )
+            );
+
+
+        const profileView =
+            document.getElementById(
+                "viewProfile"
+            );
+
+
+        if (profileView) {
+
+            profileView.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        const user =
+            usersData[userId] ||
+            (
+                currentUser &&
+                currentUser.uid === userId
+                    ? currentUser
+                    : null
+            );
+
+
+        if (!user) return;
+
+
+        const headerName =
+            document.getElementById(
+                "profileHeaderName"
+            );
+
+
+        const displayName =
+            document.getElementById(
+                "profileDisplayName"
+            );
+
+
+        const handle =
+            document.getElementById(
+                "profileHandle"
+            );
+
+
+        const bio =
+            document.getElementById(
+                "profileBioText"
+            );
+
+
+        const avatar =
+            document.getElementById(
+                "profileAvatarImg"
+            );
+
+
+        const cover =
+            document.getElementById(
+                "profileCoverImg"
+            );
+
+
+        if (headerName)
+            headerName.innerText =
+                user.name ||
+                "User";
+
+
+        if (displayName)
+            displayName.innerText =
+                user.name ||
+                "User";
+
+
+        if (handle)
+            handle.innerText =
+                `@${user.handle || "user"}`;
+
+
+        if (bio)
+            bio.innerText =
+                user.bio ||
+                "No bio provided.";
+
+
+        if (avatar)
+            avatar.src =
+                user.avatar ||
+                DEFAULT_AVATAR;
+
+
+        if (cover)
+            cover.src =
+                user.cover ||
+                DEFAULT_COVER;
+
+
+        const userPosts =
+            postsData.filter(
+                (post) =>
+                    post.authorId ===
+                    userId
+            );
+
+
+        const postCount =
+            document.getElementById(
+                "profilePostCount"
+            );
+
+
+        if (postCount) {
+
+            postCount.innerText =
+                `${userPosts.length} Posts`;
+
+        }
+
+
+        const followingCount =
+            document.getElementById(
+                "profileFollowingCount"
+            );
+
+
+        const followersCount =
+            document.getElementById(
+                "profileFollowersCount"
+            );
+
+
+        if (followingCount) {
+
+            followingCount.innerText =
+                user.following?.length ||
+                0;
+
+        }
+
+
+        if (followersCount) {
+
+            followersCount.innerText =
+                user.followers?.length ||
+                0;
+
+        }
+
+
+        const editButton =
+            document.getElementById(
+                "btnEditProfile"
+            );
+
+
+        const followButton =
+            document.getElementById(
+                "btnFollowUser"
+            );
+
+
+        const isSelf =
+            currentUser &&
+            currentUser.uid ===
+                userId;
+
+
+        if (isSelf) {
+
+            editButton?.classList.remove(
+                "hidden"
+            );
+
+            followButton?.classList.add(
+                "hidden"
+            );
+
+        }
+
+        else {
+
+            editButton?.classList.add(
+                "hidden"
+            );
+
+            followButton?.classList.remove(
+                "hidden"
+            );
+
+
+            const isFollowing =
+                currentUser &&
+                currentUser.following &&
+                currentUser.following.includes(
+                    userId
+                );
+
+
+            if (followButton) {
+
+                followButton.innerText =
+                    isFollowing
+                        ? "Following"
+                        : "Follow";
+
+            }
+
+        }
+
+
+        if (
+            typeof renderProfilePosts ===
+            "function"
+        ) {
+
+            renderProfilePosts(
+                userId
+            );
+
+        }
+
+    };
+
+
+/* =========================================================
+   INITIAL START
+   ========================================================= */
 
 window.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        initAuth();
+        updateUserBadgeUI();
 
     }
 );
