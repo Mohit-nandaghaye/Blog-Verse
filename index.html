@@ -11,20 +11,53 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        .sepia-mode { background-color: #fbf0d9 !important; color: #433422 !important; }
+        .sepia-mode header, .sepia-mode footer { background-color: #f3e5ab !important; border-color: #d7c49e !important; }
+        .sepia-mode .card-bg { background-color: #f3e5ab !important; border-color: #d7c49e !important; }
+        .sepia-mode .text-slate-100, .sepia-mode .text-slate-200 { color: #2d2113 !important; }
+        .sepia-mode .text-slate-400 { color: #6e5c47 !important; }
+
+        .light-mode { background-color: #f8fafc !important; color: #0f172a !important; }
+        .light-mode header, .light-mode footer { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
+        .light-mode .card-bg { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
+        .light-mode .text-slate-100, .light-mode .text-slate-200 { color: #0f172a !important; }
+        .light-mode .text-slate-400 { color: #64748b !important; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
+<body id="app-body" class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+    <!-- Reading Progress Bar -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-emerald-400 z-50 w-0 transition-all duration-75"></div>
 
     <!-- Header Navigation -->
     <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-40 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="filterArticles('all')">
                 <div class="bg-emerald-500 text-slate-900 font-black px-2.5 py-1 rounded-lg text-lg">BV</div>
                 <div>
                     <h1 class="font-bold text-lg leading-none">BlogVerse</h1>
                     <p class="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider mt-0.5">Owned by MOHIT NANDAGHAYE</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3" id="auth-nav-area"></div>
+
+            <!-- Header Controls & Auth -->
+            <div class="flex items-center space-x-3">
+                <!-- Theme Switcher -->
+                <select onchange="changeTheme(this.value)" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2 py-1.5 focus:outline-none cursor-pointer">
+                    <option value="dark">🌙 Dark</option>
+                    <option value="sepia">📜 Sepia</option>
+                    <option value="light">☀️ Light</option>
+                </select>
+
+                <!-- Bookmarks Tab Button -->
+                <button onclick="toggleBookmarksView()" id="bookmark-filter-btn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-bookmark text-amber-400"></i> Saved
+                </button>
+
+                <div class="flex items-center space-x-2" id="auth-nav-area"></div>
+            </div>
         </div>
     </header>
 
@@ -32,11 +65,11 @@
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
         
         <!-- Welcome Banner -->
-        <section class="mb-8 bg-gradient-to-r from-emerald-950 via-slate-800 to-slate-900 border border-emerald-500/30 rounded-2xl p-6">
+        <section class="mb-8 bg-gradient-to-r from-emerald-950 via-slate-800 to-slate-900 border border-emerald-500/30 rounded-2xl p-6 shadow-lg">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-500/30 font-semibold">Live Database Powered</span>
-                    <h2 class="text-2xl font-bold mt-2">Welcome to BlogVerse Studio</h2>
+                    <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-500/30 font-semibold">Live Interactive Studio</span>
+                    <h2 class="text-2xl font-bold mt-2" id="feed-title">Welcome to BlogVerse Studio</h2>
                     <p class="text-slate-400 text-sm mt-1">Platform Architecture & Sole Ownership managed by <span class="text-emerald-400 font-bold">MOHIT NANDAGHAYE</span>.</p>
                 </div>
                 <div id="hero-action-btn"></div>
@@ -44,7 +77,7 @@
         </section>
 
         <!-- Write Article Form -->
-        <section id="editor-section" class="hidden mb-10 bg-slate-800/80 border border-emerald-500/50 rounded-2xl p-6 shadow-xl">
+        <section id="editor-section" class="hidden mb-10 bg-slate-800/80 card-bg border border-emerald-500/50 rounded-2xl p-6 shadow-xl">
             <h3 class="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-pen-nib"></i> Publish New Article
             </h3>
@@ -75,8 +108,8 @@
 
         <!-- Feed Section -->
         <section class="space-y-6">
-            <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-newspaper text-emerald-400"></i> Published Articles
+            <h3 class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-newspaper text-emerald-400"></i> Articles
             </h3>
             <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <p class="text-slate-400 text-sm col-span-2">Loading articles from live database...</p>
@@ -86,7 +119,7 @@
 
     <!-- Login / Sign Up Modal -->
     <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+        <div class="bg-slate-900 card-bg border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
@@ -132,13 +165,30 @@
             appId: "1:903299334786:web:cba3a6f203db7504106a9b",
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         let currentUser = null;
         let currentAuthMode = 'login';
+        let showingBookmarksOnly = false;
+        let savedBookmarkedIds = JSON.parse(localStorage.getItem('bv_bookmarks') || '[]');
+
+        // Reading Scroll Progress Indicator
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scroll-progress').style.width = scrolled + "%";
+        });
+
+        // Theme Switcher Logic
+        function changeTheme(theme) {
+            const body = document.getElementById('app-body');
+            body.classList.remove('sepia-mode', 'light-mode');
+            if (theme === 'sepia') body.classList.add('sepia-mode');
+            if (theme === 'light') body.classList.add('light-mode');
+        }
 
         // Monitor Real-time Authentication
         auth.onAuthStateChanged(user => {
@@ -146,32 +196,103 @@
             renderNav();
         });
 
-        // Load Real-time Articles from Database
+        // Calculate Estimated Reading Time
+        function calculateReadTime(text) {
+            const words = text ? text.trim().split(/\s+/).length : 0;
+            const minutes = Math.ceil(words / 200);
+            return `${minutes} min read`;
+        }
+
+        // Bookmark Toggle Logic
+        function toggleBookmark(docId) {
+            if (savedBookmarkedIds.includes(docId)) {
+                savedBookmarkedIds = savedBookmarkedIds.filter(id => id !== docId);
+            } else {
+                savedBookmarkedIds.push(docId);
+            }
+            localStorage.setItem('bv_bookmarks', JSON.stringify(savedBookmarkedIds));
+            renderArticles();
+        }
+
+        function toggleBookmarksView() {
+            showingBookmarksOnly = !showingBookmarksOnly;
+            const btn = document.getElementById('bookmark-filter-btn');
+            const title = document.getElementById('feed-title');
+            
+            if (showingBookmarksOnly) {
+                btn.classList.add('bg-amber-500/20', 'border-amber-500/50');
+                title.innerText = "Your Saved Articles";
+            } else {
+                btn.classList.remove('bg-amber-500/20', 'border-amber-500/50');
+                title.innerText = "Welcome to BlogVerse Studio";
+            }
+            renderArticles();
+        }
+
+        let latestArticlesSnapshot = null;
+
+        // Firestore Real-time Listener
         db.collection("articles").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            latestArticlesSnapshot = snapshot;
+            renderArticles();
+        });
+
+        function renderArticles() {
+            if (!latestArticlesSnapshot) return;
             const articlesGrid = document.getElementById('articles-grid');
-            if (snapshot.empty) {
-                articlesGrid.innerHTML = `<p class="text-slate-400 text-sm col-span-2">No articles published yet. Be the first to write one!</p>`;
+
+            let docs = latestArticlesSnapshot.docs;
+            if (showingBookmarksOnly) {
+                docs = docs.filter(doc => savedBookmarkedIds.includes(doc.id));
+            }
+
+            if (docs.length === 0) {
+                articlesGrid.innerHTML = `<p class="text-slate-400 text-sm col-span-2">${showingBookmarksOnly ? 'No saved articles yet.' : 'No articles published yet. Be the first to write one!'}</p>`;
                 return;
             }
 
-            articlesGrid.innerHTML = snapshot.docs.map(doc => {
+            articlesGrid.innerHTML = docs.map(doc => {
                 const art = doc.data();
                 const docId = doc.id;
                 const likes = art.likes || [];
+                const reactions = art.reactions || { fire: 0, idea: 0, clap: 0 };
                 const isLiked = currentUser && likes.includes(currentUser.uid);
+                const isBookmarked = savedBookmarkedIds.includes(docId);
+                const readTime = calculateReadTime(art.excerpt || '');
 
                 return `
-                    <div class="bg-slate-800/50 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 transition flex flex-col justify-between">
+                    <div class="bg-slate-800/50 card-bg border border-slate-800 hover:border-slate-700 rounded-2xl p-5 transition flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-3">
-                                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50">${art.category}</span>
-                                <span class="text-xs text-slate-500">${art.date}</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-800/50">${art.category}</span>
+                                    <span class="text-[11px] text-slate-400"><i class="fa-regular fa-clock"></i> ${readTime}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="toggleBookmark('${docId}')" class="text-slate-400 hover:text-amber-400 transition" title="Save Article">
+                                        <i class="${isBookmarked ? 'fa-solid text-amber-400' : 'fa-regular'} fa-bookmark"></i>
+                                    </button>
+                                    <span class="text-xs text-slate-500">${art.date}</span>
+                                </div>
                             </div>
                             <h4 class="text-lg font-bold text-slate-100 mb-2">${art.title}</h4>
                             <p class="text-slate-400 text-sm leading-relaxed mb-4">${art.excerpt}</p>
                         </div>
                         <div>
-                            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <!-- Emoji Reactions Toolbar -->
+                            <div class="flex items-center space-x-2 mb-3 pt-2 border-t border-slate-800/60">
+                                <button onclick="handleReaction('${docId}', 'fire')" class="bg-slate-900/60 hover:bg-slate-700/50 px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 border border-slate-800 transition">
+                                    🔥 <span>${reactions.fire || 0}</span>
+                                </button>
+                                <button onclick="handleReaction('${docId}', 'idea')" class="bg-slate-900/60 hover:bg-slate-700/50 px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 border border-slate-800 transition">
+                                    💡 <span>${reactions.idea || 0}</span>
+                                </button>
+                                <button onclick="handleReaction('${docId}', 'clap')" class="bg-slate-900/60 hover:bg-slate-700/50 px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 border border-slate-800 transition">
+                                    👏 <span>${reactions.clap || 0}</span>
+                                </button>
+                            </div>
+
+                            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
                                 <span>By <strong class="text-slate-200">${art.author}</strong></span>
                                 <div class="flex items-center space-x-4">
                                     <!-- Like Button -->
@@ -187,7 +308,7 @@
                                 </div>
                             </div>
 
-                            <!-- Comment Section (Hidden by default) -->
+                            <!-- Comment Section -->
                             <div id="comments-section-${docId}" class="hidden mt-4 pt-4 border-t border-slate-700/50 space-y-3">
                                 <div id="comments-list-${docId}" class="space-y-2 max-h-40 overflow-y-auto text-xs pr-1">
                                     <p class="text-slate-500">Loading comments...</p>
@@ -202,7 +323,20 @@
                     </div>
                 `;
             }).join('');
-        });
+        }
+
+        // Reaction Counter Handler
+        async function handleReaction(articleId, reactionType) {
+            if (!currentUser) {
+                openAuthModal('login');
+                return;
+            }
+
+            const docRef = db.collection("articles").doc(articleId);
+            await docRef.update({
+                [`reactions.${reactionType}`]: firebase.firestore.FieldValue.increment(1)
+            });
+        }
 
         function renderNav() {
             const navArea = document.getElementById('auth-nav-area');
@@ -211,7 +345,7 @@
             if (currentUser) {
                 const displayName = currentUser.displayName || currentUser.email.split('@')[0];
                 navArea.innerHTML = `
-                    <button onclick="toggleEditor(true)" class="text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-3 py-2 rounded-lg transition"><i class="fa-solid fa-pen mr-1"></i> Write Blog</button>
+                    <button onclick="toggleEditor(true)" class="text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold px-3 py-2 rounded-lg transition"><i class="fa-solid fa-pen mr-1"></i> Write</button>
                     <span class="text-sm font-medium text-slate-200"><i class="fa-solid fa-user-circle text-emerald-400"></i> ${displayName}</span>
                     <button onclick="logout()" class="text-xs bg-slate-800 text-slate-400 hover:text-slate-200 px-3 py-2 rounded-lg border border-slate-700">Logout</button>
                 `;
@@ -258,6 +392,7 @@
                 excerpt: excerpt,
                 author: authorName,
                 likes: [],
+                reactions: { fire: 0, idea: 0, clap: 0 },
                 date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
@@ -269,7 +404,6 @@
             toggleEditor(false);
         }
 
-        // Like / Unlike Handler
         async function handleLike(articleId) {
             if (!currentUser) {
                 openAuthModal('login');
@@ -284,18 +418,13 @@
                 const userId = currentUser.uid;
 
                 if (likes.includes(userId)) {
-                    await docRef.update({
-                        likes: firebase.firestore.FieldValue.arrayRemove(userId)
-                    });
+                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayRemove(userId) });
                 } else {
-                    await docRef.update({
-                        likes: firebase.firestore.FieldValue.arrayUnion(userId)
-                    });
+                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayUnion(userId) });
                 }
             }
         }
 
-        // Toggle Comment Box & Listen to Real-time Comments
         function toggleComments(articleId) {
             const commentSec = document.getElementById(`comments-section-${articleId}`);
             commentSec.classList.toggle('hidden');
@@ -330,7 +459,6 @@
             }
         }
 
-        // Add Comment Handler
         async function handleAddComment(e, articleId) {
             e.preventDefault();
             if (!currentUser) {
