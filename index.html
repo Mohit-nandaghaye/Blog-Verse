@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlogVerse - Modern Publishing Platform</title>
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -23,19 +24,33 @@
             }
         }
     </script>
+    
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
         .article-body { font-family: 'Merriweather', serif; }
-        .sepia-mode { background-color: #f7f3e9; color: #433422; }
-        .sepia-card { background-color: #fbf9f5; border-color: #e2d7c5; }
+        
+        /* Theme Customizations */
+        body.sepia-mode { background-color: #f7f3e9 !important; color: #433422 !important; }
+        .sepia-mode header { background-color: rgba(247, 243, 233, 0.95) !important; border-color: #e2d7c5 !important; }
+        .sepia-mode .bg-gray-900 { background-color: #fbf9f5 !important; border-color: #e2d7c5 !important; }
+        .sepia-mode .bg-gray-800 { background-color: #f0e8d8 !important; border-color: #dbceb8 !important; }
+        .sepia-mode .text-white { color: #2d2216 !important; }
+        .sepia-mode .text-gray-300, .sepia-mode .text-gray-400 { color: #5c4832 !important; }
+
+        body.light-mode { background-color: #f8fafc !important; color: #0f172a !important; }
+        .light-mode header { background-color: rgba(255, 255, 255, 0.95) !important; border-color: #e2e8f0 !important; }
+        .light-mode .bg-gray-900 { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
+        .light-mode .bg-gray-800 { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; }
+        .light-mode .text-white { color: #0f172a !important; }
+        .light-mode .text-gray-300, .light-mode .text-gray-400 { color: #475569 !important; }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen transition-colors duration-200 flex flex-col">
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col">
 
     <header class="sticky top-0 z-40 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 transition-colors" id="mainHeader">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,7 +60,7 @@
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-bold text-white text-xl shadow-lg shadow-indigo-500/20">
                         BV
                     </div>
-                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">BlogVerse</span>
+                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">BlogVerse</span>
                 </div>
 
                 <!-- Live Search Bar -->
@@ -55,20 +70,26 @@
                         <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search authors or topics..." 
                             class="w-full pl-10 pr-4 py-2 bg-gray-800/80 border border-gray-700 rounded-full text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-gray-200 placeholder-gray-400 transition">
                     </div>
-                    <!-- Suggestions Dropdown -->
+                    <!-- Search Suggestions Dropdown -->
                     <div id="searchSuggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl overflow-hidden z-50"></div>
                 </div>
 
                 <!-- Right Actions -->
                 <div class="flex items-center space-x-3">
-                    <!-- Theme Selector -->
+                    <!-- Theme Selector Buttons -->
                     <div class="flex bg-gray-800/80 border border-gray-700 p-1 rounded-full space-x-1">
-                        <button onclick="setTheme('dark')" id="themeDarkBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-indigo-400"><i class="fa-solid fa-moon"></i></button>
-                        <button onclick="setTheme('sepia')" id="themeSepiaBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-amber-600"><i class="fa-solid fa-book-open"></i></button>
-                        <button onclick="setTheme('light')" id="themeLightBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-gray-400"><i class="fa-solid fa-sun"></i></button>
+                        <button onclick="setTheme('dark')" id="themeDarkBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-indigo-400" title="Dark Mode"><i class="fa-solid fa-moon"></i></button>
+                        <button onclick="setTheme('sepia')" id="themeSepiaBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-amber-600" title="Sepia Mode"><i class="fa-solid fa-book-open"></i></button>
+                        <button onclick="setTheme('light')" id="themeLightBtn" class="p-1.5 rounded-full text-xs hover:bg-gray-700 text-gray-400" title="Light Mode"><i class="fa-solid fa-sun"></i></button>
                     </div>
 
-                    <!-- Auth Controls -->
+                    <!-- Firebase Keys Button -->
+                    <button onclick="openModal('firebaseConfigModal')" class="px-3 py-1.5 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/60 text-indigo-300 rounded-full text-xs flex items-center space-x-1.5 transition shadow-sm" title="Configure Firebase Project">
+                        <i class="fa-solid fa-key text-amber-400"></i>
+                        <span class="font-medium hidden sm:inline">Firebase Keys</span>
+                    </button>
+
+                    <!-- Auth Controls (When Logged Out) -->
                     <div id="authActions" class="flex items-center space-x-2">
                         <button onclick="openAuthModal('login')" class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition">Sign In</button>
                         <button onclick="openAuthModal('register')" class="px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-full transition shadow-lg shadow-indigo-600/30">Get Started</button>
@@ -81,9 +102,9 @@
                             <span class="hidden sm:inline">Write</span>
                         </button>
                         <div class="relative group">
-                            <img id="navAvatar" onclick="navigateTo('my-profile')" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" class="w-9 h-9 rounded-full object-cover border-2 border-indigo-500 cursor-pointer">
+                            <img id="navAvatar" onclick="navigateTo('my-profile')" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" class="w-9 h-9 rounded-full object-cover border-2 border-indigo-500 cursor-pointer" title="View Profile">
                         </div>
-                        <button onclick="logout()" class="text-gray-400 hover:text-red-400 p-2" title="Logout">
+                        <button onclick="logout()" class="text-gray-400 hover:text-red-400 p-2 transition" title="Logout">
                             <i class="fa-solid fa-right-from-bracket"></i>
                         </button>
                     </div>
@@ -99,16 +120,16 @@
             <div class="flex items-center justify-between border-b border-gray-800 pb-4">
                 <h1 class="text-2xl font-bold tracking-tight">Explore Articles</h1>
                 <div class="flex space-x-2 text-sm">
-                    <button onclick="filterCategory('All')" class="cat-filter active px-3 py-1 rounded-full bg-indigo-600 text-white">All</button>
-                    <button onclick="filterCategory('Tech')" class="cat-filter px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700">Tech</button>
-                    <button onclick="filterCategory('Lifestyle')" class="cat-filter px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700">Lifestyle</button>
-                    <button onclick="filterCategory('Design')" class="cat-filter px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700">Design</button>
+                    <button onclick="filterCategory('All')" id="btnCatAll" class="cat-filter px-3.5 py-1 rounded-full bg-indigo-600 text-white font-medium transition">All</button>
+                    <button onclick="filterCategory('Tech')" id="btnCatTech" class="cat-filter px-3.5 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 font-medium transition">Tech</button>
+                    <button onclick="filterCategory('Lifestyle')" id="btnCatLifestyle" class="cat-filter px-3.5 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 font-medium transition">Lifestyle</button>
+                    <button onclick="filterCategory('Design')" id="btnCatDesign" class="cat-filter px-3.5 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 font-medium transition">Design</button>
                 </div>
             </div>
 
             <!-- Articles Feed Grid -->
             <div id="articlesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Dynamic Content Loaded Here -->
+                <!-- Articles loaded dynamically -->
             </div>
             
             <!-- Empty Feed State -->
@@ -117,7 +138,7 @@
                     <i class="fa-solid fa-newspaper"></i>
                 </div>
                 <h3 class="text-lg font-semibold text-gray-300">No articles published yet</h3>
-                <p class="text-gray-500 max-w-md mx-auto text-sm">Be the first author to publish a real article on BlogVerse!</p>
+                <p class="text-gray-500 max-w-md mx-auto text-sm">Be the first author to publish a real story on BlogVerse!</p>
                 <button onclick="openPublishModal()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-sm font-medium transition shadow-lg">Write Article</button>
             </div>
         </div>
@@ -161,7 +182,7 @@
                     </div>
                 </div>
 
-                <!-- Real Firestore Stats Bar -->
+                <!-- Firestore Stats Bar -->
                 <div class="border-t border-gray-800 bg-gray-900/50 px-6 py-4 grid grid-cols-3 divide-x divide-gray-800 text-center">
                     <div>
                         <span id="statArticlesCount" class="block text-xl font-bold text-white">0</span>
@@ -188,7 +209,6 @@
         </div>
     </main>
 
-    
     <!-- 1. EDIT PROFILE MODAL -->
     <div id="editProfileModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
         <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-xl p-6 shadow-2xl space-y-6 my-8">
@@ -213,9 +233,8 @@
                     <input type="url" id="editCoverUrl" oninput="previewProfileImages()" placeholder="https://..." class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:border-indigo-500 focus:outline-none">
                 </div>
 
-                <!-- Instant Previews -->
                 <div class="p-3 bg-gray-800/50 rounded-xl border border-gray-800 space-y-2">
-                    <span class="text-xs text-gray-400 block font-semibold">Image Previews:</span>
+                    <span class="text-xs text-gray-400 block font-semibold">Live Previews:</span>
                     <div class="flex items-center space-x-4">
                         <img id="editAvatarPreview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" class="w-12 h-12 rounded-full object-cover border border-gray-700">
                         <div class="h-12 flex-1 rounded-lg bg-gray-700 overflow-hidden relative">
@@ -292,7 +311,51 @@
         </div>
     </div>
 
-    <!-- 3. PUBLISH ARTICLE MODAL -->
+    <!-- 3. FIREBASE CONFIG MODAL -->
+    <div id="firebaseConfigModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+        <div class="bg-gray-900 border border-indigo-900/60 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5 my-8">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600/20 text-indigo-400 flex items-center justify-center">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Connect Your Firebase Project</h3>
+                        <p class="text-xs text-indigo-400 font-mono">Project ID: blogverse-f45bf</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('firebaseConfigModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <p class="text-xs text-gray-300 leading-relaxed bg-indigo-950/40 p-3 rounded-xl border border-indigo-900/40">
+                Paste your Web App Config JSON from <b>Firebase Console &gt; Project Settings &gt; General &gt; Your apps</b> to connect live user registration:
+            </p>
+
+            <form onsubmit="saveCustomFirebaseConfig(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Firebase Config JSON</label>
+                    <textarea id="cfgJsonInput" rows="5" required placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "blogverse-f45bf.firebaseapp.com",
+  "projectId": "blogverse-f45bf",
+  "storageBucket": "blogverse-f45bf.firebasestorage.app",
+  "messagingSenderId": "...",
+  "appId": "..."
+}' class="w-full px-4 py-2.5 bg-gray-950 border border-gray-700 rounded-xl text-xs font-mono text-gray-200 focus:border-indigo-500 focus:outline-none leading-relaxed"></textarea>
+                </div>
+
+                <div class="pt-2 flex items-center justify-between border-t border-gray-800">
+                    <button type="button" onclick="clearCustomFirebaseConfig()" class="text-xs text-red-400 hover:underline">Reset to Default</button>
+                    <div class="flex space-x-2">
+                        <button type="button" onclick="closeModal('firebaseConfigModal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-full text-xs font-medium">Cancel</button>
+                        <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full text-xs font-medium shadow-lg shadow-indigo-600/30">Save &amp; Reload App</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. PUBLISH ARTICLE MODAL -->
     <div id="publishModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
         <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-2xl p-6 shadow-2xl space-y-6 my-8">
             <div class="flex items-center justify-between border-b border-gray-800 pb-4">
@@ -334,10 +397,10 @@
         </div>
     </div>
 
-    <!-- 4. FULL ARTICLE READER MODAL -->
+    <!-- 5. FULL ARTICLE READER MODAL -->
     <div id="readerModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
         <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-3xl my-8 overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-            <!-- Header -->
+            <!-- Reader Header -->
             <div class="p-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/90 sticky top-0 z-10">
                 <div class="flex items-center space-x-3">
                     <img id="readerAuthorAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" class="w-9 h-9 rounded-full object-cover cursor-pointer" onclick="viewAuthorProfileFromModal()">
@@ -349,7 +412,7 @@
                 <button onclick="closeModal('readerModal')" class="text-gray-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
 
-            <!-- Body Scrollable -->
+            <!-- Scrollable Reader Body -->
             <div class="p-6 overflow-y-auto space-y-6 flex-1">
                 <span id="readerCategory" class="px-3 py-1 bg-indigo-950 text-indigo-400 border border-indigo-800 text-xs font-semibold rounded-full">Category</span>
                 <h1 id="readerTitle" class="text-3xl font-bold text-white leading-tight">Article Title</h1>
@@ -359,16 +422,16 @@
                 </div>
 
                 <div id="readerContent" class="article-body text-gray-300 text-base leading-relaxed space-y-4 whitespace-pre-line">
-                    <!-- Article text -->
+                    <!-- Article body -->
                 </div>
 
-                <!-- Likes / Claps Section -->
+                <!-- Likes & Stats Section -->
                 <div class="border-t border-b border-gray-800 py-4 flex items-center justify-between">
                     <button onclick="handleLikeArticle()" class="flex items-center space-x-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full text-pink-400 transition">
                         <i class="fa-solid fa-heart text-lg"></i>
                         <span id="readerLikeCount" class="font-bold text-sm">0</span>
                     </button>
-                    <span id="readerReadTime" class="text-xs text-gray-500">3 min read</span>
+                    <span id="readerReadTime" class="text-xs text-gray-500"><i class="fa-regular fa-clock mr-1"></i>3 min read</span>
                 </div>
 
                 <!-- Real Comments Section -->
@@ -376,15 +439,23 @@
                     <h3 class="text-lg font-bold text-white"><i class="fa-regular fa-comments mr-2"></i>Comments (<span id="readerCommentCount">0</span>)</h3>
                     
                     <div id="addCommentBox" class="flex space-x-2">
-                        <input type="text" id="commentInput" placeholder="Add a real comment..." class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500">
-                        <button onclick="submitComment()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-xl">Post</button>
+                        <input type="text" id="commentInput" placeholder="Add a comment..." class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500">
+                        <button onclick="submitComment()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-xl transition">Post</button>
                     </div>
 
                     <div id="commentsContainer" class="space-y-3 pt-2">
-                        <!-- Real dynamic comments -->
+                        <!-- Dynamic comments -->
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Live Toast Alert System -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 hidden transition-all duration-300 transform translate-y-2">
+        <div id="toastBox" class="px-5 py-3 rounded-xl shadow-2xl border text-xs font-medium flex items-center space-x-3 bg-gray-900 border-gray-700 text-white">
+            <i id="toastIcon" class="fa-solid fa-circle-info text-indigo-400 text-base"></i>
+            <span id="toastMessage">Notification message</span>
         </div>
     </div>
 
@@ -413,22 +484,30 @@
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'blogverse-pub-v1';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+
+    // Load custom Firebase config if saved locally
+    let userFirebaseConfig = null;
+    try {
+        const saved = localStorage.getItem('bv_firebase_config');
+        if (saved) userFirebaseConfig = JSON.parse(saved);
+    } catch(e) {}
+
+    const firebaseConfig = userFirebaseConfig || (typeof __firebase_config !== 'undefined' 
         ? JSON.parse(__firebase_config) 
         : {
             apiKey: "demo-key",
-            authDomain: "demo.firebaseapp.com",
-            projectId: "demo-project",
-            storageBucket: "demo.appspot.com",
+            authDomain: "blogverse-f45bf.firebaseapp.com",
+            projectId: "blogverse-f45bf",
+            storageBucket: "blogverse-f45bf.appspot.com",
             messagingSenderId: "123456789",
             appId: "1:123456789:web:demo"
-        };
+        });
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // Collection references using strict mandatory paths
+    // Collection references using strict paths
     const getArticlesCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'articles');
     const getUsersCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'users');
     const getCommentsCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'comments');
@@ -451,16 +530,92 @@
         return auth.currentUser || mockUser;
     }
 
-    function hashCode(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = (hash << 5) - hash + str.charCodeAt(i);
-            hash |= 0;
+    function setTheme(theme) {
+        const body = document.body;
+        body.classList.remove('dark', 'sepia-mode', 'light-mode');
+        
+        if (theme === 'sepia') {
+            body.classList.add('sepia-mode');
+        } else if (theme === 'light') {
+            body.classList.add('light-mode');
+        } else {
+            body.classList.add('dark');
         }
-        return Math.abs(hash);
+        localStorage.setItem('bv_theme', theme);
+    }
+
+    function navigateTo(view, param = null) {
+        const feedView = document.getElementById('feedView');
+        const profileView = document.getElementById('profileView');
+
+        if (view === 'feed') {
+            feedView.classList.remove('hidden');
+            profileView.classList.add('hidden');
+            currentViewedAuthorId = null;
+        } else if (view === 'my-profile') {
+            const activeUser = getActiveUser();
+            if (!activeUser) {
+                openAuthModal('login');
+                return;
+            }
+            feedView.classList.add('hidden');
+            profileView.classList.remove('hidden');
+            renderAuthorProfile(activeUser.uid);
+        } else if (view === 'profile' && param) {
+            feedView.classList.add('hidden');
+            profileView.classList.remove('hidden');
+            renderAuthorProfile(param);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function filterCategory(category) {
+        currentCategory = category;
+        const btns = {
+            'All': document.getElementById('btnCatAll'),
+            'Tech': document.getElementById('btnCatTech'),
+            'Lifestyle': document.getElementById('btnCatLifestyle'),
+            'Design': document.getElementById('btnCatDesign')
+        };
+
+        Object.keys(btns).forEach(cat => {
+            if (btns[cat]) {
+                if (cat === category) {
+                    btns[cat].className = "cat-filter px-3.5 py-1 rounded-full bg-indigo-600 text-white font-medium transition";
+                } else {
+                    btns[cat].className = "cat-filter px-3.5 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 font-medium transition";
+                }
+            }
+        });
+
+        renderArticlesFeed();
+    }
+
+    async function logout() {
+        try {
+            await signOut(auth);
+        } catch (e) {}
+        mockUser = null;
+        localStorage.removeItem('bv_mock_user');
+        currentUser = null;
+        currentUserProfile = null;
+        updateAuthUI(false);
+        showToast("Signed out successfully.", "info");
+        navigateTo('feed');
+    }
+
+    function openPublishModal() {
+        if (!getActiveUser()) {
+            openAuthModal('login');
+            return;
+        }
+        document.getElementById('publishModal').classList.remove('hidden');
     }
 
     async function initApp() {
+        const savedTheme = localStorage.getItem('bv_theme') || 'dark';
+        setTheme(savedTheme);
+
         const savedMock = localStorage.getItem('bv_mock_user');
         if (savedMock) {
             try { mockUser = JSON.parse(savedMock); } catch(e){}
@@ -473,7 +628,7 @@
                 await signInAnonymously(auth);
             }
         } catch (err) {
-            console.warn("Fallback auth mode enabled for local environment:", err);
+            console.warn("Fallback auth mode active:", err);
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -547,13 +702,12 @@
                 list.push({ id: docSnap.id, ...docSnap.data() });
             });
 
-            // Seed initial articles if cloud storage is completely fresh
+            // Seed initial articles if storage is fresh
             if (list.length === 0 && getActiveUser()) {
                 seedInitialArticles();
                 return;
             }
 
-            // Sort by createdAt descending in JS memory
             list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             articlesData = list;
             renderArticlesFeed();
@@ -760,6 +914,7 @@
             await addDoc(getArticlesCol(), newArticle);
             closeModal('publishModal');
             document.getElementById('publishForm').reset();
+            showToast("Article published successfully!", "success");
             navigateTo('feed');
         } catch (err) {
             console.error("Error publishing article:", err);
@@ -905,11 +1060,9 @@
         document.getElementById('profileAvatarImg').src = authorData.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
         document.getElementById('profileCoverImg').src = authorData.coverUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80';
 
-        // Author's published articles
         const authorArticles = articlesData.filter(a => a.authorId === authorUid);
         document.getElementById('statArticlesCount').innerText = authorArticles.length;
 
-        // Followers & Following
         const followersCount = followsData.filter(f => f.targetId === authorUid).length;
         const followingCount = followsData.filter(f => f.followerId === authorUid).length;
 
@@ -969,6 +1122,30 @@
         }
     }
 
+    function openEditProfileModal() {
+        const activeUser = getActiveUser();
+        if (!activeUser) return;
+        const myProfile = usersData[activeUser.uid] || currentUserProfile || {};
+
+        document.getElementById('editDisplayName').value = myProfile.displayName || '';
+        document.getElementById('editAvatarUrl').value = myProfile.avatarUrl || '';
+        document.getElementById('editCoverUrl').value = myProfile.coverUrl || '';
+        document.getElementById('editTagline').value = myProfile.tagline || '';
+        document.getElementById('editBio').value = myProfile.bio || '';
+        document.getElementById('editLocation').value = myProfile.location || '';
+        document.getElementById('editWebsite').value = myProfile.website || '';
+        
+        previewProfileImages();
+        document.getElementById('editProfileModal').classList.remove('hidden');
+    }
+
+    function previewProfileImages() {
+        const avatar = document.getElementById('editAvatarUrl').value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
+        const cover = document.getElementById('editCoverUrl').value || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80';
+        document.getElementById('editAvatarPreview').src = avatar;
+        document.getElementById('editCoverPreview').src = cover;
+    }
+
     async function saveAuthorProfile(e) {
         e.preventDefault();
         const activeUser = getActiveUser();
@@ -988,7 +1165,6 @@
             const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', activeUser.uid);
             await setDoc(userDocRef, updatedData, { merge: true });
             
-            // Sync local state
             currentUserProfile = { ...currentUserProfile, ...updatedData };
             usersData[activeUser.uid] = { ...(usersData[activeUser.uid] || {}), ...updatedData };
             
@@ -997,8 +1173,8 @@
             }
             
             closeModal('editProfileModal');
+            showToast("Profile saved successfully!", "success");
             
-            // Re-render immediately
             if (currentViewedAuthorId === activeUser.uid) {
                 renderAuthorProfile(activeUser.uid);
             }
@@ -1072,41 +1248,33 @@
                 try {
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     user = userCredential.user;
+                    showToast("Account created successfully!", "success");
                 } catch (fbErr) {
+                    console.error("Firebase Registration Error:", fbErr);
                     if (fbErr.code === 'auth/email-already-in-use') {
-                        throw new Error("This email is already registered. Please sign in instead.");
+                        throw new Error("This email is already registered! Please select 'Sign In'.");
+                    } else if (fbErr.code === 'auth/invalid-api-key' || fbErr.code === 'auth/api-key-not-valid') {
+                        throw new Error("API key is invalid. Click 'Firebase Keys' in the header to enter your valid Firebase Config.");
+                    } else if (fbErr.code === 'auth/weak-password') {
+                        throw new Error("Password must be at least 6 characters long.");
+                    } else {
+                        throw new Error(`Auth Error: ${fbErr.message}`);
                     }
-                    if (fbErr.code === 'auth/weak-password') {
-                        throw new Error("Password should be at least 6 characters.");
-                    }
-                    // Handle demo mode / invalid API key seamlessly
-                    const simulatedUid = 'usr_' + hashCode(email);
-                    mockUser = {
-                        uid: simulatedUid,
-                        email: email,
-                        displayName: displayName || email.split('@')[0]
-                    };
-                    localStorage.setItem('bv_mock_user', JSON.stringify(mockUser));
-                    user = mockUser;
                 }
             } else {
-                // Sign In mode
                 try {
                     const userCredential = await signInWithEmailAndPassword(auth, email, password);
                     user = userCredential.user;
+                    showToast("Signed in successfully!", "success");
                 } catch (fbErr) {
+                    console.error("Firebase Login Error:", fbErr);
                     if (fbErr.code === 'auth/user-not-found' || fbErr.code === 'auth/wrong-password' || fbErr.code === 'auth/invalid-credential') {
-                        throw new Error("Invalid email or password. Please check your credentials.");
+                        throw new Error("Invalid email or password.");
+                    } else if (fbErr.code === 'auth/invalid-api-key' || fbErr.code === 'auth/api-key-not-valid') {
+                        throw new Error("API key is invalid. Click 'Firebase Keys' to update your configuration.");
+                    } else {
+                        throw new Error(`Login Error: ${fbErr.message}`);
                     }
-                    // Handle demo mode / invalid API key seamlessly
-                    const simulatedUid = 'usr_' + hashCode(email);
-                    mockUser = {
-                        uid: simulatedUid,
-                        email: email,
-                        displayName: email.split('@')[0]
-                    };
-                    localStorage.setItem('bv_mock_user', JSON.stringify(mockUser));
-                    user = mockUser;
                 }
             }
 
@@ -1122,111 +1290,63 @@
             renderArticlesFeed();
 
         } catch (err) {
-            console.error("Auth error:", err);
-            errDiv.innerText = err.message || "Authentication failed. Please check your details.";
+            console.error("Auth submit exception:", err);
+            errDiv.innerText = err.message || "Authentication failed. Please check credentials.";
             errDiv.classList.remove('hidden');
         }
     }
 
-    async function logout() {
+    function saveCustomFirebaseConfig(e) {
+        e.preventDefault();
+        const raw = document.getElementById('cfgJsonInput').value.trim();
         try {
-            mockUser = null;
-            localStorage.removeItem('bv_mock_user');
-            await signOut(auth);
-        } catch (e) {
-            console.warn("Logout reset:", e);
+            let parsed = null;
+            if (raw.startsWith('{')) {
+                parsed = JSON.parse(raw);
+            } else {
+                throw new Error("Invalid JSON format. Please paste a valid Firebase Config JSON.");
+            }
+
+            if (!parsed.apiKey || !parsed.projectId) {
+                throw new Error("Config JSON must contain 'apiKey' and 'projectId'.");
+            }
+
+            localStorage.setItem('bv_firebase_config', JSON.stringify(parsed));
+            showToast("Firebase Config saved! Reloading...", "success");
+            setTimeout(() => window.location.reload(), 1000);
+        } catch (err) {
+            alert("Error in Config: " + err.message);
         }
-        currentUser = null;
-        currentUserProfile = null;
-        updateAuthUI(false);
-        navigateTo('feed');
     }
 
-    function setTheme(theme) {
-        const body = document.body;
-        const header = document.getElementById('mainHeader');
-        body.classList.remove('dark', 'sepia-mode');
-        
-        if (theme === 'sepia') {
-            body.classList.add('sepia-mode');
-            header.className = "sticky top-0 z-40 bg-[#f7f3e9]/90 border-b border-[#e2d7c5] backdrop-blur-md";
-        } else if (theme === 'light') {
-            body.className = "bg-gray-50 text-gray-900 min-h-screen transition-colors duration-200 flex flex-col";
-            header.className = "sticky top-0 z-40 bg-white/90 border-b border-gray-200 backdrop-blur-md";
+    function clearCustomFirebaseConfig() {
+        localStorage.removeItem('bv_firebase_config');
+        showToast("Reset to default config. Reloading...", "info");
+        setTimeout(() => window.location.reload(), 1000);
+    }
+
+    function showToast(msg, type = "info") {
+        const toast = document.getElementById('toastNotification');
+        const box = document.getElementById('toastBox');
+        const text = document.getElementById('toastMessage');
+        const icon = document.getElementById('toastIcon');
+
+        text.innerText = msg;
+        if (type === 'success') {
+            box.className = "px-5 py-3 rounded-xl shadow-2xl border text-xs font-medium flex items-center space-x-3 bg-emerald-950 border-emerald-800 text-emerald-200";
+            icon.className = "fa-solid fa-circle-check text-emerald-400 text-base";
+        } else if (type === 'error') {
+            box.className = "px-5 py-3 rounded-xl shadow-2xl border text-xs font-medium flex items-center space-x-3 bg-rose-950 border-rose-800 text-rose-200";
+            icon.className = "fa-solid fa-circle-xmark text-rose-400 text-base";
         } else {
-            body.className = "bg-gray-950 text-gray-100 min-h-screen transition-colors duration-200 flex flex-col dark";
-            header.className = "sticky top-0 z-40 bg-gray-900/90 border-b border-gray-800 backdrop-blur-md";
+            box.className = "px-5 py-3 rounded-xl shadow-2xl border text-xs font-medium flex items-center space-x-3 bg-gray-900 border-gray-700 text-white";
+            icon.className = "fa-solid fa-circle-info text-indigo-400 text-base";
         }
-    }
 
-    function navigateTo(view, authorId = null) {
-        const feedView = document.getElementById('feedView');
-        const profileView = document.getElementById('profileView');
-
-        if (view === 'feed') {
-            feedView.classList.remove('hidden');
-            profileView.classList.add('hidden');
-            renderArticlesFeed();
-        } else if (view === 'profile' || view === 'my-profile') {
-            feedView.classList.add('hidden');
-            profileView.classList.remove('hidden');
-            const activeUser = getActiveUser();
-            const targetId = (view === 'my-profile') ? (activeUser ? activeUser.uid : null) : authorId;
-            if (targetId) {
-                renderAuthorProfile(targetId);
-            } else {
-                openAuthModal('login');
-            }
-        }
-    }
-
-    function filterCategory(cat) {
-        currentCategory = cat;
-        document.querySelectorAll('.cat-filter').forEach(btn => {
-            if (btn.innerText === cat) {
-                btn.className = "cat-filter active px-3 py-1 rounded-full bg-indigo-600 text-white";
-            } else {
-                btn.className = "cat-filter px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700";
-            }
-        });
-        renderArticlesFeed();
-    }
-
-    function openPublishModal() {
-        if (!getActiveUser()) {
-            openAuthModal('login');
-            return;
-        }
-        document.getElementById('publishModal').classList.remove('hidden');
-    }
-
-    function openEditProfileModal() {
-        const activeUser = getActiveUser();
-        if (!activeUser) return;
-        const myProfile = usersData[activeUser.uid] || currentUserProfile || {};
-
-        document.getElementById('editDisplayName').value = myProfile.displayName || '';
-        document.getElementById('editAvatarUrl').value = myProfile.avatarUrl || '';
-        document.getElementById('editCoverUrl').value = myProfile.coverUrl || '';
-        document.getElementById('editTagline').value = myProfile.tagline || '';
-        document.getElementById('editBio').value = myProfile.bio || '';
-        document.getElementById('editLocation').value = myProfile.location || '';
-        document.getElementById('editWebsite').value = myProfile.website || '';
-        
-        previewProfileImages();
-        document.getElementById('editProfileModal').classList.remove('hidden');
-    }
-
-    function previewProfileImages() {
-        const avatar = document.getElementById('editAvatarUrl').value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
-        const cover = document.getElementById('editCoverUrl').value || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80';
-        document.getElementById('editAvatarPreview').src = avatar;
-        document.getElementById('editCoverPreview').src = cover;
-    }
-
-    function viewAuthorProfileFromModal() {
-        closeModal('readerModal');
-        navigateTo('profile', currentViewedAuthorId);
+        toast.classList.remove('hidden', 'translate-y-2');
+        setTimeout(() => {
+            toast.classList.add('hidden', 'translate-y-2');
+        }, 3500);
     }
 
     function handleSearch(val) {
@@ -1245,7 +1365,7 @@
             if (user.displayName && user.displayName.toLowerCase().includes(query)) {
                 count++;
                 const item = document.createElement('div');
-                item.className = "p-3 hover:bg-gray-800 flex items-center space-x-3 cursor-pointer border-b border-gray-800/50 last:border-0";
+                item.className = "p-3 hover:bg-gray-800 flex items-center space-x-3 cursor-pointer border-b border-gray-800/50 last:border-0 transition";
                 item.onclick = () => {
                     dropdown.classList.add('hidden');
                     navigateTo('profile', uid);
@@ -1266,6 +1386,15 @@
         } else {
             dropdown.classList.add('hidden');
         }
+    }
+
+    function viewAuthorProfileFromModal() {
+        closeModal('readerModal');
+        navigateTo('profile', currentViewedAuthorId);
+    }
+
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
     }
 
     function closeModal(id) {
@@ -1290,9 +1419,12 @@
     window.toggleFollowAuthor = toggleFollowAuthor;
     window.handleSearch = handleSearch;
     window.viewAuthorProfileFromModal = viewAuthorProfileFromModal;
+    window.saveCustomFirebaseConfig = saveCustomFirebaseConfig;
+    window.clearCustomFirebaseConfig = clearCustomFirebaseConfig;
+    window.openModal = openModal;
     window.closeModal = closeModal;
 
-    // Start application
+    // Start application on DOM Ready
     window.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
