@@ -175,9 +175,14 @@
             
             <div class="sticky top-0 z-20 bg-white/90 dark:bg-gray-900/90 backdrop-blur px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                 <span id="modal-category-badge" class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">Category</span>
-                <button onclick="closeReaderModal()" class="p-2 text-gray-500 hover:text-gray-900 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button id="modal-edit-btn" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-full text-xs font-semibold flex items-center gap-1 transition">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <button onclick="closeReaderModal()" class="p-2 text-gray-500 hover:text-gray-900 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="p-6 sm:p-8 space-y-6">
@@ -203,11 +208,11 @@
         </div>
     </div>
 
-    <!-- Create Article Modal -->
+    <!-- Create / Edit Article Modal -->
     <div id="create-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 p-6 sm:p-8 relative">
             <div class="flex justify-between items-center pb-4 mb-4 border-b border-gray-100 dark:border-gray-800">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <h3 id="modal-form-heading" class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square text-blue-600"></i> Publish New Article
                 </h3>
                 <button onclick="closeCreateModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-white">
@@ -215,7 +220,9 @@
                 </button>
             </div>
 
-            <form onsubmit="handleCreatePost(event)" class="space-y-4">
+            <form onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <input type="hidden" id="editing-article-id" value="" />
+
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1">Article Title</label>
                     <input type="text" id="new-title" required placeholder="e.g., Artificial Intelligence in Web Dev" 
@@ -241,9 +248,10 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1">Cover Image URL (Optional)</label>
-                    <input type="url" id="new-image" placeholder="https://images.unsplash.com/photo-..." 
-                        class="w-full px-3.5 py-2 text-sm rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1">Upload Cover Image (From Device)</label>
+                    <input type="file" id="new-image-file" accept="image/*" 
+                        class="w-full px-3.5 py-1.5 text-sm rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <p class="text-[10px] text-gray-400 mt-1">Directly select an image from your device.</p>
                 </div>
 
                 <div>
@@ -260,7 +268,7 @@
 
                 <div class="flex justify-end space-x-3 pt-2">
                     <button type="button" onclick="closeCreateModal()" class="px-4 py-2 text-xs font-semibold rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition">Cancel</button>
-                    <button type="submit" class="px-5 py-2 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md transition">Publish Now</button>
+                    <button type="submit" id="submit-btn" class="px-5 py-2 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md transition">Publish Now</button>
                 </div>
             </form>
         </div>
@@ -375,27 +383,58 @@
                 }
             };
 
-            // Post creation
-            window.handleCreatePost = async (event) => {
+            // Helper: Convert File to Base64 String
+            const fileToBase64 = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+
+            // Handle Post Create or Edit Submit
+            window.handleFormSubmit = async (event) => {
                 event.preventDefault();
+                const editingId = document.getElementById("editing-article-id").value;
                 const title = document.getElementById("new-title").value.trim();
                 const category = document.getElementById("new-category").value;
                 const author = document.getElementById("new-author").value.trim();
-                const image = document.getElementById("new-image").value.trim() || "https://images.unsplash.com/photo-1499750310107-5fef28a66643";
+                const fileInput = document.getElementById("new-image-file");
                 const excerpt = document.getElementById("new-excerpt").value.trim();
                 const content = document.getElementById("new-content").value.trim();
 
+                let imageBase64 = "";
+                if (fileInput.files && fileInput.files[0]) {
+                    try {
+                        imageBase64 = await fileToBase64(fileInput.files[0]);
+                    } catch (e) {
+                        console.error("Image read error:", e);
+                    }
+                }
+
                 try {
-                    await addDoc(collection(db, "posts"), {
-                        title, category, author, image, excerpt, content,
-                        likes: 0, views: 0,
-                        createdAt: serverTimestamp()
-                    });
+                    if (editingId) {
+                        // UPDATE existing article
+                        const docRef = doc(db, "posts", editingId);
+                        const updateData = { title, category, author, excerpt, content };
+                        if (imageBase64) updateData.image = imageBase64; // only update image if a new file was chosen
+
+                        await updateDoc(docRef, updateData);
+                        showToast("Article updated successfully!");
+                    } else {
+                        // CREATE new article
+                        await addDoc(collection(db, "posts"), {
+                            title, category, author, 
+                            image: imageBase64 || "https://images.unsplash.com/photo-1499750310107-5fef28a66643", 
+                            excerpt, content,
+                            likes: 0, views: 0,
+                            createdAt: serverTimestamp()
+                        });
+                        showToast("Article published successfully!");
+                    }
                     closeCreateModal();
-                    showToast("Article published successfully!");
                 } catch (err) {
-                    console.error("Error creating post:", err);
-                    showToast("Failed to publish post.");
+                    console.error("Error saving post:", err);
+                    showToast("Failed to save article.");
                 }
             };
 
@@ -409,8 +448,14 @@
                 document.getElementById('modal-category-badge').innerText = art.category || 'General';
                 document.getElementById('modal-author-name').innerText = `By ${art.author || 'Anonymous'}`;
                 document.getElementById('modal-likes-count').innerText = art.likes || 0;
-                document.getElementById('modal-image').src = art.image || '';
+                document.getElementById('modal-image').src = art.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643';
                 document.getElementById('modal-article-body').innerText = art.content || art.excerpt || '';
+
+                const editBtn = document.getElementById('modal-edit-btn');
+                editBtn.onclick = () => {
+                    closeReaderModal();
+                    openEditModal(art.id);
+                };
 
                 document.getElementById('reader-modal').classList.remove('hidden');
 
@@ -459,7 +504,6 @@
                     renderFeed();
                     renderSidebar();
 
-                    // If modal is currently open, update its like count dynamically
                     if (window.activeModalArticleId) {
                         const updated = window.articles.find(a => a.id === window.activeModalArticleId);
                         if (updated) {
@@ -476,6 +520,41 @@
             window.activeModalArticleId = null;
             document.getElementById('reader-modal').classList.add('hidden');
         };
+
+        window.openEditModal = (id) => {
+            const art = window.articles.find(a => a.id === id);
+            if (!art) return;
+
+            document.getElementById("editing-article-id").value = art.id;
+            document.getElementById("new-title").value = art.title || '';
+            document.getElementById("new-category").value = art.category || 'Tech';
+            document.getElementById("new-author").value = art.author || '';
+            document.getElementById("new-excerpt").value = art.excerpt || '';
+            document.getElementById("new-content").value = art.content || '';
+            document.getElementById("new-image-file").value = ""; 
+
+            document.getElementById("modal-form-heading").innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-500"></i> Edit Article`;
+            document.getElementById("submit-btn").innerText = "Update Article";
+
+            document.getElementById('create-modal').classList.remove('hidden');
+        };
+
+        window.openCreateModal = () => {
+            document.getElementById("editing-article-id").value = "";
+            document.getElementById("new-title").value = "";
+            document.getElementById("new-category").value = "Tech";
+            document.getElementById("new-author").value = "";
+            document.getElementById("new-excerpt").value = "";
+            document.getElementById("new-content").value = "";
+            document.getElementById("new-image-file").value = "";
+
+            document.getElementById("modal-form-heading").innerHTML = `<i class="fa-solid fa-pen-to-square text-blue-600"></i> Publish New Article`;
+            document.getElementById("submit-btn").innerText = "Publish Now";
+
+            document.getElementById('create-modal').classList.remove('hidden');
+        };
+
+        window.closeCreateModal = () => document.getElementById('create-modal').classList.add('hidden');
 
         window.initTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -554,16 +633,21 @@
             grid.innerHTML = filtered.map(art => `
                 <div class="bg-white dark:bg-gray-800 rounded-3xl p-5 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col justify-between transition hover:shadow-md">
                     <div>
-                        <img src="${art.image}" class="w-full h-44 object-cover rounded-2xl mb-4 bg-gray-100 dark:bg-gray-700" alt="Cover" />
+                        <img src="${art.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643'}" class="w-full h-44 object-cover rounded-2xl mb-4 bg-gray-100 dark:bg-gray-700" alt="Cover" />
                         <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">${art.category || 'Tech'}</span>
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white mt-2">${art.title}</h3>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">${art.excerpt}</p>
                     </div>
                     <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs text-gray-400">
                         <span>By ${art.author || 'Anonymous'}</span>
-                        <button onclick="openReaderModal('${art.id}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition text-xs flex items-center gap-1">
-                            Read More <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                        </button>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="openEditModal('${art.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-full font-medium transition text-xs flex items-center gap-1">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+                            <button onclick="openReaderModal('${art.id}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition text-xs flex items-center gap-1">
+                                Read More <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -597,9 +681,6 @@
                 </div>
             `).join('');
         };
-
-        window.openCreateModal = () => document.getElementById('create-modal').classList.remove('hidden');
-        window.closeCreateModal = () => document.getElementById('create-modal').classList.add('hidden');
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
