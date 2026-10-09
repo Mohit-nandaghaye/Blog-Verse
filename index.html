@@ -413,6 +413,37 @@
   window.auth = auth;
   window.handleGoogleLogin = () => signInWithPopup(auth, googleProvider);
   window.handleLogout = () => signOut(auth);
+  // Newsletter subscription handler
+window.handleSubscribe = async (event) => {
+  event.preventDefault(); // Page refresh hone se rokega
+  
+  const emailInput = document.getElementById("newsletter-email");
+  const statusMsg = document.getElementById("newsletter-status");
+  const email = emailInput ? emailInput.value.trim() : "";
+
+  if (!email) return;
+
+  try {
+    // Firestore ke 'subscribers' collection mein save karega
+    await addDoc(collection(db, "subscribers"), {
+      email: email,
+      subscribedAt: serverTimestamp()
+    });
+
+    // UI par success message dikhayega
+    if (statusMsg) {
+      statusMsg.innerText = "Subscribed successfully! 🎉";
+      statusMsg.classList.remove("hidden");
+    }
+    emailInput.value = ""; // Input box clear karega
+  } catch (err) {
+    console.error("Newsletter error:", err);
+    if (statusMsg) {
+      statusMsg.innerText = "Error subscribing. Try again!";
+      statusMsg.classList.remove("hidden");
+    }
+  }
+};
                 isFirebaseConnected = true;
             } catch (err) {
                 console.error("Firebase connection error:", err);
