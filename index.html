@@ -42,12 +42,6 @@
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200 flex flex-col">
 
-    <!-- Firebase Alert Banner -->
-    <div id="firebase-alert" class="hidden bg-amber-500 text-slate-950 px-4 py-2 text-xs sm:text-sm font-semibold text-center border-b border-amber-600 flex items-center justify-center gap-2">
-        <i class="fa-solid fa-triangle-exclamation text-base"></i>
-        <span>Firebase Config Required to enable Cloud Sync!</span>
-    </div>
-
     <!-- Header & Navigation -->
     <header class="sticky top-0 z-40 w-full glass-header bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,9 +58,7 @@
                 </div>
 
                 <!-- Desktop Nav Categories -->
-                <nav class="hidden md:flex space-x-1" id="desktop-category-nav">
-                    <!-- Dynamic Categories Rendered by JS -->
-                </nav>
+                <nav class="hidden md:flex space-x-1" id="desktop-category-nav"></nav>
 
                 <!-- Actions Right -->
                 <div class="flex items-center space-x-3">
@@ -81,9 +73,8 @@
                         <span class="hidden sm:inline">Write Article</span>
                     </button>
 
-                    <!-- Google Auth Button Dynamic Container -->
                     <div id="auth-container">
-                        <button onclick="handleGoogleLogin()" class="flex items-center space-x-1.5 bg-gray-900 hover:bg-black dark:bg-gray-800 dark:hover:bg-gray-700 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-full transition shadow-sm">
+                        <button onclick="handleGoogleLogin()" class="flex items-center space-x-1.5 bg-gray-900 hover:bg-black text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-full transition shadow-sm">
                             <i class="fa-brands fa-google text-red-400"></i>
                             <span>Login</span>
                         </button>
@@ -96,7 +87,6 @@
                 </div>
             </div>
             
-            <!-- Mobile Search Bar -->
             <div class="sm:hidden pb-3 pt-1">
                 <div class="relative w-full">
                     <input type="text" id="search-input-mobile" onkeyup="handleSearchMobile()" placeholder="Search articles..." 
@@ -106,10 +96,7 @@
             </div>
         </div>
 
-        <!-- Mobile Categories Nav -->
-        <div class="md:hidden border-t border-gray-100 dark:border-gray-800 px-4 py-2 overflow-x-auto flex space-x-2 no-scrollbar" id="mobile-category-nav">
-            <!-- Mobile categories generated via JS -->
-        </div>
+        <div class="md:hidden border-t border-gray-100 dark:border-gray-800 px-4 py-2 overflow-x-auto flex space-x-2 no-scrollbar" id="mobile-category-nav"></div>
     </header>
 
     <!-- Main Container -->
@@ -181,6 +168,40 @@
             </aside>
         </div>
     </main>
+
+    <!-- Full Reader Modal -->
+    <div id="reader-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 transition-opacity">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl overflow-y-auto border border-gray-200 dark:border-gray-800 relative flex flex-col">
+            
+            <div class="sticky top-0 z-20 bg-white/90 dark:bg-gray-900/90 backdrop-blur px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                <span id="modal-category-badge" class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">Category</span>
+                <button onclick="closeReaderModal()" class="p-2 text-gray-500 hover:text-gray-900 dark:hover:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="p-6 sm:p-8 space-y-6">
+                <div>
+                    <h1 id="modal-title" class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight mb-3">Article Title</h1>
+                    <div class="flex items-center justify-between text-xs sm:text-sm text-gray-500 dark:text-gray-400 pb-4 border-b border-gray-100 dark:border-gray-800">
+                        <span id="modal-author-name" class="font-semibold text-gray-900 dark:text-white">Author Name</span>
+                        <div class="flex items-center space-x-3">
+                            <button id="modal-like-btn" onclick="toggleModalLike()" class="flex items-center space-x-1 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 transition font-semibold">
+                                <i class="fa-solid fa-heart"></i>
+                                <span id="modal-likes-count">0</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl overflow-hidden max-h-80 bg-gray-100 dark:bg-gray-800">
+                    <img id="modal-image" src="" alt="Article Banner" class="w-full h-full object-cover">
+                </div>
+
+                <div id="modal-article-body" class="article-content text-gray-800 dark:text-gray-200 text-base leading-relaxed space-y-4"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Create Article Modal -->
     <div id="create-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -255,7 +276,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
-            getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp 
+            getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, increment, query, orderBy, serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { 
             getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut 
@@ -378,6 +399,41 @@
                 }
             };
 
+            // Open Full Article Reader
+            window.openReaderModal = async (id) => {
+                const art = window.articles.find(a => a.id === id);
+                if (!art) return;
+
+                window.activeModalArticleId = id;
+                document.getElementById('modal-title').innerText = art.title || '';
+                document.getElementById('modal-category-badge').innerText = art.category || 'General';
+                document.getElementById('modal-author-name').innerText = `By ${art.author || 'Anonymous'}`;
+                document.getElementById('modal-likes-count').innerText = art.likes || 0;
+                document.getElementById('modal-image').src = art.image || '';
+                document.getElementById('modal-article-body').innerText = art.content || art.excerpt || '';
+
+                document.getElementById('reader-modal').classList.remove('hidden');
+
+                // Increment views in Firestore
+                try {
+                    const docRef = doc(db, "posts", id);
+                    await updateDoc(docRef, { views: increment(1) });
+                } catch (e) {
+                    console.error("Error incrementing views:", e);
+                }
+            };
+
+            // Toggle Likes
+            window.toggleModalLike = async () => {
+                if (!window.activeModalArticleId) return;
+                try {
+                    const docRef = doc(db, "posts", window.activeModalArticleId);
+                    await updateDoc(docRef, { likes: increment(1) });
+                } catch (e) {
+                    console.error("Error liking post:", e);
+                }
+            };
+
         } catch (err) {
             console.error("Firebase connection error:", err);
         }
@@ -402,11 +458,24 @@
                     }));
                     renderFeed();
                     renderSidebar();
+
+                    // If modal is currently open, update its like count dynamically
+                    if (window.activeModalArticleId) {
+                        const updated = window.articles.find(a => a.id === window.activeModalArticleId);
+                        if (updated) {
+                            document.getElementById('modal-likes-count').innerText = updated.likes || 0;
+                        }
+                    }
                 });
             } else {
                 renderFeed();
             }
         });
+
+        window.closeReaderModal = () => {
+            window.activeModalArticleId = null;
+            document.getElementById('reader-modal').classList.add('hidden');
+        };
 
         window.initTheme = function() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -492,7 +561,9 @@
                     </div>
                     <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs text-gray-400">
                         <span>By ${art.author || 'Anonymous'}</span>
-                        <span>${art.likes || 0} ❤️</span>
+                        <button onclick="openReaderModal('${art.id}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition text-xs flex items-center gap-1">
+                            Read More <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
                     </div>
                 </div>
             `).join('');
@@ -517,10 +588,10 @@
             }
 
             container.innerHTML = sorted.map((art, idx) => `
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="openReaderModal('${art.id}')">
                     <span class="text-xl font-extrabold text-blue-600 dark:text-blue-400">0${idx + 1}</span>
                     <div>
-                        <h4 class="text-xs font-bold text-gray-900 dark:text-white line-clamp-1">${art.title}</h4>
+                        <h4 class="text-xs font-bold text-gray-900 dark:text-white line-clamp-1 hover:text-blue-500">${art.title}</h4>
                         <span class="text-[10px] text-gray-400">${art.likes || 0} likes</span>
                     </div>
                 </div>
