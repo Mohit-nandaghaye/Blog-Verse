@@ -708,13 +708,13 @@
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'blogverse-app';
 
     const defaultConfig = {
-        apiKey: "AIzaSyBRe5ja_JmKkZwlXjRY0UmBEgwdLeM8vNw",
-        authDomain: "blogverse-f45bf.firebaseapp.com",
-        projectId: "blogverse-f45bf",
-        storageBucket: "blogverse-f45bf.firebasestorage.app",
-        messagingSenderId: "903299334786",
-        appId: "1:903299334786:web:f40f8e90aa4f2dd1106a9b",
-        measurementId: "G-SFDHQT4WTS"
+       apiKey: "AIzaSyAf7IE-QCRwFZLTWwDCNnmjRpkY0zWcnhk",
+  authDomain: "blogverse-b52f6.firebaseapp.com",
+  projectId: "blogverse-b52f6",
+  storageBucket: "blogverse-b52f6.firebasestorage.app",
+  messagingSenderId: "961056628298",
+  appId: "1:961056628298:web:5a858ccca07d585c9790b3",
+  measurementId: "G-CQD7RCHJ8K"
     };
 
     let firebaseConfig = defaultConfig;
@@ -730,59 +730,9 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const sampleProfiles = {
-        'user_tech_guru': {
-            uid: 'user_tech_guru',
-            name: 'Aarav Tech & AI',
-            handle: 'aarav_tech',
-            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-            cover: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
-            bio: 'Exploring Next-Gen Web Technologies & AI Solutions. 🚀 Code, Design & Cloud.',
-            followers: ['user_design_pro'],
-            following: ['user_design_pro']
-        },
-        'user_design_pro': {
-            uid: 'user_design_pro',
-            name: 'Priya Design Studio',
-            handle: 'priya_design',
-            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
-            cover: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
-            bio: 'UI/UX Designer & Product Enthusiast. Crafting elegant digital experiences.',
-            followers: ['user_tech_guru'],
-            following: ['user_tech_guru']
-        }
-    };
-
-    const sampleFeedPosts = [
-        {
-            id: 'post_1',
-            authorId: 'user_tech_guru',
-            content: '🚀 Welcome to Blogverse! Featuring real-time social feeds, dark/light themes, instant direct messaging, and cloud post creation. Create your first post using the box above!',
-            mediaUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-            timestamp: '2h ago',
-            createdAt: Date.now() - 3600000,
-            likes: ['user_design_pro'],
-            reposts: ['user_design_pro'],
-            replies: [1, 2],
-            category: 'Tech'
-        },
-        {
-            id: 'post_2',
-            authorId: 'user_design_pro',
-            content: '🎨 Minimalist glassmorphism UI design experiment for modern web platforms. What do you think about deep dark mode palettes with indigo & pink accents?',
-            mediaUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
-            timestamp: '5h ago',
-            createdAt: Date.now() - 18000000,
-            likes: ['user_tech_guru'],
-            reposts: [],
-            replies: [1],
-            category: 'Design'
-        }
-    ];
-
     let currentUser = null;
-    let usersData = { ...sampleProfiles };
-    let postsData = [...sampleFeedPosts];
+    let usersData = {};
+    let postsData = [];
     let bookmarksData = [];
     let currentFeedTab = 'foryou';
     let currentView = 'home';
@@ -858,42 +808,32 @@
         // 1. Subscribe to Public Posts
         const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
         onSnapshot(postsRef, (snapshot) => {
-            const fetched = [];
+            postsData = [];
             snapshot.forEach((docSnap) => {
-                fetched.push({ id: docSnap.id, ...docSnap.data() });
+                postsData.push({ id: docSnap.id, ...docSnap.data() });
             });
-            if (fetched.length > 0) {
-                postsData = fetched;
-            } else {
-                postsData = [...sampleFeedPosts];
-            }
             postsData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             renderMainFeed();
             if (currentView === 'profile' && viewedUserId) renderProfilePosts(viewedUserId);
             if (currentView === 'bookmarks') renderBookmarksFeed();
         }, (error) => {
-            console.warn("Firestore Posts fallback active:", error);
-            postsData = [...sampleFeedPosts];
-            renderMainFeed();
+            console.error("Firestore Posts snapshot error:", error);
         });
 
         // 2. Subscribe to Public Profiles
         const profilesRef = collection(db, 'artifacts', appId, 'public', 'data', 'profiles');
         onSnapshot(profilesRef, (snapshot) => {
-            const fetched = {};
+            usersData = {};
             snapshot.forEach((docSnap) => {
-                fetched[docSnap.id] = docSnap.data();
+                usersData[docSnap.id] = docSnap.data();
             });
-            usersData = { ...sampleProfiles, ...fetched };
             renderWhoToFollow();
             updateUserBadgeUI();
             if (currentView === 'profile' && viewedUserId) {
                 navigateToProfile(viewedUserId);
             }
         }, (error) => {
-            console.warn("Firestore Profiles fallback active:", error);
-            usersData = { ...sampleProfiles };
-            renderWhoToFollow();
+            console.error("Firestore Profiles snapshot error:", error);
         });
 
         // 3. Subscribe to Private Bookmarks
@@ -1754,8 +1694,6 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         initAuth();
-        renderMainFeed();
-        renderWhoToFollow();
     });
 </script>
 </body>
