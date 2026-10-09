@@ -353,19 +353,26 @@
             orderBy, 
             serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { 
+  getAuth, 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // =========================================================================
         // REPLACE WITH YOUR FIREBASE CONFIG KEYS FROM FIREBASE CONSOLE:
         // =========================================================================
         const firebaseConfig = {
            apiKey: "AIzaSyAf7IE-QCRwFZLTWwDCNnmjRpkY0zWcnhk",
-  authDomain: "blogverse-b52f6.firebaseapp.com",
-  databaseURL: "https://blogverse-b52f6-default-rtdb.firebaseio.com",
-  projectId: "blogverse-b52f6",
-  storageBucket: "blogverse-b52f6.firebasestorage.app",
-  messagingSenderId: "961056628298",
-  appId: "1:961056628298:web:5a858ccca07d585c9790b3",
-  measurementId: "G-CQD7RCHJ8K"
+           authDomain: "blogverse-b52f6.firebaseapp.com",
+          databaseURL: "https://blogverse-b52f6-default-rtdb.firebaseio.com",
+         projectId: "blogverse-b52f6",
+         storageBucket: "blogverse-b52f6.firebasestorage.app",
+         messagingSenderId: "961056628298",
+         appId: "1:961056628298:web:5a858ccca07d585c9790b3",
+         measurementId: "G-CQD7RCHJ8K"
         };
         // =========================================================================
 
@@ -377,6 +384,35 @@
             try {
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
+                const auth = getAuth(app);
+  const googleProvider = new GoogleAuthProvider();
+
+  // Function to save login time & user details in Firestore
+  async function logUserSession(user) {
+    try {
+      await addDoc(collection(db, "user_logins"), {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "User",
+        loginTime: serverTimestamp()
+      });
+      console.log("Login time recorded in database!");
+    } catch (err) {
+      console.error("Login tracking error:", err);
+    }
+  }
+
+  // Detect when user logs in
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      logUserSession(user);
+    }
+  });
+
+  // Export functions to window
+  window.auth = auth;
+  window.handleGoogleLogin = () => signInWithPopup(auth, googleProvider);
+  window.handleLogout = () => signOut(auth);
                 isFirebaseConnected = true;
             } catch (err) {
                 console.error("Firebase connection error:", err);
